@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* styles.css */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+/* About.css */
+.about-container {
+  perspective: 1000px; /* Creates the 3D effect */
+}
+
+.image-container {
+  transition: transform 0.3s ease-in-out;
+}
+
+.image {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-in-out;
+}
