@@ -15,7 +15,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${API_URL}`, {
-        credentials: 'include',
+        credentials: "include",
         method: "GET",
       });
       if (!response.ok) throw new Error("Failed to fetch products");
@@ -40,7 +40,7 @@ const Products = () => {
       formData.append("title", productData.title);
       // formData.append("description", productData.description);
       formData.append("price", productData.price);
-      
+
       // Add images
       if (productData.images) {
         productData.images.forEach((image) => {
@@ -57,19 +57,17 @@ const Products = () => {
           formData.append("colors", color);
         });
       }
-      console.log("Form data in products", formData);
-      console.log("Selected product:", productData);
 
       let response;
       if (selectedProduct) {
         response = await fetch(`${API_URL}/update/${selectedProduct._id}`, {
-          credentials: 'include',
+          credentials: "include",
           method: "PUT",
           body: formData,
         });
       } else {
         response = await fetch(`${API_URL}/add`, {
-          credentials: 'include',
+          credentials: "include",
           method: "POST",
           body: formData,
         });
@@ -100,7 +98,7 @@ const Products = () => {
   const handleDeleteProduct = async (productId) => {
     try {
       const response = await fetch(`${API_URL}/delete/${productId}`, {
-        credentials: 'include',
+        credentials: "include",
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete product");
@@ -120,6 +118,7 @@ const Products = () => {
 
   return (
     <div className="p-4">
+      {/* Title and Add Product Button */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-semibold text-gray-800">Products</h1>
         <button
@@ -127,12 +126,18 @@ const Products = () => {
             setSelectedProduct(null);
             setIsModalOpen(true);
           }}
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+          className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-600"
         >
           Add Product
         </button>
       </div>
 
+      {/* Product Count Display */}
+      <div className="mb-4 text-gray-600">
+        <p className="text-lg">Total Products: {products.length}</p>
+      </div>
+
+      {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {Array.isArray(products) &&
           products.map((product) => (
@@ -150,7 +155,7 @@ const Products = () => {
                     setSelectedProduct(product);
                     setIsModalOpen(true);
                   }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-600"
                 >
                   Update
                 </button>
@@ -159,7 +164,7 @@ const Products = () => {
                     setSelectedProduct(product);
                     setIsDeleteModalOpen(true);
                   }}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+                  className="bg-black text-white px-4 py-2 rounded hover:bg-red-700"
                 >
                   Delete
                 </button>
@@ -170,6 +175,7 @@ const Products = () => {
 
       <ToastContainer />
 
+      {/* Modals */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -179,7 +185,6 @@ const Products = () => {
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        // onConfirm={() => handleDeleteProduct(selectedProduct.id)}
         onConfirm={() => handleDeleteProduct(selectedProduct._id)}
       />
     </div>

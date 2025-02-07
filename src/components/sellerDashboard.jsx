@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaBars,
   FaBox,
@@ -14,44 +14,79 @@ import Customers from "./customers";
 
 const SellerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Dashboard"); // Track the active tab
+  const [activeTab, setActiveTab] = useState("Dashboard");
 
+  // State to hold dynamic values for the dashboard
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+
+  const API_URL = "http://localhost:5000/api"; // Adjust the API URL accordingly
+
+  // Function to toggle the sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Function to fetch dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      const [ordersRes, productsRes, customersRes] = await Promise.all([
+        fetch(`${API_URL}/orders`), // Fetch total orders count
+        fetch(`${API_URL}/products/`), // Fetch total products count
+        fetch(`${API_URL}/customers/count`), // Fetch total customers
+      ]);
+
+      const ordersData = await ordersRes.json();
+      const productsData = await productsRes.json();
+      const customersData = await customersRes.json();
+
+      setTotalOrders(ordersData.count); // Assuming the API returns { count: number }
+      setTotalProducts(productsData.count); // Assuming the API returns { count: number }
+      setTotalCustomers(customersData.count); // Assuming the API returns { count: number }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
+  // Fetch dashboard data when the component mounts
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
       case "Orders":
         return <div className="p-4"><Orders /></div>;
       case "Products":
-        return <div className="p-4"><Products/></div>;
+        return <div className="p-4"><Products /></div>;
       case "Earnings":
-        return <div className="p-4"><Earnings /></div>;
+        return <div className="p-4"><Earnings setTotalEarnings={setTotalEarnings} /></div>;
       case "Customers":
-        return <div className="p-4"><Customers/></div>;
+        return <div className="p-4"><Customers /></div>;
       case "Dashboard":
         return (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             <DashboardCard
               title="Orders"
-              value="120"
-              icon={<FaShoppingCart className="text-indigo-600" />}
+              value={totalOrders}
+              icon={<FaShoppingCart className="text-orange-600" />}
             />
             <DashboardCard
               title="Products"
-              value="45"
-              icon={<FaBox className="text-green-600" />}
+              value={totalProducts}
+              icon={<FaBox className="text-orange-600" />}
             />
             <DashboardCard
               title="Earnings"
-              value="$8,500"
+              value={`$${totalEarnings.toLocaleString()}`}
               icon={<FaChartBar className="text-orange-600" />}
             />
             <DashboardCard
               title="Customers"
-              value="300"
-              icon={<FaUsers className="text-purple-600" />}
+              value={totalCustomers}
+              icon={<FaUsers className=" text-orange-600" />}
             />
           </div>
         );
@@ -67,7 +102,7 @@ const SellerDashboard = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 sm:translate-x-0 sm:w-64`}
       >
-        <div className="flex items-center justify-between p-4 bg-indigo-600">
+        <div className="flex items-center justify-between p-4 bg-orange-400">
           <h2 className="text-white text-xl font-bold">Seller Dashboard</h2>
           <button className="text-white sm:hidden" onClick={toggleSidebar}>
             <FaTimes />
@@ -109,10 +144,9 @@ const SellerDashboard = () => {
         </nav>
       </div>
       <div className="flex flex-col flex-grow sm:ml-64">
-        {/* Header */}
         <header className="flex items-center justify-between p-4 bg-white shadow-md sm:hidden">
           <h2 className="text-lg font-semibold">{activeTab}</h2>
-          <button onClick={toggleSidebar} className="text-indigo-600">
+          <button onClick={toggleSidebar} className="text-orange-600">
             <FaBars />
           </button>
         </header>
@@ -127,8 +161,8 @@ const MenuItem = ({ icon, text, isActive, onClick }) => (
     <button
       onClick={onClick}
       className={`flex items-center p-2 w-full text-left ${
-        isActive ? "text-indigo-600 bg-gray-100" : "text-gray-700"
-      } hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition`}
+        isActive ? "text-orange-600 bg-gray-100" : "text-gray-700"
+      } hover:text-orange-600 hover:bg-gray-100 rounded-lg transition`}
     >
       <span className="mr-2">{icon}</span>
       {text}

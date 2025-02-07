@@ -12,6 +12,7 @@ import LoginPage from "./Pages/login";
 import SignUp from "./Pages/signup";
 import OtpPage from "./Pages/otp";
 import SellPage from "./Pages/seller";
+import Order from "./Pages/order";
 
 const App = () => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/otp" element={<OtpPage />} />
         <Route path="/seller" element={<SellPage />} />
+        <Route path="/order" element={<Order />} />
       </Routes>
       {!isSellerPage && <Footer />}
     </>
