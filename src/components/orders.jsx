@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom"; // Import Link for navigation
 import "react-toastify/dist/ReactToastify.css";
 
 const Orders = () => {
@@ -68,23 +69,26 @@ const Orders = () => {
                 key={order._id}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}
               >
-                <td className="px-4 py-2 text-sm text-gray-700">{order._id}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{order.product}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td
-                  className={`px-4 py-2 text-sm font-medium ${
-                    order.status === "Delivered"
-                      ? "text-green-600"
-                      : order.status === "Shipped"
-                      ? "text-blue-600"
-                      : order.status === "Cancelled"
-                      ? "text-red-600"
-                      : "text-yellow-600"
-                  }`}
-                >
-                  {order.status}
-                </td>
-                <td className="px-4 py-2 text-sm text-gray-700">${order.totalAmount}</td>
+                {/* Wrap the row with a Link component to navigate to the order details page */}
+                <Link to={`/orders/${order._id}`}>
+                  <td className="px-4 py-2 text-sm text-gray-700">{order._id}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700">{order.product}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td
+                    className={`px-4 py-2 text-sm font-medium ${
+                      order.status === "Delivered"
+                        ? "text-green-600"
+                        : order.status === "Shipped"
+                        ? "text-blue-600"
+                        : order.status === "Cancelled"
+                        ? "text-red-600"
+                        : "text-yellow-600"
+                    }`}
+                  >
+                    {order.status}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-700">${order.totalAmount}</td>
+                </Link>
               </tr>
             ))}
           </tbody>

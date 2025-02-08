@@ -13,6 +13,8 @@ import SignUp from "./Pages/signup";
 import OtpPage from "./Pages/otp";
 import SellPage from "./Pages/seller";
 import Order from "./Pages/order";
+// import OrderDetails from "./OrderDetails";
+import OrderDetails from "./Pages/order";
 
 const App = () => {
   const location = useLocation();
@@ -34,6 +36,7 @@ const App = () => {
         <Route path="/otp" element={<OtpPage />} />
         <Route path="/seller" element={<SellPage />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/orders/:orderId" element={<OrderDetails />} /> 
       </Routes>
       {!isSellerPage && <Footer />}
     </>
