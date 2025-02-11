@@ -67,15 +67,16 @@ const TShirtSelector = () => {
         </div>
         <div className="overflow-x-auto flex space-x-2 mt-4 p-2">
           {products.map((product, index) => (
-            <img
-              key={index}
-              src={product.frontImage}
-              alt={`Front View ${index + 1}`}
-              className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
-                selectedProduct === product ? "border-orange-500" : ""
-              }`}
-              onClick={() => handleProductSelect(product)}
-            />
+            <div key={index} className="text-center">
+              <img
+                src={product.frontImage}
+                alt={`Front View ${index + 1}`}
+                className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
+                  selectedProduct === product ? "border-orange-500" : ""
+                }`}
+                onClick={() => handleProductSelect(product)}
+              />
+            </div>
           ))}
         </div>
 
@@ -133,7 +134,7 @@ const TShirtSelector = () => {
         </div>
 
         {/* Size Selection Section */}
-        <SizeSelection />
+        <SizeSelection selectedProduct={selectedProduct} />
       </div>
     </div>
   );

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { add } from '../store/cartSlice';
 import Popup from './shirtpopup';
 
-const SizeSelection = () => {
+const SizeSelection = ({ selectedProduct }) => {
   const [sizes, setSizes] = useState([
     { size: 'S', price: 6.42, originalPrice: 8.50, stock: 63, quantity: 0 },
     { size: 'M', price: 6.42, originalPrice: 8.50, stock: 86, quantity: 0 },
@@ -11,6 +13,7 @@ const SizeSelection = () => {
   ]);
 
   const [popupVisible, setPopupVisible] = useState(false); // State for popup visibility
+  const dispatch = useDispatch();
 
   const handleQuantityChange = (size, action) => {
     setSizes((prevSizes) =>
@@ -26,12 +29,30 @@ const SizeSelection = () => {
   };
 
   const handleAddToCart = () => {
+    if (!selectedProduct) {
+      alert('Please select a product first');
+      return;
+    }
+
+    const selectedSize = sizes.find(size => size.quantity > 0);
+    if (!selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+
+    const productToAdd = {
+      ...selectedProduct,
+      size: selectedSize.size,
+      quantity: selectedSize.quantity,
+      price: selectedProduct.price, // Use the product's price
+    };
+
+    dispatch(add(productToAdd));
     alert('Item added to cart!');
   };
 
   // Handle opening and closing the popup
   const togglePopup = () => {
-    // Check if any size has been selected (quantity > 0)
     const selectedSize = sizes.some((size) => size.quantity > 0);
     if (!selectedSize) {
       alert('Please select a size');

@@ -11,7 +11,7 @@ const Cart = () => {
 
   // Calculate the total amount
   const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  const shippingCost = 50; 
+  const shippingCost = 50;
   const totalWithShipping = totalAmount + shippingCost;
 
   const handleCheckout = () => {
@@ -32,14 +32,15 @@ const Cart = () => {
                 className="flex items-center justify-between bg-white shadow-lg shadow-gray-300 rounded-md p-4 mb-4"
               >
                 <img
-                  src={item.image}
+                  src={item.frontImage}
                   alt={item.title}
                   className="w-20 h-20 object-contain"
                 />
                 <div className="flex-1 ml-4">
                   <h2 className="text-lg font-bold text-gray-800">{item.title}</h2>
                   <p className="text-gray-600 text-sm">{item.category}</p>
-                  <p className="text-gray-800 font-bold text-lg">${item.price}</p>
+                  <p className="text-gray-800 font-bold text-lg">Rs. {item.price}</p>
+                  <p className="text-gray-600 text-sm">Size: {item.size}</p>
                 </div>
                 <div className="flex items-center">
                   <button
@@ -68,10 +69,10 @@ const Cart = () => {
         </div>
         <div className="p-4 bg-white shadow-lg shadow-gray-300 rounded-md">
           <h2 className="text-lg font-bold text-gray-800 mb-4">The total amount of</h2>
-          <p className="text-gray-600 text-sm">Total amount: ${totalAmount.toFixed(2)}</p>
-          <p className="text-gray-600 text-sm">Shipping: ${shippingCost.toFixed(2)}</p>
+          <p className="text-gray-600 text-sm">Total amount: Rs. {totalAmount.toFixed(2)}</p>
+          <p className="text-gray-600 text-sm">Shipping: Rs. {shippingCost.toFixed(2)}</p>
           <p className="text-gray-800 font-bold text-lg mt-2">
-            The total amount of (excluding VAT): ${totalWithShipping.toFixed(2)}
+            The total amount of (excluding VAT): Rs. {totalWithShipping.toFixed(2)}
           </p>
           <button
             className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"

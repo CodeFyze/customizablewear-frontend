@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { add } from "../store/cartSlice"; // Import the add action from cartSlice
 
-const UploadLogoPopup = ({ onBack }) => {
+const UploadLogoPopup = ({ onBack, onClose }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [note, setNote] = useState("");
+  const dispatch = useDispatch();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -16,8 +19,18 @@ const UploadLogoPopup = ({ onBack }) => {
   };
 
   const handleFinish = () => {
-    console.log("Logo:", selectedFile ? selectedFile.name : "No file selected");
-    console.log("Note:", note);
+    const product = {
+      id: new Date().getTime(), // Unique ID based on timestamp
+      image: selectedFile ? URL.createObjectURL(selectedFile) : null,
+      title: "Custom Logo",
+      brand: "Your Brand",
+      model: selectedFile ? selectedFile.name : "No file selected",
+      price: 50, // Example price for a custom logo
+      notes: note,
+    };
+
+    dispatch(add(product));
+    onClose(); // Close the popup after adding to cart
   };
 
   return (
