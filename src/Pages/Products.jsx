@@ -51,7 +51,7 @@ const Products = ({ showTShirtSelector = true }) => {
     <div>
       {showTShirtSelector && <TShirtSelector />}
       <div className="container mx-auto pb-24 py-4">
-        <h1 className="text-3xl font-bold my-8 font-sans">Products</h1>
+        <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
         <div className="flex flex-wrap justify-center">
           {products.map((product) => (
             <div
