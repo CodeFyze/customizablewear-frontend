@@ -47,7 +47,7 @@ const TShirtSelector = () => {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0">
       {/* Main Shirt Display */}
-      <div className="w-full md:w-[1000px] flex justify-center">
+      <div className="w-full lg:w-[1000px] flex justify-center">
         {selectedShirt && (
           <img
             src={selectedShirt}
@@ -60,7 +60,7 @@ const TShirtSelector = () => {
       </div>
 
       {/* Right-Side Section */}
-      <div className="w-full md:w-1/3 md:pr-10">
+      <div className="w-full lg:w-1/3 lg:pr-10">
         {/* Shirt Image Scroller (All Products' Front Images) */}
         <div className="mt-4 font-medium text-lg text-center md:text-left">
           Shirts

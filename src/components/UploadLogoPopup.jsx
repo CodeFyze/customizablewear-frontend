@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { add } from "../store/cartSlice"; // Import the add action from cartSlice
 
-const UploadLogoPopup = ({ onBack, onClose }) => {
+const UploadLogoPopup = ({ onBack, onClose, selectedSize }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [note, setNote] = useState("");
   const dispatch = useDispatch();
@@ -26,6 +26,7 @@ const UploadLogoPopup = ({ onBack, onClose }) => {
       brand: "Your Brand",
       model: selectedFile ? selectedFile.name : "No file selected",
       price: 50, // Example price for a custom logo
+      size: selectedSize,
       notes: note,
     };
 
