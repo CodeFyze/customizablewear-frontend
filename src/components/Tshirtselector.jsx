@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+// import { add } from "../store/cartSlice";
+import { addItem } from "../store/cartSlice";
 import SizeSelection from "./SizeSelection";
+import Popup from "./shirtpopup";
 
 const TShirtSelector = () => {
   const [selectedShirt, setSelectedShirt] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const dispatch = useDispatch();
 
   const handleShirtChange = (shirt) => {
     setIsAnimating(true);
@@ -18,8 +26,49 @@ const TShirtSelector = () => {
   const handleProductSelect = (product) => {
     setSelectedProduct(product);
     setSelectedShirt(product.frontImage);
+    setSelectedSize(null);
+    setSelectedColor(null);
   };
 
+  const handleColorSelect = (color) => {
+    console.log("Color selected:", color);
+    setSelectedColor(color);
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedProduct) {
+      alert("Please select a product first.");
+      return;
+    }
+
+    if (!selectedSize || selectedSize.quantity === 0) {
+      alert("Please select a size.");
+      return;
+    }
+
+    if (!selectedColor) {
+      alert("Please select a color.");
+      return;
+    }
+
+    const productToAdd = {
+      id: new Date().getTime(),
+      image: selectedShirt || selectedProduct.frontImage,
+      title: selectedProduct.title,
+      size: selectedSize.size,
+      color: selectedColor,
+      quantity: selectedSize.quantity,
+      price: selectedProduct.price,
+    };
+
+    dispatch(addItem(productToAdd));
+    alert("Item added to cart!");
+  };
+
+
+
+  
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -34,8 +83,6 @@ const TShirtSelector = () => {
           setSelectedProduct(data.products[0]);
           setSelectedShirt(data.products[0]?.frontImage);
         }
-
-        console.log("Fetched Products:", data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -46,7 +93,6 @@ const TShirtSelector = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0">
-      {/* Main Shirt Display */}
       <div className="w-full md:w-[1000px] flex justify-center">
         {selectedShirt && (
           <img
@@ -59,9 +105,7 @@ const TShirtSelector = () => {
         )}
       </div>
 
-      {/* Right-Side Section */}
       <div className="w-full md:w-1/3 md:pr-10">
-        {/* Shirt Image Scroller (All Products' Front Images) */}
         <div className="mt-4 font-medium text-lg text-center md:text-left">
           Shirts
         </div>
@@ -79,8 +123,6 @@ const TShirtSelector = () => {
             </div>
           ))}
         </div>
-
-        {/* Shirt Selector (Front, Side, and Back Images of Selected Product) */}
         <div className="mt-4 font-medium text-lg text-center md:text-left">
           Select Your T-Shirt View
         </div>
@@ -108,8 +150,6 @@ const TShirtSelector = () => {
               </div>
             ))}
         </div>
-
-        {/* Color Picker */}
         <div className="mt-6 font-medium text-lg text-center md:text-left">
           Select Color
         </div>
@@ -117,8 +157,13 @@ const TShirtSelector = () => {
           {selectedProduct?.colors?.map((color, index) => (
             <div
               key={index}
-              className="w-8 h-8 rounded-full border border-gray-300 cursor-pointer hover:border-orange-500"
+              className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer ${
+                selectedColor === color
+                  ? "border-orange-500 outline outline-2"
+                  : "hover:border-orange-500"
+              }`}
               style={{ backgroundColor: color }}
+              onClick={() => handleColorSelect(color)}
             ></div>
           ))}
         </div>
@@ -132,10 +177,34 @@ const TShirtSelector = () => {
             Price: Rs. {selectedProduct?.price}
           </p>
         </div>
+        <SizeSelection
+          selectedProduct={selectedProduct}
+          onSizeSelect={setSelectedSize}
+        />
+        <button
+          onClick={() => setPopupVisible(true)}
+          className="mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg  hover:bg-orange-600"
+        >
+          ADD LOGO
+        </button>
 
-        {/* Size Selection Section */}
-        <SizeSelection selectedProduct={selectedProduct} />
+        <button
+          onClick={handleAddToCart}
+          className="bg-orange-500 text-white py-2 px-4 ml-10 rounded-lg hover:bg-orange-600"
+        >
+          ADD TO CART
+        </button>
       </div>
+      {popupVisible && (
+        <Popup
+          visible={popupVisible}
+          onClose={() => setPopupVisible(false)}
+          selectedProduct={selectedProduct}
+          selectedSize={selectedSize}
+          selectedColor={selectedColor}
+          selectedShirt={selectedShirt}
+        />
+      )}
     </div>
   );
 };

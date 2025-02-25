@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const [productTitle, setProductTitle] = useState("");
@@ -42,7 +44,7 @@ const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const handleExtraImagesChange = (e) => {
     const files = Array.from(e.target.files);
     if (images.length + files.length > 10) {
-      alert("You can upload up to 10 additional images only.");
+      toast.error("You can upload up to 10 additional images only.", { position: "top-right" });
       return;
     }
     setImages([...images, ...files]);
@@ -69,8 +71,14 @@ const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("authToken"); // ✅ Get auth token
+    if (!token) {
+      toast.error("Unauthorized! Please log in again.", { position: "top-right" });
+      return;
+    }
+
     if (!frontImage || !backImage || !sideImage) {
-      alert("Please upload all three main images (front, back, side)!");
+      toast.error("Please upload all three main images (front, back, side)!", { position: "top-right" });
       return;
     }
 
@@ -89,21 +97,25 @@ const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Add token in headers
+        },
       });
+
       const data = await response.json();
       if (response.status === 401) {
-        alert("Unauthorized! Please log in again.");
+        toast.error("Unauthorized! Please log in again.", { position: "top-right" });
         return;
       }
       if (data.success) {
-        alert("Product added successfully!");
+        toast.success("Product added successfully!", { position: "top-right" });
         onClose();
       } else {
-        alert(`Error: ${data.message}`);
+        toast.error(`Error: ${data.message}`, { position: "top-right" });
       }
     } catch (error) {
       console.error("Error adding product:", error);
-      alert("Failed to add product. Please try again.");
+      toast.error("Failed to add product. Please try again.", { position: "top-right" });
     }
   };
 
@@ -111,11 +123,7 @@ const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-scroll">
         <h2 className="text-xl font-semibold mb-4">Add Product</h2>
-        <form
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-          className="space-y-4"
-        >
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
           <input
             className="w-full p-2 border rounded"
             type="text"
@@ -181,14 +189,12 @@ const Modal = ({ isOpen, onClose, onSubmit, initialData }) => {
               </div>
             ))}
           </div>
-          <button
-            className="w-full p-2 bg-green-500 text-white rounded"
-            type="submit"
-          >
+          <button className="w-full p-2 bg-green-500 text-white rounded" type="submit">
             Add Product
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

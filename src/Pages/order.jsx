@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  FaBox, FaShoppingCart, FaPalette, FaRuler, FaImage, FaMoneyBillWave,
+  FaMapMarkerAlt, FaCheckCircle, FaInfoCircle, FaEllipsisV, FaEye, FaDownload
+} from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 
 const OrderDetails = () => {
@@ -8,14 +12,22 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(null);
 
   const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
 
   const fetchOrderDetails = async () => {
     try {
-      const response = await fetch(`${API_URL}`, {
+      const token = localStorage.getItem("authToken"); // ✅ Get token from localStorage
+
+      if (!token) {
+        throw new Error("Unauthorized - No token found.");
+      }
+
+      const response = await fetch(API_URL, {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${token}`, // ✅ Add token in headers
           "Content-Type": "application/json",
         },
         credentials: "include",
@@ -41,169 +53,336 @@ const OrderDetails = () => {
     fetchOrderDetails();
   }, [orderId]);
 
+  const handleDownload = async (imageUrl) => {
+    try {
+      const response = await fetch(imageUrl, { mode: "cors" });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "custom-logo.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      toast.error("Failed to download image. Please try again.", { position: "top-right" });
+    }
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-2xl font-semibold text-gray-700 animate-pulse">
-          Loading...
-        </div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-2xl font-semibold text-gray-700 animate-pulse">Loading...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <div className="text-2xl font-semibold text-red-600">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Order Card */}
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 sm:p-8">
-            <h1 className="text-3xl font-bold text-white">Order Summary</h1>
-            <p className="text-lg text-blue-100 mt-2">
-              Here are the details of your order.
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        {/* ✅ Order Header */}
+        <div className="flex justify-between items-center bg-blue-600 text-white rounded-lg p-6">
+          <h1 className="text-2xl font-bold flex items-center">
+            <FaBox className="mr-2" /> Order Details
+          </h1>
+          <p className="text-lg flex items-center">
+            <FaInfoCircle className="mr-2" /> Order ID:
+            <span className="font-semibold ml-1">{order._id}</span>
+          </p>
+        </div>
+
+
+
+
+
+ {/* ✅ Order Status & Payment Info */}
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div className="p-4 bg-gray-100 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <FaCheckCircle className="mr-2 text-green-600" /> Order Status
+            </h2>
+            <p className="text-gray-600 text-lg">
+              <span className="font-semibold">Status:</span> 
+              <span className={`ml-2 px-3 py-1 rounded-full text-white ${
+                order.status === "Delivered" ? "bg-green-500" :
+                order.status === "Pending" ? "bg-blue-500" :
+                order.status === "Cancelled" ? "bg-red-500" : "bg-gray-500"
+              }`}>
+                {order.status}
+              </span>
+            </p>
+            <p className="text-gray-600 text-lg">
+              <span className="font-semibold">Payment Mode:</span> {order.paymentMode}
+            </p>
+            <p className="text-gray-600 text-lg">
+              <span className="font-semibold">Payment Status:</span> 
+              <span className={`ml-2 px-3 py-1 rounded-full text-white ${
+                order.paymentStatus === "Paid" ? "bg-green-500" : "bg-red-500"
+              }`}>
+                {order.paymentStatus}
+              </span>
             </p>
           </div>
+        </div>
 
-          {/* Body Section */}
-          <div className="p-6 sm:p-8 space-y-6">
-            {/* Order ID */}
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Order ID</p>
-                <p className="text-lg font-semibold text-gray-900">{order._id}</p>
-              </div>
-            </div>
+        {/* ✅ Products List */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <FaShoppingCart className="mr-2" /> Products Ordered
+          </h2>
+          {order.products.map((item, index) => (
+            <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-md mb-4 relative">
+              <div className="flex items-center">
+                <img src={item.frontImage} alt={item.title} className="w-24 h-24 object-cover rounded-md mr-4" />
+                <div>
+                  <p className="text-lg font-semibold">{item.title}</p>
+                  <p className="text-sm text-gray-500 flex items-center">
+  <FaPalette className="mr-2" /> Color:
+  <span 
+    className="w-5 h-5 inline-block ml-2 border border-gray-400 rounded-full"
+    style={{ backgroundColor: item.color }}
+  ></span>
+</p>
 
-            {/* Product */}
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-50 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
+                  <p className="text-sm text-gray-500 flex items-center"><FaRuler className="mr-2" /> Size: {item.size}</p>
+                  <p className="text-sm text-gray-500 flex items-center"><FaCheckCircle className="mr-2" /> Method: {item.method}</p>
+                  <p className="text-sm text-gray-500 flex items-center"><FaCheckCircle className="mr-2" /> Position: {item.position}</p>
+                  <p className="text-sm text-gray-500 flex items-center"><FaShoppingCart className="mr-2" /> Quantity: {item.quantity}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Product</p>
-                <p className="text-lg font-semibold text-gray-900">{order.product}</p>
-              </div>
+              {item.logo && (
+                <div className="mt-6 relative">
+                  <h2 className="text-sm font-bold text-gray-800">Custom Logo:</h2>
+                  <div className="flex items-center space-x-4">
+                    <img src={item.logo} alt="Custom Logo" className="w-32 h-32 object-cover rounded-md border" />
+                    {/* Three-dot menu */}
+                    <div className="relative">
+                      <button onClick={() => setMenuOpen(menuOpen === index ? null : index)}
+                        className="text-gray-600 hover:text-gray-800">
+                        <FaEllipsisV size={18} />
+                      </button>
+                      {menuOpen === index && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg">
+                          <button
+                            onClick={() => window.open(item.logo, "_blank")}
+                            className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            <FaEye className="mr-2" /> View Image
+                          </button>
+                          <button
+                            onClick={() => handleDownload(item.logo)}
+                            className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            <FaDownload className="mr-2" /> Download Image
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-
-            {/* Status */}
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Status</p>
-                <p
-                  className={`text-lg font-semibold ${
-                    order.status === "Delivered" ? "text-green-600" : "text-blue-600"
-                  }`}
-                >
-                  {order.status}
-                </p>
-              </div>
-            </div>
-
-            {/* Total Amount */}
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-yellow-50 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Total Amount</p>
-                <p className="text-lg font-semibold text-gray-900">${order.totalAmount}</p>
-              </div>
-            </div>
-
-            {/* Order Date */}
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-pink-50 rounded-lg">
-                <svg
-                  className="w-6 h-6 text-pink-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Order Date</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {new Date(order.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
+          ))}
+        </div>
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center"><FaMapMarkerAlt className="mr-2" /> Shipping Address</h2>
+          <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+            <p className="text-lg font-semibold">
+              {order.shippingAddress.firstName} {order.shippingAddress.lastName}
+            </p>
+            <p className="text-gray-600">{order.shippingAddress.address}</p>
+            <p className="text-gray-600">Email: {order.shippingAddress.email}</p>
+            <p className="text-gray-600">Phone: {order.shippingAddress.phone}</p>
           </div>
         </div>
       </div>
-
-      {/* Toast container for feedback */}
       <ToastContainer />
     </div>
   );
 };
 
 export default OrderDetails;
+
+
+// import React, { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import { toast, ToastContainer } from "react-toastify";
+// import {
+//   FaBox, FaShoppingCart, FaPalette, FaRuler, FaImage, FaMoneyBillWave,
+//   FaMapMarkerAlt, FaCheckCircle, FaInfoCircle, FaEllipsisV, FaEye, FaDownload
+// } from "react-icons/fa";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const OrderDetails = () => {
+//   const { orderId } = useParams();
+//   const [order, setOrder] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [menuOpen, setMenuOpen] = useState(null);
+
+//   const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
+
+//   const fetchOrderDetails = async () => {
+//     try {
+//       const token = localStorage.getItem("authToken"); // ✅ Get token from localStorage
+
+//       if (!token) {
+//         throw new Error("Unauthorized - No token found.");
+//       }
+
+//       const response = await fetch(API_URL, {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${token}`, // ✅ Add token in headers
+//           "Content-Type": "application/json",
+//         },
+//         credentials: "include",
+//       });
+
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.message || "Failed to fetch order details");
+//       }
+
+//       const data = await response.json();
+//       setOrder(data.order);
+//     } catch (error) {
+//       console.error("Error fetching order details:", error);
+//       setError(error.message || "Failed to fetch order details");
+//       toast.error(error.message, { position: "top-right" });
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchOrderDetails();
+//   }, [orderId]);
+
+//   const handleDownload = async (imageUrl) => {
+//     try {
+//       const response = await fetch(imageUrl, { mode: "cors" });
+//       const blob = await response.blob();
+//       const url = window.URL.createObjectURL(blob);
+//       const link = document.createElement("a");
+//       link.href = url;
+//       link.download = "custom-logo.png";
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+//       window.URL.revokeObjectURL(url);
+//     } catch (error) {
+//       console.error("Error downloading image:", error);
+//       toast.error("Failed to download image. Please try again.", { position: "top-right" });
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center min-h-screen bg-gray-100">
+//         <div className="text-2xl font-semibold text-gray-700 animate-pulse">Loading...</div>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="flex justify-center items-center min-h-screen bg-gray-100">
+//         <div className="text-2xl font-semibold text-red-600">{error}</div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+//       <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
+//         {/* ✅ Order Header */}
+//         <div className="flex justify-between items-center bg-blue-600 text-white rounded-lg p-6">
+//           <h1 className="text-2xl font-bold flex items-center">
+//             <FaBox className="mr-2" /> Order Details
+//           </h1>
+//           <p className="text-lg flex items-center">
+//             <FaInfoCircle className="mr-2" /> Order ID:
+//             <span className="font-semibold ml-1">{order._id}</span>
+//           </p>
+//         </div>
+
+//         {/* ✅ Order Status & Payment Info */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//           <div className="p-4 bg-gray-100 rounded-lg shadow-md">
+//             <h2 className="text-xl font-semibold mb-4 flex items-center">
+//               <FaCheckCircle className="mr-2 text-green-600" /> Order Status
+//             </h2>
+//             <p className="text-gray-600 text-lg">
+//               <span className="font-semibold">Status:</span> 
+//               <span className={`ml-2 px-3 py-1 rounded-full text-white ${
+//                 order.status === "Delivered" ? "bg-green-500" :
+//                 order.status === "Pending" ? "bg-blue-500" :
+//                 order.status === "Cancelled" ? "bg-red-500" : "bg-gray-500"
+//               }`}>
+//                 {order.status}
+//               </span>
+//             </p>
+//             <p className="text-gray-600 text-lg">
+//               <span className="font-semibold">Payment Mode:</span> {order.paymentMode}
+//             </p>
+//             <p className="text-gray-600 text-lg">
+//               <span className="font-semibold">Payment Status:</span> 
+//               <span className={`ml-2 px-3 py-1 rounded-full text-white ${
+//                 order.paymentStatus === "Paid" ? "bg-green-500" : "bg-red-500"
+//               }`}>
+//                 {order.paymentStatus}
+//               </span>
+//             </p>
+//           </div>
+//         </div>
+
+//         {/* ✅ Products List */}
+//         <div className="mt-8">
+//           <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+//             <FaShoppingCart className="mr-2" /> Products Ordered
+//           </h2>
+//           {order.products.map((item, index) => (
+//             <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-md mb-4 relative">
+//               <div className="flex items-center">
+//                 <img src={item.frontImage} alt={item.title} className="w-24 h-24 object-cover rounded-md mr-4" />
+//                 <div>
+//                   <p className="text-lg font-semibold">{item.title}</p>
+//                   <p className="text-sm text-gray-500"><FaRuler className="mr-2" /> Size: {item.size}</p>
+//                   <p className="text-sm text-gray-500"><FaCheckCircle className="mr-2" /> Method: {item.method}</p>
+//                   <p className="text-sm text-gray-500"><FaCheckCircle className="mr-2" /> Position: {item.position}</p>
+//                   <p className="text-sm text-gray-500"><FaShoppingCart className="mr-2" /> Quantity: {item.quantity}</p>
+//                 </div>
+//               </div>
+//               {item.logo && (
+//                 <div className="mt-6">
+//                   <h2 className="text-sm font-bold text-gray-800">Custom Logo:</h2>
+//                   <div className="flex items-center space-x-4">
+//                     <img src={item.logo} alt="Custom Logo" className="w-32 h-32 object-cover rounded-md border" />
+//                     <button onClick={() => handleDownload(item.logo)}
+//                       className="text-blue-600 hover:underline flex items-center">
+//                       <FaDownload className="mr-2" /> Download
+//                     </button>
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//       <ToastContainer />
+//     </div>
+//   );
+// };
+
+// export default OrderDetails;

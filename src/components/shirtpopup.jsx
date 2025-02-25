@@ -7,14 +7,22 @@ import AddTextLogoPopup from "./AddTextLogoPopup";
 import UploadLogoPopup from "./UploadLogoPopup";
 import PropTypes from "prop-types";
 
-const Popup = ({ onClose, visible }) => {
+const Popup = ({
+  onClose,
+  visible,
+  selectedProduct,
+  selectedSize,
+  selectedColor,
+}) => {
   const [selectedMethod, setSelectedMethod] = useState("Embroidery");
-  const [selectedPosition, setSelectedPosition] = useState("Large Front"); // New state for logo position
+  const [selectedPosition, setSelectedPosition] = useState("Large Front");
   const [showSizePopup, setShowSizePopup] = useState(false);
   const [isAddLogoPopupVisible, setIsAddLogoPopupVisible] = useState(false);
-  const [isAddTextLogoPopupVisible, setIsAddTextLogoPopupVisible] = useState(false);
-  const [isUploadLogoPopupVisible, setIsUploadLogoPopupVisible] = useState(false);
-  const [setTextLogoDetails] = useState(null);
+  const [isAddTextLogoPopupVisible, setIsAddTextLogoPopupVisible] =
+    useState(false);
+  const [isUploadLogoPopupVisible, setIsUploadLogoPopupVisible] =
+    useState(false);
+  const [textLogoDetails, setTextLogoDetails] = useState(null);
 
   useEffect(() => {
     if (visible) {
@@ -34,106 +42,103 @@ const Popup = ({ onClose, visible }) => {
     setIsAddLogoPopupVisible(false);
     onClose();
     console.log("Text logo details:", details);
-    // Handle the details as needed, e.g., save to state, send to server, etc.
   };
 
   if (!visible) return null;
 
   return (
     <>
-      {/* Main Popup */}
-      {!showSizePopup && !isAddLogoPopupVisible && !isAddTextLogoPopupVisible && !isUploadLogoPopupVisible && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg w-96 md:w-[600px] z-60">
-            <div className="font-semibold text-xl mb-4 text-center">
-              Russell Classic Heavyweight T-Shirt
-            </div>
-            <div className="text-lg mb-4 text-center">
-              Select an application method
-            </div>
+      {!showSizePopup &&
+        !isAddLogoPopupVisible &&
+        !isAddTextLogoPopupVisible &&
+        !isUploadLogoPopupVisible && (
+          <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded-lg w-96 md:w-[600px] z-60">
+              <div className="font-semibold text-xl mb-4 text-center">
+                {selectedProduct?.title || "Select a T-Shirt"}
+              </div>
+              <div className="text-lg mb-4 text-center">
+                Select an application method
+              </div>
 
-            <div className="flex justify-between space-x-4">
-              {/* Embroidery Option */}
-              <div
-                className="flex flex-col items-center cursor-pointer w-full p-2 rounded-md"
-                onClick={() => setSelectedMethod("Embroidery")}
-              >
+              <div className="flex justify-between space-x-4">
                 <div
-                  className={`border-2 ${
-                    selectedMethod === "Embroidery"
-                      ? "border-orange-500"
-                      : "border-transparent"
-                  } rounded-md`}
+                  className="flex flex-col items-center cursor-pointer w-full p-2 rounded-md"
+                  onClick={() => setSelectedMethod("Embroidery")}
                 >
-                  <img
-                    src={Embroidery}
-                    alt="Embroidery"
-                    className="object-cover mb-2 rounded-md"
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
-                </div>
-                <div className="text-lg font-semibold text-center">
-                  Embroidery
-                </div>
-                <div className="text-sm text-gray-500 text-center">
-                  Embroidery involves stitching logos onto garments by needle
-                  and thread.
-                </div>
-                {selectedMethod === "Embroidery" && (
-                  <div className="mt-2 text-sm text-yellow-500">
-                    We Recommend
+                  <div
+                    className={`border-2 ${
+                      selectedMethod === "Embroidery"
+                        ? "border-orange-500"
+                        : "border-transparent"
+                    } rounded-md`}
+                  >
+                    <img
+                      src={Embroidery}
+                      alt="Embroidery"
+                      className="object-cover mb-2 rounded-md"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
                   </div>
-                )}
-              </div>
+                  <div className="text-lg font-semibold text-center">
+                    Embroidery
+                  </div>
+                  <div className="text-sm text-gray-500 text-center">
+                    Embroidery involves stitching logos onto garments by needle
+                    and thread.
+                  </div>
+                  {selectedMethod === "Embroidery" && (
+                    <div className="mt-2 text-sm text-yellow-500">
+                      We Recommend
+                    </div>
+                  )}
+                </div>
 
-              {/* Print Option */}
-              <div
-                className="flex flex-col items-center cursor-pointer w-full p-2 rounded-md"
-                onClick={() => setSelectedMethod("Print")}
-              >
                 <div
-                  className={`border-2 ${
-                    selectedMethod === "Print"
-                      ? "border-orange-500"
-                      : "border-transparent"
-                  } rounded-md`}
+                  className="flex flex-col items-center cursor-pointer w-full p-2 rounded-md"
+                  onClick={() => setSelectedMethod("Print")}
                 >
-                  <img
-                    src={Print}
-                    alt="Print"
-                    className="object-cover mb-2 rounded-md"
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
-                </div>
-                <div className="text-lg font-semibold text-center">Print</div>
-                <div className="text-sm text-gray-500 text-center">
-                  Printing involves pressing logos onto garments using heat.
+                  <div
+                    className={`border-2 ${
+                      selectedMethod === "Print"
+                        ? "border-orange-500"
+                        : "border-transparent"
+                    } rounded-md`}
+                  >
+                    <img
+                      src={Print}
+                      alt="Print"
+                      className="object-cover mb-2 rounded-md"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="text-lg font-semibold text-center">Print</div>
+                  <div className="text-sm text-gray-500 text-center">
+                    Printing involves pressing logos onto garments using heat.
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={onClose}
-                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
-              >
-                BACK
-              </button>
-              <button
-                onClick={() => {
-                  setShowSizePopup(true);
-                  console.log("Selected method:", selectedMethod);
-                }}
-                className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
-              >
-                NEXT STEP
-              </button>
+              <div className="flex justify-between mt-6">
+                <button
+                  onClick={onClose}
+                  className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600"
+                >
+                  BACK
+                </button>
+                <button
+                  onClick={() => {
+                    setShowSizePopup(true);
+                    console.log("Selected method:", selectedMethod);
+                  }}
+                  className="bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
+                >
+                  NEXT STEP
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* SizePopup */}
+        )}
       {showSizePopup && (
         <SizePopup
           visible={showSizePopup}
@@ -143,15 +148,12 @@ const Popup = ({ onClose, visible }) => {
           onNext={() => {
             setShowSizePopup(false);
             setIsAddLogoPopupVisible(true);
-            console.log("Selected position:", selectedPosition);
           }}
         />
       )}
-
-      {/* AddLogoPopup */}
       {isAddLogoPopupVisible && (
         <AddLogoPopup
-          selectedPosition={selectedPosition} // Pass down the selected position
+          selectedPosition={selectedPosition}
           onBack={() => {
             setIsAddLogoPopupVisible(false);
             setShowSizePopup(true);
@@ -167,9 +169,13 @@ const Popup = ({ onClose, visible }) => {
         />
       )}
 
-      {/* AddTextLogoPopup */}
       {isAddTextLogoPopupVisible && (
         <AddTextLogoPopup
+        selectedProduct={selectedProduct}
+        selectedSize={selectedSize}
+        selectedColor={selectedColor}
+        selectedPosition={selectedPosition}
+        selectedMethod={selectedMethod}
           onBack={() => {
             setIsAddTextLogoPopupVisible(false);
             setIsAddLogoPopupVisible(true);
@@ -177,10 +183,13 @@ const Popup = ({ onClose, visible }) => {
           onFinish={handleFinishTextLogo}
         />
       )}
-
-      {/* UploadLogoPopup */}
       {isUploadLogoPopupVisible && (
         <UploadLogoPopup
+          selectedProduct={selectedProduct}
+          selectedSize={selectedSize}
+          selectedColor={selectedColor}
+          selectedPosition={selectedPosition}
+          selectedMethod={selectedMethod}
           onBack={() => {
             setIsUploadLogoPopupVisible(false);
             setIsAddLogoPopupVisible(true);
@@ -193,8 +202,11 @@ const Popup = ({ onClose, visible }) => {
 };
 
 Popup.propTypes = {
-  onClose: PropTypes.func.isRequired, // Must be a function
-  visible: PropTypes.bool.isRequired, // Must be a boolean
+  onClose: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
+  selectedProduct: PropTypes.object,
+  selectedSize: PropTypes.object,
+  selectedColor: PropTypes.string,
 };
 
 export default Popup;

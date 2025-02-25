@@ -1,49 +1,62 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-// Initial state for the cart slice
-const initialState = [];
+const initialState = {
+  items: [],
+};
 
-// Create a slice for managing the cart state
-const cartSlice = createSlice({
-  name: "cart",
+export const cartSlice = createSlice({
+  name: 'cart',
   initialState,
   reducers: {
-    // Action to add an item to the cart
-    add(state, action) {
-      // Check if the item is already in the cart
-      const existingItem = state.find(item => item.id === action.payload.id);
+    setCart: (state, action) => {
+      console.log("✅ Cart data in Redux (Final Check):", action.payload);
+      state.items = action.payload; // Set the cart items from the API response
+    },
+    
+    addItem: (state, action) => {
+      const { productId, size, color, method, position, textLine, font, notes, quantity } = action.payload;
+
+      // Check if the item already exists in the cart
+      const existingItem = state.items.find(
+        (item) =>
+          item.productId === productId &&
+          item.size === size &&
+          item.color === color &&
+          item.method === method &&
+          item.position === position
+      );
+
       if (existingItem) {
-        // If the item exists, increase its quantity
-        existingItem.quantity += 1;
+        // Increase quantity if the same product exists
+        existingItem.quantity += quantity || 1;
       } else {
-        // If the item doesn't exist, add it to the cart with a quantity of 1
-        state.push({ ...action.payload, quantity: 1 });
+        // Add new item to the cart
+        state.items.push({
+          ...action.payload,
+          textLine: textLine || "",  // ✅ Ensure these fields are stored
+          font: font || "",
+          notes: notes || "",
+          quantity: quantity || 1
+        });
       }
     },
-    // Action to remove an item from the cart
-    remove(state, action) {
-      // Filter out the item with the provided ID from the cart
-      return state.filter(item => item.id !== action.payload);
+
+    removeItem: (state, action) => {
+      state.items = state.items.filter((item) => item.productId !== action.payload);
     },
-    // Action to increase the quantity of an item in the cart
-    increaseQuantity(state, action) {
-      const item = state.find(item => item.id === action.payload);
-      if (item) {
-        item.quantity += 1;
-      }
+
+    increaseQuantity: (state, action) => {
+      const item = state.items.find((item) => item.productId === action.payload);
+      if (item) item.quantity += 1;
     },
-    // Action to decrease the quantity of an item in the cart
-    decreaseQuantity(state, action) {
-      const item = state.find(item => item.id === action.payload);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-      }
+
+    decreaseQuantity: (state, action) => {
+      const item = state.items.find((item) => item.productId === action.payload);
+      if (item && item.quantity > 1) item.quantity -= 1;
     },
   },
 });
 
-// Extract the action creators
-export const { add, remove, increaseQuantity, decreaseQuantity } = cartSlice.actions;
+export const { setCart, addItem, removeItem, increaseQuantity, decreaseQuantity } = cartSlice.actions;
 
-// Export the reducer function
 export default cartSlice.reducer;

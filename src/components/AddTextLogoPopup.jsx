@@ -1,13 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AddTextLogoPopup = ({ onBack, onFinish }) => {
-  const [textLine, setTextLine] = useState("");
-  const [font, setFont] = useState("Standard");
-  const [color, setColor] = useState("Black");
-  const [notes, setNotes] = useState("");
+const AddTextLogoPopup = ({ 
+  onBack, 
+  onFinish, 
+  selectedProduct,
+  selectedSize, 
+  selectedColor, 
+  selectedMethod, 
+  selectedPosition 
+}) => {
+  const [textLine, setTextLine] = useState(selectedProduct?.textLine || "");
+  const [font, setFont] = useState(selectedProduct?.font || "Standard");
+  const [notes, setNotes] = useState(selectedProduct?.notes || "");
+  const [loading, setLoading] = useState(false);
 
-  const handleFinish = () => {
-    onFinish({ textLine, font, color, notes });
+  useEffect(() => {
+    console.log("Product:", selectedProduct);
+    console.log("Size:", selectedSize);
+    console.log("Color:", selectedColor);
+    console.log("Method:", selectedMethod);
+    console.log("Position:", selectedPosition);
+  }, [selectedProduct, selectedSize, selectedColor, selectedMethod, selectedPosition]);
+
+  const handleFinish = async () => {
+    // Validation
+    if (!textLine.trim()) {
+      alert("Please enter text for the logo.");
+      return;
+    }
+    if (!selectedSize || !selectedSize.size) {
+      alert("Please select a size before finishing.");
+      return;
+    }
+    if (!selectedColor) {
+      alert("Please select a color before finishing.");
+      return;
+    }
+    if (!selectedMethod || selectedMethod.trim() === "") {
+      alert("Please select a printing method before finishing.");
+      return;
+    }
+    if (!selectedPosition || selectedPosition.trim() === "") {
+      alert("Please select a logo position before finishing.");
+      return;
+    }
+
+    const quantity =
+      selectedSize?.quantity &&
+      Number.isInteger(Number(selectedSize.quantity)) &&
+      selectedSize.quantity > 0
+        ? selectedSize.quantity
+        : 1;
+
+    const requestData = {
+      productId: selectedProduct?._id,
+      title: selectedProduct?.title,
+      frontImage: selectedProduct?.frontImage || selectedProduct?.image,
+      size: selectedSize.size,
+      color: selectedColor,
+      quantity,
+      method: selectedMethod,
+      position: selectedPosition,
+      textLine,
+      font,
+      notes,
+    };
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Item successfully added to cart!");
+        onFinish();
+      } else {
+        alert(data.message || "Failed to add item to cart.");
+      }
+    } catch (error) {
+      console.error("❌ Error adding to cart:", error.message);
+      alert("An error occurred while adding to the cart.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -16,9 +99,12 @@ const AddTextLogoPopup = ({ onBack, onFinish }) => {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Add Your Text Logo</h2>
           <p className="text-gray-600 mb-4">
-            Create your text logo, we have no set up fees! We will always send a
+            Create your text logo, we have no setup fees! We will always send a
             design proof for your approval before production.
           </p>
+          {selectedProduct?.frontImage && (
+            <img src={selectedProduct.frontImage} alt={selectedProduct.title} className="w-32 h-auto mx-auto mt-2 border rounded-md" />
+          )}
         </div>
         <div className="space-y-4">
           {/* Text Line Input */}
@@ -35,36 +121,20 @@ const AddTextLogoPopup = ({ onBack, onFinish }) => {
             />
           </div>
 
-          {/* Font and Color Select */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Font
-              </label>
-              <select
-                value={font}
-                onChange={(e) => setFont(e.target.value)}
-                className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option>Standard</option>
-                <option>Serif</option>
-                <option>Sans-serif</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Colour
-              </label>
-              <select
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option>Black</option>
-                <option>White</option>
-                <option>Red</option>
-              </select>
-            </div>
+          {/* Font Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Font
+            </label>
+            <select
+              value={font}
+              onChange={(e) => setFont(e.target.value)}
+              className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option>Standard</option>
+              <option>Serif</option>
+              <option>Sans-serif</option>
+            </select>
           </div>
 
           {/* Text Preview */}
@@ -104,17 +174,13 @@ const AddTextLogoPopup = ({ onBack, onFinish }) => {
           >
             Back
           </button>
-          <div className="flex gap-2">
-            <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none" disabled>
-              Add Another Logo
-            </button>
-            <button
-              onClick={handleFinish}
-              className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
-            >
-              Finish
-            </button>
-          </div>
+          <button
+            onClick={handleFinish}
+            className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Finish"}
+          </button>
         </div>
       </div>
     </div>

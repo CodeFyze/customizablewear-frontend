@@ -8,37 +8,27 @@ const SignUp = () => {
     email: "",
     password: "",
     role: "user",
-    profilePic: null,
   });
 
   const navigate = useNavigate(); 
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === "file") {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: files[0],
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
-    }
-
     try {
       const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
-        body: formDataToSend,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
       if (response.ok) {
         alert("Sign Up Successful. Please verify OTP.");
@@ -58,16 +48,9 @@ const SignUp = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
           Sign Up
         </h2>
-        <form
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-          className="space-y-6"
-        >
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="firstName"
-              className="block text-sm font-medium text-gray-600"
-            >
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-600">
               First Name
             </label>
             <input
@@ -81,10 +64,7 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="lastName"
-              className="block text-sm font-medium text-gray-600"
-            >
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-600">
               Last Name
             </label>
             <input
@@ -98,10 +78,7 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-600"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600">
               Email Address
             </label>
             <input
@@ -115,10 +92,7 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-600"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600">
               Password
             </label>
             <input
@@ -132,10 +106,7 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="role"
-              className="block text-sm font-medium text-gray-600"
-            >
+            <label htmlFor="role" className="block text-sm font-medium text-gray-600">
               Role
             </label>
             <select
@@ -149,21 +120,6 @@ const SignUp = () => {
               <option value="seller">Seller</option>
             </select>
           </div>
-          <div>
-            <label
-              htmlFor="profilePic"
-              className="block text-sm font-medium text-gray-600"
-            >
-              Profile Picture
-            </label>
-            <input
-              type="file"
-              name="profilePic"
-              id="profilePic"
-              onChange={handleChange}
-              className="mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
-            />
-          </div>
           <div className="flex justify-center">
             <button
               type="submit"
@@ -176,7 +132,7 @@ const SignUp = () => {
 
         <div className="mt-4 text-center text-sm text-gray-600">
           <p>
-            Already have an account?{" "}
+            Already have an account? {" "}
             <a href="/login" className="text-indigo-600 hover:text-indigo-700">
               Login here
             </a>

@@ -10,16 +10,19 @@ const SellPage = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
+        const token = localStorage.getItem("authToken"); 
+
         const response = await fetch("http://localhost:5000/api/auth/isAdmin", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, 
           },
           credentials: "include",
         });
 
         const data = await response.json();
-        console.log("Admin Check Response:", data); 
+        console.log("Admin Check Response:", data);
 
         if (data.success) {
           setIsAdmin(true);
@@ -39,11 +42,11 @@ const SellPage = () => {
   }, [navigate]);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   if (!isAdmin) {
-    return null; 
+    return null;
   }
 
   return (

@@ -1,36 +1,401 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { add } from "../store/cartSlice"; // Import the add action from cartSlice
+// import React, { useState, useEffect } from "react";
+// import { useDispatch } from "react-redux";
+// import { addItem } from "../store/cartSlice"; 
+// import PropTypes from "prop-types";
 
-const UploadLogoPopup = ({ onBack, onClose }) => {
+// const UploadLogoPopup = ({
+//   onBack,
+//   onClose,
+//   selectedProduct = {},
+//   selectedSize = {},
+//   selectedPosition,
+//   selectedMethod,
+//   selectedColor,
+// }) => {
+//   const [selectedFile, setSelectedFile] = useState(null);
+//   const [note, setNote] = useState("");
+//   const dispatch = useDispatch();
+
+//   const handleFileChange = (event) => {
+//     const file = event.target.files[0];
+//     if (file) {
+//       setSelectedFile(file);
+//     }
+//   };
+
+//   const handleRemoveFile = () => {
+//     setSelectedFile(null);
+//   };
+
+//   useEffect(() => {
+//     console.log("Selected Product in UploadLogoPopup:", selectedProduct);
+//   }, [selectedProduct]);
+
+
+//   const handleFinish = async () => {
+//     if (!selectedFile) {
+//       alert("Please upload a logo before finishing.");
+//       return;
+//     }
+  
+//     if (!selectedSize || !selectedSize.size) {
+//       alert("Please select a size before finishing.");
+//       return;
+//     }
+  
+//     if (!selectedColor) {
+//       alert("Please select a color before finishing.");
+//       return;
+//     }
+  
+//     const quantity =
+//       selectedSize?.quantity &&
+//       Number.isInteger(Number(selectedSize.quantity)) &&
+//       selectedSize.quantity > 0
+//         ? selectedSize.quantity
+//         : 1;
+  
+//     const formData = new FormData();
+//     formData.append("productId", selectedProduct._id);
+//     formData.append("title", selectedProduct?.title || "Custom T-Shirt");
+//     formData.append("size", selectedSize?.size);
+//     formData.append("color", selectedColor);
+//     formData.append("quantity", quantity);
+//     formData.append("price", selectedProduct?.price || 200);
+//     formData.append("logo", selectedFile);
+//     formData.append("method", selectedMethod); 
+//     formData.append("position", selectedPosition); 
+  
+//     try {
+//       const response = await fetch("http://localhost:5000/api/cart/add", {
+//         method: "POST",
+//         headers: {
+//           Accept: "application/json",
+//         },
+//         credentials: "include",
+//         body: formData,
+//       });
+  
+//       const data = await response.json();
+//       if (response.ok) {
+//         alert("Item successfully added to cart!");
+//         dispatch(addItem(data));
+//         onClose();
+//       } else {
+//         alert(data.message || "Failed to add item to cart.");
+//       }
+//     } catch (error) {
+//       console.error("Error adding to cart:", error);
+//       alert("An error occurred while adding to the cart.");
+//     }
+//   };
+  
+//   return (
+//     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+//       <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-4">
+//         <div className="text-center">
+//           <h2 className="text-2xl font-bold mb-2">Upload Your Logo</h2>
+//           <p className="text-gray-600 mb-4">
+//             Upload with confidence, we have no setup fees!
+//           </p>
+//           <p className="text-gray-600">
+//             Currently Selected Shirt: {selectedProduct?.title}
+//           </p>
+//           {selectedProduct?.frontImage && (
+//             <img
+//               src={selectedProduct.frontImage}
+//               alt="Selected Shirt"
+//               className="w-32 h-auto mx-auto mt-2"
+//             />
+//           )}
+//         </div>
+//         <div className="space-y-4">
+//           <div className="text-center">
+//             {!selectedFile ? (
+//               <label htmlFor="file-upload" className="cursor-pointer">
+//                 <div className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-600 flex items-center justify-center mx-auto mb-3">
+//                   Upload File
+//                 </div>
+//                 <input
+//                   id="file-upload"
+//                   type="file"
+//                   accept=".jpg,.png,.eps,.ai,.pdf"
+//                   className="hidden"
+//                   onChange={handleFileChange}
+//                 />
+//               </label>
+//             ) : (
+//               <div className="flex flex-col items-center">
+//                 <p className="text-sm text-gray-600">
+//                   Selected File: <strong>{selectedFile.name}</strong>
+//                 </p>
+//                 <button
+//                   onClick={handleRemoveFile}
+//                   className="mt-2 text-red-500 underline text-sm hover:text-red-700"
+//                 >
+//                   Remove File
+//                 </button>
+//               </div>
+//             )}
+//             <p className="text-sm text-gray-500 mt-1">
+//               Upload formats: JPG, PNG, EPS, AI, PDF
+//             </p>
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium text-gray-700 mb-1">
+//               Notes
+//             </label>
+//             <textarea
+//               placeholder="Leave a message"
+//               value={note}
+//               onChange={(e) => setNote(e.target.value)}
+//               className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+//             />
+//           </div>
+//         </div>
+
+//         <div className="flex justify-between mt-6">
+//           <button
+//             onClick={onBack}
+//             className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
+//           >
+//             Back
+//           </button>
+//           <button
+//             onClick={handleFinish}
+//             className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
+//           >
+//             Finish
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// UploadLogoPopup.propTypes = {
+//   onBack: PropTypes.func.isRequired,
+//   onClose: PropTypes.func.isRequired,
+//   selectedProduct: PropTypes.object,
+//   selectedSize: PropTypes.object,
+//   selectedPosition: PropTypes.string,
+//   selectedMethod: PropTypes.string,
+//   selectedColor: PropTypes.string,
+// };
+
+// export default UploadLogoPopup;
+
+
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "../store/cartSlice";
+import PropTypes from "prop-types";
+
+const UploadLogoPopup = ({
+  onBack,
+  onClose,
+  selectedProduct = {},
+  selectedSize = {},
+  selectedPosition = "",
+  selectedMethod = "",
+  selectedColor = "",
+}) => {
+  const [userId, setUserId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [note, setNote] = useState("");
+  const [previewURL, setPreviewURL] = useState(null);
+  const [previousLogo, setPreviousLogo] = useState(null);
+  const [usePreviousLogo, setUsePreviousLogo] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchPreviousLogo = async () => {
+      try {
+        const storedUserId = localStorage.getItem("userId");
+        setUserId(storedUserId);
+
+        if (!storedUserId) {
+          console.error("❌ User ID is missing! Please login.");
+          return;
+        }
+
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("❌ No auth token found! Please login.");
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:5000/api/orders/order-user/${storedUserId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (response.ok && data.orders) {
+          console.log("✅ Orders Fetched:", data.orders);
+
+          const lastOrderWithLogo = data.orders.find((order) =>
+            order.products.some((product) => product.logo && product.logo !== "")
+          );
+
+          if (lastOrderWithLogo) {
+            const productWithLogo = lastOrderWithLogo.products.find(
+              (product) => product.logo && product.logo !== ""
+            );
+
+            if (productWithLogo) {
+              console.log("✅ Previous Logo Found:", productWithLogo.logo);
+              setPreviousLogo(productWithLogo.logo);
+            }
+          }
+        } else {
+          console.error("❌ No orders found:", data.message);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching previous logo:", error.message);
+      }
+    };
+
+    fetchPreviousLogo();
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
+      setUsePreviousLogo(false); // Switch to the new file upload
+
+      // ✅ Generate preview URL for the new logo
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewURL(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
+    setPreviewURL(null);
   };
 
-  const handleFinish = () => {
-    const product = {
-      id: new Date().getTime(), // Unique ID based on timestamp
-      image: selectedFile ? URL.createObjectURL(selectedFile) : null,
-      title: "Custom Logo",
-      brand: "Your Brand",
-      model: selectedFile ? selectedFile.name : "No file selected",
-      price: 50, // Example price for a custom logo
-      notes: note,
-    };
+  const handleUsePreviousLogo = () => {
+    if (previousLogo) {
+      setUsePreviousLogo(true);
+      setSelectedFile(null);
+      setPreviewURL(null); // Clear the new logo preview
+    } else {
+      alert("No previous logo found.");
+    }
+  };
 
-    dispatch(add(product));
-    onClose(); // Close the popup after adding to cart
+  const handleFinish = async () => {
+    console.log("Selected Size:", selectedSize);
+    console.log("Selected Color:", selectedColor);
+    console.log("Selected Method:", selectedMethod);
+    console.log("Selected Position:", selectedPosition);
+    console.log("Selected File:", selectedFile);
+    console.log("Using Previous Logo:", usePreviousLogo ? "Yes" : "No");
+
+    if (!selectedFile && !usePreviousLogo) {
+      alert("Please upload a logo or use your previous logo before finishing.");
+      return;
+    }
+
+    if (!selectedSize || !selectedSize.size) {
+      alert("Please select a size before finishing.");
+      return;
+    }
+
+    if (!selectedColor) {
+      alert("Please select a color before finishing.");
+      return;
+    }
+
+    if (!selectedMethod || selectedMethod.trim() === "") {
+      alert("Please select a printing method before finishing.");
+      return;
+    }
+
+    if (!selectedPosition || selectedPosition.trim() === "") {
+      alert("Please select a logo position before finishing.");
+      return;
+    }
+
+    const quantity =
+      selectedSize?.quantity &&
+      Number.isInteger(Number(selectedSize.quantity)) &&
+      selectedSize.quantity > 0
+        ? selectedSize.quantity
+        : 1;
+
+    let finalPrice = selectedProduct?.price || 200;
+
+    if (selectedFile) {
+      finalPrice += 5; // ✅ Charge $5 for a new logo
+    }
+
+    const token = localStorage.getItem("authToken");
+    const userId = localStorage.getItem("userId");
+
+    if (!token) {
+      console.error("❌ No auth token found! Please login.");
+      alert("Unauthorized! Please log in again.");
+      return;
+    }
+
+    if (!userId) {
+      console.error("❌ No userId found! Please login.");
+      alert("User ID missing! Please log in again.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("productId", selectedProduct._id);
+    formData.append("title", selectedProduct?.title || "Custom T-Shirt");
+    formData.append("size", selectedSize?.size);
+    formData.append("color", selectedColor);
+    formData.append("quantity", quantity);
+    formData.append("price", finalPrice);
+    formData.append("usePreviousLogo", usePreviousLogo);
+
+    if (usePreviousLogo) {
+      formData.append("logo", previousLogo);
+    } else {
+      formData.append("logo", selectedFile);
+    }
+
+    formData.append("method", selectedMethod);
+    formData.append("position", selectedPosition);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/cart/add", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Item successfully added to cart!");
+        dispatch(addItem(data));
+        onClose();
+      } else {
+        alert(data.message || "Failed to add item to cart.");
+      }
+    } catch (error) {
+      console.error("❌ Error adding to cart:", error.message);
+      alert("An error occurred while adding to the cart.");
+    }
   };
 
   return (
@@ -38,94 +403,44 @@ const UploadLogoPopup = ({ onBack, onClose }) => {
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Upload Your Logo</h2>
-          <p className="text-gray-600 mb-4">
-            Upload with confidence, we have no setup fees!
-          </p>
+          <p className="text-gray-600 mb-4">Upload with confidence, we have no setup fees!</p>
+          <p className="text-gray-600">Currently Selected Shirt: {selectedProduct?.title}</p>
+          {selectedProduct?.frontImage && (
+            <img src={selectedProduct.frontImage} alt="Selected Shirt" className="w-32 h-auto mx-auto mt-2" />
+          )}
         </div>
+
         <div className="space-y-4">
-          {/* File Upload Section */}
-          <div className="text-center">
-            {!selectedFile ? (
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <div className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-600 flex items-center justify-center mx-auto mb-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 3a1 1 0 00-1 1v7H6a1 1 0 00-.707 1.707l4 4a1 1 0 001.414 0l4-4A1 1 0 0014 11h-3V4a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Choose File
-                </div>
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept=".jpg,.png,.eps,.ai,.pdf"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="flex flex-col items-center">
-                <p className="text-sm text-gray-600">
-                  Selected File: <strong>{selectedFile.name}</strong>
-                </p>
-                <button
-                  onClick={handleRemoveFile}
-                  className="mt-2 text-red-500 underline text-sm hover:text-red-700"
-                >
-                  Remove File
-                </button>
-              </div>
-            )}
-            <p className="text-sm text-gray-500 mt-1">
-              Upload supported formats: <strong>JPG, PNG, EPS, AI, PDF</strong>
-            </p>
-            <p className="text-sm text-gray-500 mt-1">Max size: 8MB</p>
-            <p className="text-sm text-gray-500 mt-1">
-              Don’t worry how it looks, we will make it look great and send a
-              proof before we add to your products!
-            </p>
-          </div>
+          {/* Upload New Logo */}
+          <label htmlFor="file-upload" className="cursor-pointer">
+            <div className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-600 flex items-center justify-center mx-auto mb-3">
+              Upload New Logo
+            </div>
+            <input id="file-upload" type="file" accept=".jpg,.png,.eps,.ai,.pdf" className="hidden" onChange={handleFileChange} />
+          </label>
 
-          {/* Notes Section */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
-            </label>
-            <textarea
-              placeholder="Leave a message"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
+          {previewURL && (
+            <div className="text-center">
+              <img src={previewURL} alt="New Logo" className="w-32 h-auto mx-auto border rounded-md" />
+              <p className="text-red-500 text-sm mt-2">An additional $5 will be charged for this new logo.</p>
+            </div>
+          )}
+
+          {/* Use Previous Logo */}
+          {previousLogo && (
+            <button onClick={handleUsePreviousLogo} className="mt-3 text-blue-500 underline text-sm hover:text-blue-700">
+              Use Previous Logo
+            </button>
+          )}
+
+          {usePreviousLogo && previousLogo && (
+            <img src={previousLogo} alt="Previous Logo" className="w-32 h-auto mx-auto mt-2 border rounded-md" />
+          )}
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-between mt-6">
-          <button
-            onClick={onBack}
-            className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
-          >
-            Back
-          </button>
-          <div className="flex gap-2">
-            <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none">
-              Add Another Logo
-            </button>
-            <button
-              onClick={handleFinish}
-              className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none"
-            >
-              Finish
-            </button>
-          </div>
+          <button onClick={onBack} className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">Back</button>
+          <button onClick={handleFinish} className="bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600">Finish</button>
         </div>
       </div>
     </div>

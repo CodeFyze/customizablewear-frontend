@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 const Orders = () => {
@@ -8,16 +8,33 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = "http://localhost:5000/api/orders"; // API URL for fetching orders
+  const API_URL = "http://localhost:5000/api/orders";
 
-  // Function to fetch orders
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${API_URL}`, {
-        credentials: 'include', // Ensure credentials are included for authenticated requests
+      const token = localStorage.getItem("authToken"); // ✅ Get stored auth token
+
+      if (!token) {
+        throw new Error("Unauthorized - No token found");
+      }
+
+      const response = await fetch(API_URL, {
         method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ Send Token in Headers
+          "Content-Type": "application/json",
+        },
       });
-      if (!response.ok) throw new Error("Failed to fetch orders");
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized - Please log in again.");
+        } else {
+          throw new Error("Failed to fetch orders");
+        }
+      }
+
       const data = await response.json();
 
       if (data.success && Array.isArray(data.orders)) {
@@ -28,23 +45,21 @@ const Orders = () => {
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders", { position: "top-right" });
+      setError(error.message);
+      toast.error(error.message, { position: "top-right" });
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch orders on component mount
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  // Loading state
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Error state
   if (error) {
     return <div className="text-red-600">{error}</div>;
   }
@@ -57,10 +72,10 @@ const Orders = () => {
           <thead className="bg-orange-400 text-white">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium">Order ID</th>
-              <th className="px-4 py-2 text-left text-sm font-medium">Product</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
-              <th className="px-4 py-2 text-left text-sm font-medium">Price</th>
+              <th className="px-4 py-2 text-left text-sm font-medium">Total Amount</th>
+              <th className="px-4 py-2 text-left text-sm font-medium">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -69,33 +84,41 @@ const Orders = () => {
                 key={order._id}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}
               >
-                {/* Wrap the row with a Link component to navigate to the order details page */}
-                <Link to={`/orders/${order._id}`}>
-                  <td className="px-4 py-2 text-sm text-gray-700">{order._id}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{order.product}</td>
-                  <td className="px-4 py-2 text-sm text-gray-700">{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td
-                    className={`px-4 py-2 text-sm font-medium ${
-                      order.status === "Delivered"
-                        ? "text-green-600"
-                        : order.status === "Shipped"
-                        ? "text-blue-600"
-                        : order.status === "Cancelled"
-                        ? "text-red-600"
-                        : "text-yellow-600"
-                    }`}
-                  >
-                    {order.status}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">${order.totalAmount}</td>
-                </Link>
+                <td className="px-4 py-2 text-sm text-gray-700">
+                  <Link to={`/orders/${order._id}`} className="text-blue-500 hover:underline">
+                    {order._id}
+                  </Link>
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-700">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </td>
+                <td
+                  className={`px-4 py-2 text-sm font-medium ${
+                    order.status === "Delivered"
+                      ? "text-green-600"
+                      : order.status === "Shipped"
+                      ? "text-blue-600"
+                      : order.status === "Cancelled"
+                      ? "text-red-600"
+                      : "text-yellow-600"
+                  }`}
+                >
+                  {order.status}
+                </td>
+                <td className="px-4 py-2 text-sm text-gray-700">${order.finalAmount.toFixed(2)}</td>
+                <td className="px-4 py-2 text-sm">
+                  <Link to={`/orders/${order._id}`} className="text-blue-500 hover:underline">
+                    View Details
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <ToastContainer />
+      {/* Ensure ToastContainer is included properly */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

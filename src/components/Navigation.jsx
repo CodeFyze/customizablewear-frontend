@@ -13,7 +13,9 @@ import { useSelector } from "react-redux";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const items = useSelector((state) => state.cart);
+  const cartItems = useSelector((state) => state.cart.items);
+  const totalCartQuantity = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+  
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -52,11 +54,12 @@ const Navigation = () => {
             <Link to="/cart" className="flex items-center hidden lg:flex">
               <div className="relative">
                 <FaShoppingCart className="h-6 w-6 sm:h-8 sm:w-8" />
-                {items.length > 0 && (
-                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                    {items.length}
-                  </span>
-                )}
+                {totalCartQuantity > 0 && (
+  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+    {totalCartQuantity}
+  </span>
+)}
+
               </div>
             </Link>
           </div>
