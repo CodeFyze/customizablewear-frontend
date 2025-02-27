@@ -12,18 +12,46 @@ const Products = () => {
 
   const API_URL = "http://localhost:5000/api/products";
 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await fetch(`${API_URL}`, {
+  //       credentials: "include",
+  //       method: "GET",
+  //     });
+  //     if (!response.ok) throw new Error("Failed to fetch products");
+  //     const data = await response.json();
+
+  //     if (data.success && Array.isArray(data.products)) {
+  //       setProducts(data.products);
+  //       console.log(data.products);
+  //     } else {
+  //       console.error("Unexpected API response:", data);
+  //       toast.error("Unexpected response format from API", { position: "top-right" });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching products:", error);
+  //     toast.error("Failed to fetch products", { position: "top-right" });
+  //   }
+  // };
+
+
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${API_URL}`, {
         credentials: "include",
         method: "GET",
       });
+  
       if (!response.ok) throw new Error("Failed to fetch products");
+  
       const data = await response.json();
-
+  
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
-        console.log(data.products);
+        
+        // ✅ Log all product details
+        console.log("Fetched Products:", JSON.stringify(data.products, null, 2));
+        
       } else {
         console.error("Unexpected API response:", data);
         toast.error("Unexpected response format from API", { position: "top-right" });
@@ -33,7 +61,7 @@ const Products = () => {
       toast.error("Failed to fetch products", { position: "top-right" });
     }
   };
-
+  
   const handleProductSubmit = async (productData) => {
     try {
       const formData = new FormData();

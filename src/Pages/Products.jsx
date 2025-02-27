@@ -87,10 +87,10 @@ const Products = ({ showTShirtSelector = true }) => {
                 </div>
               </div>
 
-              <div className="text-center mt-2 font-semibold text-green-600">
+              {/* <div className="text-center mt-2 font-semibold text-green-600">
                 Discount:{" "}
                 {product.discount ? `${product.discount}%` : "No discount"}
-              </div>
+              </div> */}
 
               <div className="text-center mt-2">
                 <button
