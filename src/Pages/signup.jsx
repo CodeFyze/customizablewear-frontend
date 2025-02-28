@@ -32,7 +32,7 @@ const SignUp = () => {
       });
       if (response.ok) {
         alert("Sign Up Successful. Please verify OTP.");
-        navigate("/otp");
+        navigate("/home");
       } else {
         alert("Error during sign up");
       }

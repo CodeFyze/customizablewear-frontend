@@ -13,6 +13,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    console.log("🚀 Sending login request:", data); // ✅ Log request body before sending
+  
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -25,30 +27,24 @@ const LoginPage = () => {
           password: data.password,
         }),
       });
-
+  
       const result = await response.json();
-
+      console.log("🚀 Response from server:", result); // ✅ Log response from backend
+  
       if (response.ok && result.success) {
-        toast.success("Login successful!");
-
-        // ✅ Store user role & token properly
+        toast.success("✅ Login successful!");
         localStorage.setItem("authToken", result.token);
-        if (result.user?.id) {
-          localStorage.setItem("userId", result.user.id);
-        }
-
-        // Redirect based on role
-        const userRole = result.user?.role;
-        navigate(userRole === "seller" ? "/seller" : "/");
+        localStorage.setItem("userId", result.user?.id);
+        navigate(result.user?.role === "seller" ? "/seller" : "/");
       } else {
         toast.error(result.message || "Invalid email or password.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("An error occurred during login. Please try again.");
+      toast.error("❌ An error occurred during login. Please try again.");
     }
   };
-
+   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">

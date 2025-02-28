@@ -12,6 +12,7 @@ import Orders from "./orders";
 import Products from "./products";
 import Earnings from "./earnings";
 import Customers from "./customers";
+import Logout from "./logout";
 
 const SellerDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -159,7 +160,9 @@ const SellerDashboard = () => {
             <MenuItem icon={<FaBox />} text="Products" isActive={activeTab === "Products"} onClick={() => setActiveTab("Products")} />
             <MenuItem icon={<FaChartBar />} text="Earnings" isActive={activeTab === "Earnings"} onClick={() => setActiveTab("Earnings")} />
             <MenuItem icon={<FaUsers />} text="Customers" isActive={activeTab === "Customers"} onClick={() => setActiveTab("Customers")} />
+            <Logout />
           </ul>
+
         </nav>
       </div>
 

@@ -13,13 +13,11 @@ import SignUp from "./Pages/signup";
 import OtpPage from "./Pages/otp";
 import SellPage from "./Pages/seller";
 import Order from "./Pages/order";
-// import OrderDetails from "./OrderDetails";
 import OrderDetails from "./Pages/order";
 import Success from "./components/Success";
+import CustomerOrders from "./Pages/CustomerOrders";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CustomerOrders from "./Pages/CustomerOrders";
-
 
 const App = () => {
   const location = useLocation();
@@ -27,7 +25,8 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer  />
+
       {!isSellerPage && <Navigation />}
 
       <Routes>
@@ -42,11 +41,11 @@ const App = () => {
         <Route path="/otp" element={<OtpPage />} />
         <Route path="/seller" element={<SellPage />} />
         <Route path="/order" element={<Order />} />
-        <Route path="/orders/:orderId" element={<OrderDetails />} /> 
+        <Route path="/orders/:orderId" element={<OrderDetails />} />
         <Route path="/success" element={<Success />} />
         <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
-
       </Routes>
+
       {!isSellerPage && <Footer />}
     </>
   );
