@@ -1,101 +1,226 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import {
+	FaBox,
+	FaShoppingCart,
+	FaPalette,
+	FaRuler,
+	FaCheckCircle,
+	FaMapMarkerAlt,
+	FaInfoCircle,
+	FaEye,
+	FaDownload,
+} from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 
 const OrderDetails = () => {
-	const [orders, setOrders] = useState([]);
+	const { orderId } = useParams();
+	const [order, setOrder] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const navigate = useNavigate();
-	const API_URL = 'http://localhost:5000/api/orders';
 
-	useEffect(() => {
-		const fetchOrders = async () => {
-			try {
-				const token = localStorage.getItem('authToken');
-				if (!token) {
-					setError('Unauthorized - Please log in.');
-					setLoading(false);
-					return;
-				}
+	const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
 
-				const response = await fetch(API_URL, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'application/json',
-					},
-				});
+	const fetchOrderDetails = async () => {
+		try {
+			const token = localStorage.getItem('authToken');
 
-				const data = await response.json();
-				if (!response.ok) throw new Error(data.message || 'Failed to fetch orders');
-
-				setOrders(data.orders);
-			} catch (err) {
-				setError(err.message);
-			} finally {
-				setLoading(false);
+			if (!token) {
+				throw new Error('Unauthorized - No token found.');
 			}
-		};
 
-		fetchOrders();
-	}, []);
+			const response = await fetch(API_URL, {
+				method: 'GET',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
 
-	// ✅ Function to navigate to order details
-	const viewOrderDetails = (orderId) => {
-		navigate(`/orders/${orderId}`);
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to fetch order details');
+			}
+
+			const data = await response.json();
+			setOrder(data.order);
+		} catch (error) {
+			console.error('Error fetching order details:', error);
+			setError(error.message || 'Failed to fetch order details');
+			toast.error(error.message, { position: 'top-right' });
+		} finally {
+			setLoading(false);
+		}
 	};
 
+	useEffect(() => {
+		fetchOrderDetails();
+	}, [orderId]);
+
+	const handleDownload = async (imageUrl) => {
+		try {
+			const response = await fetch(imageUrl, { mode: 'cors' });
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = 'custom-logo.png';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error('Error downloading image:', error);
+			toast.error('Failed to download image. Please try again.', { position: 'top-right' });
+		}
+	};
+
+	if (loading) {
+		return (
+			<div className='flex justify-center items-center min-h-screen bg-gray-100'>
+				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500'></div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className='flex justify-center items-center min-h-screen bg-gray-100'>
+				<p className='text-red-500 text-lg'>{error}</p>
+			</div>
+		);
+	}
+
 	return (
-		<div className='p-4'>
-			<h1 className='text-2xl font-semibold text-gray-800 mb-6'>Orders</h1>
+		<div className='min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8'>
+			{/* Page Title */}
+			<h1 className='text-3xl font-bold text-gray-800 mb-8 text-center flex items-center justify-center'>
+				<FaBox className='mr-2' /> Order Details
+			</h1>
 
-			{loading && <p className='text-center text-gray-500'>Loading...</p>}
-			{error && <p className='text-center text-red-500'>{error}</p>}
-
-			{!loading && !error && orders.length > 0 && (
-				<div className='overflow-x-auto bg-white shadow rounded-lg'>
-					<table className='w-full table-auto'>
-						<thead className='bg-gray-600 text-white'>
-							<tr>
-								<th className='px-4 py-3 text-left text-sm font-medium'>Order ID</th>
-								<th className='px-4 py-3 text-left text-sm font-medium'>Date</th>
-								<th className='px-4 py-3 text-left text-sm font-medium'>Status</th>
-								<th className='px-4 py-3 text-left text-sm font-medium'>Total Amount</th>
-							</tr>
-						</thead>
-						<tbody>
-							{orders.map((order, index) => (
-								<tr
-									key={order._id}
-									className={`$ {index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100 cursor-pointer`}
-									onClick={() => viewOrderDetails(order._id)} // ✅ Navigate on click
-								>
-									<td className='px-4 py-3 text-gray-700 text-sm'>{order._id}</td>
-									<td className='px-4 py-3 text-gray-700 text-sm'>{new Date(order.createdAt).toLocaleDateString()}</td>
-									<td
-										className={`px-4 py-3 text-sm font-medium ${
-											order.status === 'Delivered'
-												? 'text-green-600'
-												: order.status === 'Shipped'
-												? 'text-blue-600'
-												: order.status === 'Cancelled'
-												? 'text-red-600'
-												: 'text-yellow-600'
-										}`}>
-										{order.status}
-									</td>
-									<td className='px-4 py-3 text-gray-700 text-sm'>${order.finalAmount.toFixed(2)}</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+			{/* Order Card */}
+			<div className='max-w-md mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
+				{/* ✅ Order Status */}
+				<div className='p-6 border-b border-gray-200'>
+					<h2 className='text-xl font-semibold mb-4 flex items-center'>
+						<FaCheckCircle className='mr-2 text-gray-700' /> Order Status
+					</h2>
+					<div className='space-y-2'>
+						<p className='text-gray-700'>
+							<strong>Order ID:</strong> {order._id}
+						</p>
+						<p className='text-gray-700'>
+							<strong>Status:</strong>{' '}
+							<span
+								className={`px-2 py-1 rounded-full text-sm font-medium ${
+									order.status === 'Delivered'
+										? 'bg-green-100 text-green-700'
+										: order.status === 'Pending'
+										? 'bg-yellow-100 text-yellow-700'
+										: order.status === 'Cancelled'
+										? 'bg-red-100 text-red-700'
+										: 'bg-gray-100 text-gray-700'
+								}`}>
+								{order.status}
+							</span>
+						</p>
+						<p className='text-gray-700'>
+							<strong>Placed on:</strong> {new Date(order.createdAt).toLocaleDateString()}
+						</p>
+						<p className='text-gray-700'>
+							<strong>Total Amount:</strong> ${order.finalAmount.toFixed(2)}
+						</p>
+						<p className='text-gray-700'>
+							<strong>Payment:</strong> {order.paymentMode} ({order.paymentStatus})
+						</p>
+					</div>
 				</div>
-			)}
 
-			{!loading && !error && orders.length === 0 && <p className='text-center text-gray-500'>No orders found.</p>}
-			<ToastContainer position='top-right' autoClose={3000} />
+				{/* ✅ Shipping Address */}
+				<div className='p-6 border-b border-gray-200'>
+					<h2 className='text-xl font-semibold mb-4 flex items-center'>
+						<FaMapMarkerAlt className='mr-2 text-gray-700' /> Shipping Address
+					</h2>
+					<div className='space-y-2'>
+						<p className='text-gray-700 font-semibold'>
+							{order.shippingAddress.firstName} {order.shippingAddress.lastName}
+						</p>
+						<p className='text-gray-600'>{order.shippingAddress.address}</p>
+						<p className='text-gray-600'>Email: {order.shippingAddress.email}</p>
+						<p className='text-gray-600'>Phone: {order.shippingAddress.phone}</p>
+					</div>
+				</div>
+
+				{/* ✅ Products List */}
+				<div className='p-6'>
+					<h2 className='text-xl font-semibold mb-4 flex items-center'>
+						<FaShoppingCart className='mr-2 text-gray-700' /> Products Ordered
+					</h2>
+					<div className='space-y-4'>
+						{order.products.map((item, index) => (
+							<div key={index} className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
+								{/* Horizontal Layout */}
+								<div className='flex flex-col md:flex-row items-center gap-4'>
+									{/* Product Image */}
+									<div className='flex-shrink-0'>
+										<img src={item.frontImage} alt={item.title} className='w-20 h-20 object-cover rounded-md' />
+									</div>
+
+									{/* Product Details */}
+									<div className='flex-1'>
+										<p className='text-lg font-semibold text-gray-800'>{item.title}</p>
+										<div className='space-y-2 mt-2'>
+											<p className='text-sm text-gray-600 flex items-center'>
+												<FaPalette className='mr-2' /> Color:
+												<span
+													className='w-4 h-4 inline-block ml-2 border border-gray-400 rounded-full'
+													style={{ backgroundColor: item.color }}></span>
+											</p>
+											<p className='text-sm text-gray-600 flex items-center'>
+												<FaRuler className='mr-2' /> Size: {item.size}
+											</p>
+											<p className='text-sm text-gray-600 flex items-center'>
+												<FaCheckCircle className='mr-2' /> Method: {item.method}
+											</p>
+											<p className='text-sm text-gray-600 flex items-center'>
+												<FaCheckCircle className='mr-2' /> Position: {item.position}
+											</p>
+											<p className='text-sm text-gray-600 flex items-center'>
+												<FaShoppingCart className='mr-2' /> Quantity: {item.quantity}
+											</p>
+										</div>
+
+										{/* Custom Logo Section */}
+										{item.logo && (
+											<div className='mt-4'>
+												<h2 className='text-sm font-bold text-gray-800 mb-2'>Custom Logo:</h2>
+												<div className='flex items-center gap-3'>
+													<img src={item.logo} alt='Custom Logo' className='w-16 h-16 object-cover rounded-md border' />
+													<div className='flex space-x-3'>
+														<button
+															onClick={() => window.open(item.logo, '_blank')}
+															className='text-blue-600 hover:text-blue-800 flex items-center transition-colors'>
+															<FaEye className='mr-1' /> View
+														</button>
+														<button
+															onClick={() => handleDownload(item.logo)}
+															className='text-blue-600 hover:text-blue-800 flex items-center transition-colors'>
+															<FaDownload className='mr-1' /> Download
+														</button>
+													</div>
+												</div>
+											</div>
+										)}
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+			<ToastContainer />
 		</div>
 	);
 };

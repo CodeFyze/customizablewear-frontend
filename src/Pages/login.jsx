@@ -42,7 +42,7 @@ const LoginPage = () => {
 				dispatch(
 					loginSuccess({
 						token: result.token,
-						userId: result.user?.id,
+						user: result.user,
 					}),
 				);
 
