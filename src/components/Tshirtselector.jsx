@@ -218,6 +218,8 @@ import { useDispatch } from "react-redux";
 import { addItem } from "../store/cartSlice";
 import SizeSelection from "./SizeSelection";
 import Popup from "./shirtpopup";
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const TShirtSelector = () => {
   const [selectedShirt, setSelectedShirt] = useState(null);
@@ -265,17 +267,17 @@ const TShirtSelector = () => {
   // ✅ Handle Adding to Cart
   const handleAddToCart = () => {
     if (!selectedProduct) {
-      alert("Please select a product first.");
+        toast.error('Please select a product first.');
       return;
     }
 
     if (!selectedSize || selectedSize.quantity === 0) {
-      alert("Please select a size.");
+      toast.error("Please select a size.")
       return;
     }
 
     if (!selectedColor) {
-      alert("Please select a color.");
+      toast.error("Please select a color.");
       return;
     }
 
@@ -290,7 +292,12 @@ const TShirtSelector = () => {
     };
 
     dispatch(addItem(productToAdd));
-    alert("Item added to cart!");
+
+    Swal.fire({
+			title: 'Added',
+			text: 'Item added to cart',
+			icon: 'success',
+		});
   };
 
   // ✅ Fetch Products on Component Mount

@@ -19,9 +19,11 @@ import CustomerOrders from "./Pages/CustomerOrders";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const App = () => {
   const location = useLocation();
   const isSellerPage = location.pathname === "/seller";
+  
 
   return (
     <>
