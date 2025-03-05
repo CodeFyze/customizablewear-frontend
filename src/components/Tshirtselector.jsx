@@ -65,9 +65,11 @@ const TShirtSelector = () => {
       toast.error("Please select a color.");
       return;
     }
+    console.log("selected product id------> ",selectedProduct._id)
 
     const productToAdd = {
-      id: new Date().getTime(),
+      // id: new Date().getTime(),
+      _id:selectedProduct._id,
       image: selectedShirt || selectedProduct.frontImage,
       title: selectedProduct.title,
       size: selectedSize.size,
