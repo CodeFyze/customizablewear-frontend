@@ -40,6 +40,7 @@ const Products = ({ showTShirtSelector = true }) => {
   };
 
   const handleAdd = (product) => {
+    console.log(product)
     dispatch(addItem(product));
   };
 
@@ -97,6 +98,7 @@ const Products = ({ showTShirtSelector = true }) => {
                   className="px-4 py-2 bg-[#e57312] text-white rounded-full hover:bg-[#146c7d] selection:transition duration-300 font-sans"
                   onClick={() => handleAdd(product)}
                 >
+                 
                   Add to Cart
                 </button>
               </div>
