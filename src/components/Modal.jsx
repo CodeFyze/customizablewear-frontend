@@ -16,6 +16,13 @@ const Modal = ({ isOpen, onClose, initialData }) => {
   const [images, setImages] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [sizeImages, setSizeImages] = useState({});
+    // Added state for selected product type
+    const [productType, setProductType] = useState({
+      hoodie: false,
+      shirt: false,
+      trouser: false,
+    });
+  
 
   useEffect(() => {
     if (initialData) {
@@ -45,6 +52,15 @@ const Modal = ({ isOpen, onClose, initialData }) => {
   }, [initialData]);
 
   if (!isOpen) return null;
+
+    // Handle product type checkbox change
+    const handleProductTypeChange = (e) => {
+      const { name, checked } = e.target;
+      setProductType((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+    };
 
   const handleImageChange = (e, type) => {
     const file = e.target.files[0];
@@ -109,20 +125,83 @@ const Modal = ({ isOpen, onClose, initialData }) => {
     setSizeImages((prev) => ({ ...prev, [size]: file }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const token = localStorage.getItem("authToken");
+  //   if (!token) {
+  //     toast.error("Unauthorized! Please log in again.");
+  //     return;
+  //   }
+
+  //   if (!frontImage || !backImage || !sideImage) {
+  //     toast.error("Please upload all three main images (front, back, side)!");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("title", productTitle);
+  //   formData.append("price", productPrice);
+  //   formData.append("stock", productStock);
+  //   formData.append("description", productDescription); // Append description
+  //   formData.append("front", frontImage);
+  //   formData.append("back", backImage);
+  //   formData.append("side", sideImage);
+
+  //   // Append additional images
+  //   images.forEach((img) => formData.append("images", img));
+
+  //   // Send colors as JSON string, filtering out any null values
+  //   formData.append("colors", JSON.stringify(colors.filter(color => color !== null)));
+
+  //   // Append color images, filtering out null images
+  //   Object.entries(colorImages).forEach(([index, img]) => {
+  //     if (img !== null) {
+  //       formData.append("colorImages", img);
+  //     }
+  //   });
+
+  //   // Append sizes data
+  //   formData.append("sizes", JSON.stringify(sizes));
+  //   Object.entries(sizeImages).forEach(([size, img]) => {
+  //     formData.append("sizeImages", img);
+  //   });
+
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/products/add", {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+
+  //     const data = await response.json();
+  //     if (!data.success) {
+  //       toast.error(`Error: ${data.message}`);
+  //     } else {
+  //       toast.success("Product added successfully!");
+  //       onClose();
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding product:", error);
+  //     toast.error("Failed to add product. Please try again.");
+  //   }
+  // };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem("authToken");
     if (!token) {
       toast.error("Unauthorized! Please log in again.");
       return;
     }
-
-    if (!frontImage || !backImage || !sideImage) {
+  
+    if (!frontImage || backImage || sideImage) {
       toast.error("Please upload all three main images (front, back, side)!");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("title", productTitle);
     formData.append("price", productPrice);
@@ -131,33 +210,37 @@ const Modal = ({ isOpen, onClose, initialData }) => {
     formData.append("front", frontImage);
     formData.append("back", backImage);
     formData.append("side", sideImage);
-
+  
     // Append additional images
     images.forEach((img) => formData.append("images", img));
-
+  
     // Send colors as JSON string, filtering out any null values
     formData.append("colors", JSON.stringify(colors.filter(color => color !== null)));
-
+  
     // Append color images, filtering out null images
     Object.entries(colorImages).forEach(([index, img]) => {
       if (img !== null) {
         formData.append("colorImages", img);
       }
     });
-
+  
     // Append sizes data
     formData.append("sizes", JSON.stringify(sizes));
     Object.entries(sizeImages).forEach(([size, img]) => {
       formData.append("sizeImages", img);
     });
-
+  
+    // Construct productType array (only include the checked options)
+    const selectedProductTypes = Object.keys(productType).filter(key => productType[key]);
+    formData.append("productType", JSON.stringify(selectedProductTypes));
+  
     try {
       const response = await fetch("http://localhost:5000/api/products/add", {
         method: "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },
       });
-
+  
       const data = await response.json();
       if (!data.success) {
         toast.error(`Error: ${data.message}`);
@@ -170,7 +253,7 @@ const Modal = ({ isOpen, onClose, initialData }) => {
       toast.error("Failed to add product. Please try again.");
     }
   };
-
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-scroll">
@@ -235,6 +318,35 @@ const Modal = ({ isOpen, onClose, initialData }) => {
             ))}
           </div>
 
+
+
+          <div>
+            <label className="block">Select Product Type:</label>
+            <label>
+              <input
+                type="checkbox"
+                name="hoodie"
+                checked={productType.hoodie}
+                onChange={handleProductTypeChange}
+              /> Hoodie
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="shirt"
+                checked={productType.shirt}
+                onChange={handleProductTypeChange}
+              /> Shirt
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="trouser"
+                checked={productType.trouser}
+                onChange={handleProductTypeChange}
+              /> Trouser
+            </label>
+          </div>
           <button className="px-4 py-2 bg-orange-400 text-white rounded" type="button" onClick={addColor}>
             Add Color
           </button>
