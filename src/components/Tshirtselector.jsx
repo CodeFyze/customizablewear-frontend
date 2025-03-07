@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 const TShirtSelector = () => {
   const [selectedShirt, setSelectedShirt] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);  // List of all products
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -53,12 +53,12 @@ const TShirtSelector = () => {
   console.log("selected size",selectedSize)
   const handleAddToCart = () => {
     if (!selectedProduct) {
-        toast.error('Please select a product first.');
+      toast.error('Please select a product first.');
       return;
     }
 
     if (!selectedSize || selectedSize.quantity === 0) {
-      toast.error("Please select a size.")
+      toast.error("Please select a size.");
       return;
     }
 
@@ -66,11 +66,10 @@ const TShirtSelector = () => {
       toast.error("Please select a color.");
       return;
     }
-    console.log("selected product id------> ",selectedProduct._id)
+    console.log("selected product id------> ", selectedProduct._id);
 
     const productToAdd = {
-      id: new Date().getTime(),
-   
+      _id: selectedProduct._id,
       image: selectedShirt || selectedProduct.frontImage,
       title: selectedProduct.title,
       size: selectedSize.size,
@@ -84,10 +83,10 @@ const TShirtSelector = () => {
     dispatch(addItem(productToAdd));
 
     Swal.fire({
-			title: 'Added',
-			text: 'Item added to cart',
-			icon: 'success',
-		});
+      title: 'Added',
+      text: 'Item added to cart',
+      icon: 'success',
+    });
   };
 
   // ✅ Fetch Products on Component Mount
@@ -101,9 +100,13 @@ const TShirtSelector = () => {
         const data = await response.json();
 
         if (data.products && data.products.length > 0) {
-          setProducts(data.products);
-          setSelectedProduct(data.products[0]);
-          setSelectedShirt(data.products[0]?.frontImage);
+          // Filter products to only show those with productType 'shirt'
+          const shirtProducts = data.products.filter(product =>
+            product.productType && product.productType.includes('shirt')
+          );
+          setProducts(shirtProducts);
+          setSelectedProduct(shirtProducts[0]);
+          setSelectedShirt(shirtProducts[0]?.frontImage);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -147,34 +150,34 @@ const TShirtSelector = () => {
 					))}
 				</div>
 
-				{/* Select View */}
-				{/* <div className="mt-4 font-medium text-lg text-center md:text-left">
-          Select Your T-Shirt View
-        </div>
-        <div className="grid grid-cols-3 gap-4 mt-4 p-2">
-          {selectedProduct &&
-            [
-              selectedProduct.frontImage,
-              selectedProduct.sideImage,
-              selectedProduct.backImage,
-            ].map((image, index) => (
-              <div
-                key={index}
-                onClick={() => handleShirtChange(image)}
-                className={`cursor-pointer w-full h-32 p-2 text-center transform transition-transform duration-300 ${
-                  selectedShirt === image
-                    ? "scale-105 outline outline-2 outline-orange-500"
-                    : ""
-                }`}
-              >
-                <img
-                  src={image}
-                  alt={`T-Shirt View ${index + 1}`}
-                  className="w-full h-24 object-cover rounded-md"
-                />
-              </div>
-            ))}
-        </div> */}
+
+        {/* <div className="mt-4 font-medium text-lg text-center md:text-left">
+Select Your T-Shirt View
+</div>
+<div className="grid grid-cols-3 gap-4 mt-4 p-2">
+{selectedProduct &&
+  [
+    selectedProduct.frontImage,
+    selectedProduct.sideImage,
+    selectedProduct.backImage,
+  ].map((image, index) => (
+    <div
+      key={index}
+      onClick={() => handleShirtChange(image)}
+      className={`cursor-pointer w-full h-32 p-2 text-center transform transition-transform duration-300 ${
+        selectedShirt === image
+          ? "scale-105 outline outline-2 outline-orange-500"
+          : ""
+      }`}
+    >
+      <img
+        src={image}
+        alt={`T-Shirt View ${index + 1}`}
+        className="w-full h-24 object-cover rounded-md"
+      />
+    </div>
+  ))}
+</div>  */}
 
 				{/* Select Color */}
 				<div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
