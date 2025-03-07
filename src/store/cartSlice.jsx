@@ -1,30 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  items: [],
+	items: [],
 };
 
 export const cartSlice = createSlice({
 	name: 'cart',
 	initialState,
 	reducers: {
-    setCart: (state, action) => {
-    
+		setCart: (state, action) => {
 			console.log('✅ Cart data in Redux (Final Check):', action.payload);
 			state.items = action.payload; // Set the cart items from the API response
 		},
 
 		addItem: (state, action) => {
-      const { _id, size, color, method, position, textLine, font, notes, quantity } = action.payload;
-      const { products } = state.items;
-      console.log("products---->",products)
+			const { _id: productId, size, color, method,logo, frontImage,position, textLine, font, notes, quantity } = action.payload;
 
-      console.log("selected produce id --->",_id);
-      // console.log("selected front image --->",action.payload);
-			// Check if the item already exists in the cart
+console.log(logo)
 			const existingItem = state.items.find(
 				(item) =>
-					item.productId === _id &&
+					item.productId === productId &&
 					item.size === size &&
 					item.color === color &&
 					item.method === method &&
@@ -42,11 +37,9 @@ export const cartSlice = createSlice({
 					font: font || '',
 					notes: notes || '',
 					quantity: quantity || 1,
-        });
-        
-      }
-     console.log('state.items---->', JSON.stringify(state.items, null, 2));
-
+				});
+			}
+			// console.log('state.items---->', JSON.stringify(state.items, null, 2));
 		},
 
 		removeItem: (state, action) => {

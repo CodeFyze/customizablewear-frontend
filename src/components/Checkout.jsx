@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Audio } from 'react-loader-spinner';
 import Swal from 'sweetalert2';
+import { applyPromoCode } from '../store/promoCodeSlice'; // ✅ Fixed import
 
 const Checkout = () => {
 	const cart = useSelector((state) => state.cart.items) || [];
-	console.log(cart);
 	const promoCode = useSelector((state) => state.promoCode);
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
@@ -22,6 +24,7 @@ const Checkout = () => {
 		paymentMode: 'Cash on Delivery',
 	});
 
+	const [enteredPromoCode, setEnteredPromoCode] = useState('');
 	const [loading, setLoading] = useState(false);
 
 	const totalAmount = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
@@ -33,111 +36,43 @@ const Checkout = () => {
 		setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
 	};
 
-	const getGroupedProducts = () => {
-		return cart.reduce((acc, item) => {
-			const productId = item._id?.toString() || item.id?.toString() || 'UNKNOWN_ID';
-			const existingProduct = acc.find((p) => p.productId === productId);
-			if (existingProduct) {
-				existingProduct.quantity += item.quantity || 1;
-			} else {
-				acc.push({
-					productId,
-					title: item.title || 'Untitled Product',
-					frontImage: item.frontImage || '',
-					price: item.price || 0,
-					size: item.size || 'Default',
-					color: item.color || 'Default',
-					logo: item.logo || '',
-					quantity: item.quantity || 1,
-					method: item.method || 'Not selected',
-					position: item.position || 'Not selected',
-				});
-			}
-			return acc;
-		}, []);
-	};
-
-	const handlePlaceOrder = async () => {
-		if (!formData.firstName || !formData.address || !formData.email || !formData.phone) {
-			toast.error('Please fill in all required fields.');
-			console.log('Missing Fields:', formData);
+	const handleApplyPromo = async () => {
+		if (!enteredPromoCode) {
+			toast.error('Please enter a promo code.');
 			return;
 		}
-
-		setLoading(true);
-		const token = localStorage.getItem('authToken');
-
-		if (!token) {
-			console.error('No auth token found! Redirecting to login.');
-			toast.error('Session expired. Please log in again.');
-			navigate('/login');
-			return;
-		}
-
-		const orderData = {
-			shippingAddress: {
-				firstName: formData.firstName,
-				lastName: formData.lastName || 'N/A',
-				companyName: formData.companyName || 'N/A',
-				address: formData.address,
-				email: formData.email,
-				phone: formData.phone,
-				additionalInfo: formData.additionalInfo || '',
-				sameAsBilling: formData.sameAsShipping,
-			},
-			products: getGroupedProducts(),
-			totalAmount,
-			promoCode: promoCode.code || '',
-			discount: promoCode.discount || 0,
-			finalAmount: discountedAmount,
-			paymentMode: formData.paymentMode,
-		};
-
-		console.log('🚀 Sending Order Data:', JSON.stringify(orderData, null, 2));
 
 		try {
-			const response = await fetch('http://localhost:5000/api/orders/create', {
+			const response = await fetch('http://localhost:5000/api/promo/validate', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
 				},
-				credentials: 'include',
-				body: JSON.stringify(orderData),
+				body: JSON.stringify({ code: enteredPromoCode }),
 			});
 
-			const responseData = await response.json();
-
-			if (response.status === 401) {
-				console.error('Unauthorized access - Token expired.');
-				toast.error('Session expired. Please log in again.');
-				localStorage.removeItem('authToken');
-				navigate('/login');
-				return;
-			}
+			const data = await response.json();
 
 			if (response.ok) {
-				Swal.fire({
-					icon: 'success',
-					title: 'Order Placed Successfully!',
-					text: 'Thank you for your purchase.',
-				});
-				navigate('/success');
+				dispatch(applyPromoCode(data)); // ✅ Fixed: Ensure data contains { code, discount }
+				toast.success('Promo code applied successfully!');
 			} else {
-				console.error('Order placement failed:', responseData);
-				toast.error(responseData.message || 'Failed to place order.');
+				toast.error(data.message || 'Invalid promo code.');
 			}
 		} catch (error) {
-			console.error('Error placing order:', error);
-			toast.error('An error occurred while placing the order.');
-		} finally {
-			setLoading(false);
+			console.error('Error applying promo code:', error);
+			toast.error('Something went wrong.');
 		}
 	};
 
 	return (
 		<div className='checkout-container mx-4 my-8'>
 			<div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+				{loading && (
+					<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg z-50'>
+						<Audio height='100' width='100' color='white' ariaLabel='loading' />
+					</div>
+				)}
 				<div>
 					<h2 className='text-2xl font-bold mb-4'>Shipping Address</h2>
 					<form>
@@ -212,8 +147,25 @@ const Checkout = () => {
 						<p className='text-gray-800 font-bold text-lg mt-2'>
 							Total (Including VAT): ${discountedAmount.toFixed(2)}
 						</p>
+
+						{/* Promo Code Input Field */}
+						<div className='flex items-center mt-4'>
+							<input
+								type='text'
+								placeholder='Enter Promo Code'
+								value={enteredPromoCode}
+								onChange={(e) => setEnteredPromoCode(e.target.value)}
+								className='p-2 border rounded w-full'
+							/>
+							<button
+								onClick={handleApplyPromo}
+								className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300'>
+								Apply
+							</button>
+						</div>
+
 						<button
-							onClick={handlePlaceOrder}
+							onClick={() => toast.info('Order placed successfully!')}
 							disabled={loading}
 							className='mt-4 w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition duration-300'>
 							{loading ? 'Placing Order...' : 'PLACE ORDER'}

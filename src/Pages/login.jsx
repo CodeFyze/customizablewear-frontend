@@ -3,11 +3,13 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Audio } from 'react-loader-spinner';
 import { loginSuccess } from '../store/authSlice'; // Import Redux action
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa'; // Import eye and close icons
 
 const LoginPage = () => {
 	const [isLogin, setIsLogin] = useState(true);
+	const [loading, setLoading] = useState(false); // <-- Added state for loader
 	const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 	const dispatch = useDispatch();
 	const {
@@ -21,6 +23,7 @@ const LoginPage = () => {
 		console.log('🚀 Sending login request:', data);
 
 		try {
+			setLoading(true); // ✅ Start loading before API call
 			const response = await fetch('http://localhost:5000/api/auth/login', {
 				method: 'POST',
 				headers: {
@@ -38,7 +41,6 @@ const LoginPage = () => {
 				localStorage.setItem('authToken', result.token);
 				localStorage.setItem('userId', result.user?.id);
 
-				// 🔹 Dispatch action to update Redux store
 				dispatch(
 					loginSuccess({
 						token: result.token,
@@ -53,8 +55,11 @@ const LoginPage = () => {
 		} catch (error) {
 			console.error('Login error:', error);
 			toast.error('❌ An error occurred during login. Please try again.');
+		} finally {
+			setLoading(false); // ✅ Stop loading after request finishes
 		}
 	};
+
 
 	// Function to handle the close button click
 	const handleClose = () => {
@@ -64,6 +69,13 @@ const LoginPage = () => {
 	return (
 		<div className='flex items-center justify-center min-h-screen bg-gray-100'>
 			<div className='w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
+				{/* Background overlay when loading */}
+				{loading && (
+					<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg z-50'>
+						<Audio height='100' width='100' color='white' ariaLabel='loading' />
+					</div>
+				)}
+
 				{/* Close Button */}
 				<button onClick={handleClose} className='absolute top-4 right-4 text-gray-500 hover:text-gray-700 p-2'>
 					<FaTimes size={20} />

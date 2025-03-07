@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { FaTimes } from 'react-icons/fa'; 
+import { addItem } from '../store/cartSlice'; 
+import { useDispatch } from 'react-redux';
+
 
 const AddTextLogoPopup = ({
 	onBack,
@@ -13,10 +16,14 @@ const AddTextLogoPopup = ({
 	selectedPosition,
 	onClose, 
 }) => {
+
+
 	const [textLine, setTextLine] = useState(selectedProduct?.textLine || '');
 	const [font, setFont] = useState(selectedProduct?.font || 'Standard');
 	const [notes, setNotes] = useState(selectedProduct?.notes || '');
-	const [loading, setLoading] = useState(false);
+	const [ loading, setLoading ] = useState(false);
+	const dispatch = useDispatch();
+
 
 	useEffect(() => {
 		console.log('Product:', selectedProduct);
@@ -27,6 +34,7 @@ const AddTextLogoPopup = ({
 	}, [selectedProduct, selectedSize, selectedColor, selectedMethod, selectedPosition]);
 
 	const handleFinish = async () => {
+		console.log(textLine,font,notes)
 		// Validation
 		if (!textLine.trim()) {
 			toast.error('Please enter text for the logo.');
@@ -68,6 +76,8 @@ const AddTextLogoPopup = ({
 			notes,
 		};
 
+		console.log(requestData)
+		dispatch(addItem(requestData));
 		try {
 			setLoading(true);
 			const token = localStorage.getItem('authToken');
