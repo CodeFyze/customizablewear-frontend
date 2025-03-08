@@ -16,6 +16,8 @@ const Category = () => {
         method: "GET",
       });
       const data = await response.json();
+      console.log("product data",data);
+      
       setProducts(data.products);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -24,23 +26,23 @@ const Category = () => {
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({
-      left: -300,
+      left: -200,
       behavior: "smooth",
     });
   };
 
   const scrollRight = () => {
     scrollRef.current.scrollBy({
-      left: 300,
+      left: 200,
       behavior: "smooth",
     });
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4">
-      <div className="flex items-center justify-between my-8">
-        <div className="text-2xl font-bold">Product Categories</div>
-        <div className="flex space-x-2">
+    <div className=" w-full h-auto mx-auto my-2 px-4">
+      <div className="flex items-center justify-between ">
+        <div className="text-md md:text-xl lg:text-3xl font-bold">Product Categories</div>
+        <div className="flex space-x-3">
           <button
             className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-[#4bf6d4] transition-colors"
             onClick={scrollLeft}
@@ -57,30 +59,43 @@ const Category = () => {
       </div>
       <div
         ref={scrollRef}
-        className="flex items-center overflow-x-auto scrollbar-hide space-x-4 py-7"
+        className="flex overflow-x-auto scrollbar-hide space-x-4 md:space-x-3 lg:space-x-3 py-3"
       >
         {products.map((product) => (
           <div
             key={product.product_id}
-            className="w-44 h-64 flex-shrink-0 transition-transform transform hover:scale-105 p-4 rounded-lg shadow-md"
+            className="border-[1px] border-solid border-gray-200 w-52 h-80 flex-shrink-0 transition-transform duration-700 transform hover:scale-105 p-2 rounded-lg shadow-md"
           >
-            <div className="h-full flex flex-col justify-between">
+            <div className="h-full flex flex-col items-start gap-y-1">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-36 object-cover rounded-lg transition-transform duration-500 hover:rotate-3 hover:scale-110"
+                className="w-full h-40 object-cover rounded-lg transition-transform duration-500  hover:rotate-3 hover:scale-105"
               />
-              <div className="text-center mt-2 font-semibold text-gray-700">
-                {product.name}
+              <div className="text-start font-semibold text-gray-700">
+                {product.title} 
               </div>
-              <div className="text-center text-gray-500">
-                {product.category}
+              <div className="text-start font-normal text-gray-700">
+                Kid's Section
               </div>
+          
+               {/* <div className="text-start font-semibold text-gray-700 text-[14px]">
+                {product.description}
+              </div> */}
+              <div className="border-t-[1px] bordert-t-gray-600 border-solid w-full"></div>
+              <div className="text-start font-semibold text-gray-700 text-[14px]">
+               Available
+              </div>
+              
+              
+              <button className="bg-[#E57312] border-2 border-solid border-[#E57312] w-full px-2 py-1 rounded-full mt-1 hover:bg-transparent duration-500 hover:text-black text-white">click</button>
+
+             
             </div>
           </div>
         ))}
       </div>
-      <hr className="my-4 border-gray-500" />
+      {/* <hr className="my-4 border-gray-500" /> */}
     </div>
   );
 };
