@@ -9,6 +9,7 @@ const promoCodes = {
 const initialState = {
   code: "",
   discount: 0,
+  
 };
 
 const promoCodeSlice = createSlice({
@@ -16,10 +17,10 @@ const promoCodeSlice = createSlice({
   initialState,
   reducers: {
     applyPromoCode(state, action) {
-      const { code } = action.payload;
-      const discount = promoCodes[code] || 0;
+      const { code, discount: appliedDiscount } = action.payload;
+      console.log(code,appliedDiscount)
       state.code = code;
-      state.discount = discount;
+      state.discount = appliedDiscount;
     },
     clearPromoCode(state) {
       state.code = "";

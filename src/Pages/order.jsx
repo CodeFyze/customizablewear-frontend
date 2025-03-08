@@ -19,10 +19,12 @@ const OrderDetails = () => {
 	const [order, setOrder] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [status, setStatus] = useState('Pending'); // State for dropdown value
 
 	const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
 
 	const fetchOrderDetails = async () => {
+		
 		try {
 			const token = localStorage.getItem('authToken');
 
@@ -46,6 +48,7 @@ const OrderDetails = () => {
 
 			const data = await response.json();
 			setOrder(data.order);
+			setStatus(data.order.status); // Set initial status from fetched order
 		} catch (error) {
 			console.error('Error fetching order details:', error);
 			setError(error.message || 'Failed to fetch order details');
@@ -57,7 +60,40 @@ const OrderDetails = () => {
 
 	useEffect(() => {
 		fetchOrderDetails();
-	}, [orderId]);
+	}, [ orderId ]);
+
+	const handleStatusChange = async (newStatus) => {
+		try {
+			const token = localStorage.getItem('authToken');
+
+			if (!token) {
+				throw new Error('Unauthorized - No token found.');
+			}
+
+			const response = await fetch(`http://localhost:5000/api/orders/update/${orderId}`, {
+				method: 'PUT', 
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({ status: newStatus }), 
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to update order status');
+			}
+
+			const data = await response.json();
+			setOrder({ ...order, status: newStatus });
+			toast.success('Order status updated successfully!', { position: 'top-right' });
+		} catch (error) {
+			console.log(error)
+			console.error('Error updating order status:', error);
+			toast.error(error.message || 'Failed to update order status', { position: 'top-right' });
+		}
+	};
 
 	const handleDownload = async (imageUrl) => {
 		try {
@@ -102,7 +138,7 @@ const OrderDetails = () => {
 
 			{/* Order Card */}
 			<div className='max-w-md mx-auto bg-white rounded-lg shadow-sm overflow-hidden'>
-				{/* ✅ Order Status */}
+				{/* Order Status */}
 				<div className='p-6 border-b border-gray-200'>
 					<h2 className='text-xl font-semibold mb-4 flex items-center'>
 						<FaCheckCircle className='mr-2 text-gray-700' /> Order Status
@@ -111,21 +147,30 @@ const OrderDetails = () => {
 						<p className='text-gray-700'>
 							<strong>Order ID:</strong> {order._id}
 						</p>
-						<p className='text-gray-700'>
-							<strong>Status:</strong>{' '}
-							<span
+						<div className='flex items-center gap-2'>
+							<strong>Status:</strong>
+							<select
+								value={status}
+								onChange={(e) => {
+									setStatus(e.target.value);
+									handleStatusChange(e.target.value);
+								}}
 								className={`px-2 py-1 rounded-full text-sm font-medium ${
-									order.status === 'Delivered'
+									status === 'Delivered'
 										? 'bg-green-100 text-green-700'
-										: order.status === 'Pending'
+										: status === 'Pending'
 										? 'bg-yellow-100 text-yellow-700'
-										: order.status === 'Cancelled'
+										: status === 'Cancelled'
 										? 'bg-red-100 text-red-700'
 										: 'bg-gray-100 text-gray-700'
 								}`}>
-								{order.status}
-							</span>
-						</p>
+								<option value='Pending'>Pending</option>
+								<option value='Confirmed'>Confirmed</option>
+								<option value='Shipped'>Shipped</option>
+								<option value='Delivered'>Delivered</option>
+								<option value='Cancelled'>Cancelled</option>
+							</select>
+						</div>
 						<p className='text-gray-700'>
 							<strong>Placed on:</strong> {new Date(order.createdAt).toLocaleDateString()}
 						</p>
@@ -138,7 +183,7 @@ const OrderDetails = () => {
 					</div>
 				</div>
 
-				{/* ✅ Shipping Address */}
+				{/* Shipping Address */}
 				<div className='p-6 border-b border-gray-200'>
 					<h2 className='text-xl font-semibold mb-4 flex items-center'>
 						<FaMapMarkerAlt className='mr-2 text-gray-700' /> Shipping Address
@@ -153,7 +198,7 @@ const OrderDetails = () => {
 					</div>
 				</div>
 
-				{/* ✅ Products List */}
+				{/* Products List */}
 				<div className='p-6'>
 					<h2 className='text-xl font-semibold mb-4 flex items-center'>
 						<FaShoppingCart className='mr-2 text-gray-700' /> Products Ordered

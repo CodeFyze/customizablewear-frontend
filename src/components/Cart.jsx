@@ -9,6 +9,7 @@ import img from '../assets/images/empty-cart.png';
 
 const Cart = () => {
 	const cart = useSelector((state) => state.cart.items || []);
+	console.log(cart.products)
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);

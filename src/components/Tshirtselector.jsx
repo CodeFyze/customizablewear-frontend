@@ -51,7 +51,7 @@ const TShirtSelector = () => {
 
   // ✅ Handle Adding to Cart
   console.log("selected size",selectedSize)
-  const handleAddToCart = () => {
+  const handleAddToCart = async() => {
     if (!selectedProduct) {
       toast.error('Please select a product first.');
       return;
@@ -69,6 +69,7 @@ const TShirtSelector = () => {
     console.log("selected product id------> ", selectedProduct._id);
 
     const productToAdd = {
+      
       _id: selectedProduct._id,
       image: selectedShirt || selectedProduct.frontImage,
       title: selectedProduct.title,
@@ -82,12 +83,14 @@ const TShirtSelector = () => {
     
     dispatch(addItem(productToAdd));
 
-    Swal.fire({
-      title: 'Added',
-      text: 'Item added to cart',
-      icon: 'success',
-    });
-  };
+     // ✅ Await Swal.fire to pause execution until the user dismisses the alert
+  await Swal.fire({
+    title: "Added",
+    text: "Item added to cart",
+    icon: "success",
+    confirmButtonText: "OK",
+  });
+};
 
   // ✅ Fetch Products on Component Mount
   useEffect(() => {

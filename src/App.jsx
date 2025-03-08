@@ -16,8 +16,8 @@ import Order from "./Pages/order";
 import OrderDetails from "./Pages/order";
 import Success from "./components/Success";
 import CustomerOrders from "./Pages/CustomerOrders";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const App = () => {
@@ -45,6 +45,7 @@ const App = () => {
         <Route path="/order" element={<Order />} />
         <Route path="/orders/:orderId" element={<OrderDetails />} />
         <Route path="/success" element={<Success />} />
+        <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
         <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
       </Routes>
 

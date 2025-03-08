@@ -14,9 +14,8 @@ export const cartSlice = createSlice({
 		},
 
 		addItem: (state, action) => {
-			const { _id: productId, size, color, method,logo, frontImage,position, textLine, font, notes, quantity } = action.payload;
-
-console.log(logo)
+			const {  _id:productId, size, color, method,logo, frontImage,position, textLine, font, notes, quantity } = action.payload;
+console.log(productId)
 			const existingItem = state.items.find(
 				(item) =>
 					item.productId === productId &&
