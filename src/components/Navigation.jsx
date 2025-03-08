@@ -25,8 +25,8 @@ const Navigation = () => {
 				<div className='flex items-center justify-between h-16  w-full'>
 					<div className='flex-shrink-0 '>
 						<Link to='/'>
-						<div className=''>
-							<img className=' h-7 md:h-7 lg:h-7 xl:h-7' src={logo} alt='logo' />
+							<div className=''>
+								<img className=' h-7 md:h-7 lg:h-7 xl:h-7' src={logo} alt='logo' />
 							</div>
 							<span className='font-bold items-center border-b-[3px] hover:border-[#e57312] transition duration-500'>
 								rofessoR
@@ -44,7 +44,7 @@ const Navigation = () => {
 							<NavLink to='/contact' text='Contact' className='text-red-300' />
 							{!isAuthenticated && (
 								<>
-									<NavLink to='/Signup'  text='Sign Up' />
+									<NavLink to='/Signup' text='Sign Up' />
 									<NavLink to='/login' text='Login' />
 								</>
 							)}
@@ -56,11 +56,11 @@ const Navigation = () => {
 						<Link to='/cart' className='items-center   '>
 							<div className='relative right-0 sm:right-4 md:top-0 lg:top-0  xl:top-0 '>
 								<FaShoppingCart className='h-6 w-6 sm:h-8 sm:w-8 md:w-6 text-gray-700' />
-								
+
 								{totalCartQuantity > 0 && (
 									<span className='absolute top-0 right-0 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full'>
-										{totalCartQuantity} 
-										
+										{totalCartQuantity}
+
 									</span>
 								)}
 							</div>
@@ -71,20 +71,35 @@ const Navigation = () => {
 					<div className='flex sm:hidden'>
 						<button
 							onClick={toggleMenu}
-							className='inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out'>
-							{isOpen ? <FaTimes className='h-6 w-6' /> : <FaBars className='h-6 w-6' />}
+							className='inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out'>
+							<FaBars className='h-6 w-6' />
 						</button>
 					</div>
 				</div>
 			</div>
 
 			{/* Mobile Menu */}
-			<div className={`${isOpen ? 'block' : 'hidden'} sm:hidden`}>
+			<div className={`fixed top-0 right-0 z-10 h-full w-full bg-white shadow-lg transform ${isOpen ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-in-out sm:hidden`}>
+				<div className='flex justify-between p-4'>
+					<div>
+					<div className=''>
+								<img className=' h-7 ' src={logo} alt='logo' />
+							</div>
+							<span className='font-bold items-center border-b-[3px] border-[#e57312] '>
+								rofessoR
+							</span>
+							<span className=' font-bold border-b-[3px] border-[#4bf6d4]'>Store</span>
+					</div>
+
+					<button onClick={toggleMenu} className='text-gray-600'>
+						<FaTimes className='h-6 w-6' />
+					</button>
+				</div>
 				<div className='px-2 pt-2 pb-3 mx-auto space-y-1'>
-					<NavLinkMobile to='/' text='Home' onClick={toggleMenu}  />
-					<NavLinkMobile to='/products' text='Products' onClick={toggleMenu}  />
-					<NavLinkMobile to='/about' text='About' onClick={toggleMenu}  />
-					<NavLinkMobile to='/contact' text='Contact' onClick={toggleMenu}  />
+					<NavLinkMobile to='/' text='Home' onClick={toggleMenu} />
+					<NavLinkMobile to='/products' text='Products' onClick={toggleMenu} />
+					<NavLinkMobile to='/about' text='About' onClick={toggleMenu} />
+					<NavLinkMobile to='/contact' text='Contact' onClick={toggleMenu} />
 					{/* <NavLinkMobile to='/cart' text='Cart' onClick={toggleMenu}  /> */}
 				</div>
 			</div>
@@ -108,9 +123,9 @@ const NavLinkMobile = ({ to, text, onClick }) => (
 	<Link
 		to={to}
 		onClick={onClick}
-		className='block py-2 px-3 text-base font-medium text-gray-500 hover:text-gray-800 transition duration-150 relative group'>
+		className='block py-2 px-3 text-base font-medium text-gray-700  relative group'>
 		<span>{text}</span>
-		<span className='absolute bottom-0 left-0 w-full bg-orange-500 h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left'></span>
+		<span className='absolute bottom-0 left-0 w-full border-[1px] h-0.5   origin-left'></span>
 	</Link>
 );
 

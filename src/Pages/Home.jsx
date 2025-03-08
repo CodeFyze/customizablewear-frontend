@@ -15,7 +15,7 @@ const Home = () => {
         <Category />
       </div>
 
-      <div className="container mx-auto px-6 md:px-10 pt-8 bg-red-500">
+      <div className="container h-auto mx-auto px-6 md:px-10 pt-8 bg-red-500">
         <Products showTShirtSelector={false} />
       </div>
     </div>

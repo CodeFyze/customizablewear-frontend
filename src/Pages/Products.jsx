@@ -47,15 +47,15 @@ const Products = ({ showTShirtSelector = true }) => {
   return (
     <div>
       {showTShirtSelector && <TShirtSelector />}
-      <div className="container mx-auto pb-24 py-4">
+      <div className="bg-green-400 w-full container mx-auto py-2">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
-        <div className="flex flex-wrap justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {products.map((product) => (
             <div
               key={product._id}
-              className="min-w-[300px] max-w-[200px] m-2 p-4 bg-white shadow-md border-2 rounded-lg transition-transform transform hover:scale-100"
+              className="bg-red-400 m-2 p-4 shadow-md border-2 rounded-lg transition-transform transform hover:scale-100"
               style={{ height: "560px" }}
-            >
+            > 
               <img
                 src={product.image || product.frontImage || "/placeholder.jpg"}
                 alt={product.title || "No title available"}
