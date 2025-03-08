@@ -79,17 +79,9 @@ const Navigation = () => {
 			</div>
 
 			{/* Mobile Menu */}
-			<div className={`fixed top-0 right-0 z-10 h-full w-full bg-white shadow-lg transform ${isOpen ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-in-out sm:hidden`}>
-				<div className='flex justify-between p-4'>
-					<div>
-					<div className=''>
-								<img className=' h-7 ' src={logo} alt='logo' />
-							</div>
-							<span className='font-bold items-center border-b-[3px] border-[#e57312] '>
-								rofessoR
-							</span>
-							<span className=' font-bold border-b-[3px] border-[#4bf6d4]'>Store</span>
-					</div>
+			<div className={`fixed top-0 right-0 z-10 h-full w-2/3 bg-white shadow-lg transform ${isOpen ? "translate-x-0" : "translate-x-full"} transition-transform duration-300 ease-in-out sm:hidden`}>
+				<div className='flex justify-end p-4'>
+					
 
 					<button onClick={toggleMenu} className='text-gray-600'>
 						<FaTimes className='h-6 w-6' />
