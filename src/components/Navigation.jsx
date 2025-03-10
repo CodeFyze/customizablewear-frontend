@@ -92,6 +92,8 @@ const Navigation = () => {
 					<NavLinkMobile to='/products' text='Products' onClick={toggleMenu} />
 					<NavLinkMobile to='/about' text='About' onClick={toggleMenu} />
 					<NavLinkMobile to='/contact' text='Contact' onClick={toggleMenu} />
+					<NavLinkMobile to='/login' text='Login' onClick={toggleMenu} />
+					<NavLinkMobile to='/Signup' text='Sign up' onClick={toggleMenu} />
 					{/* <NavLinkMobile to='/cart' text='Cart' onClick={toggleMenu}  /> */}
 				</div>
 			</div>

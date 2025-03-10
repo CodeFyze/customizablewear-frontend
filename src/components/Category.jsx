@@ -61,7 +61,7 @@ const Category = () => {
         ref={scrollRef}
         className="flex overflow-x-auto scrollbar-hide space-x-4 md:space-x-3 lg:space-x-3 py-3"
       >
-        {products.map((product) => (
+        {products && products.map((product) => (
           <div
             key={product.product_id}
             className="border-[1px] border-solid border-gray-200 w-52 h-80 flex-shrink-0 transition-transform duration-700 transform hover:scale-105 p-2 rounded-lg shadow-md"

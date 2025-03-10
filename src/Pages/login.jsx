@@ -62,8 +62,8 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-center min-h-screen bg-gray-100'>
-			<div className='w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
+		<div className='flex items-center justify-center p-8 min-h-screen bg-gray-100'>
+			<div className=' w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
 				{/* Close Button */}
 				<button onClick={handleClose} className='absolute top-4 right-4 text-gray-500 hover:text-gray-700 p-2'>
 					<FaTimes size={20} />
@@ -76,7 +76,7 @@ const LoginPage = () => {
 						<input
 							type='email'
 							placeholder='Enter your email'
-							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							{...register('email', { required: 'Email is required' })}
 						/>
 						{errors.email && <span className='text-sm text-red-500 mt-1'>{errors.email.message}</span>}
@@ -87,7 +87,7 @@ const LoginPage = () => {
 						<input
 							type={showPassword ? 'text' : 'password'} // Toggle between text and password
 							placeholder='Enter your password'
-							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							{...register('password', { required: 'Password is required' })}
 						/>
 						{/* Eye icon to toggle password visibility */}
@@ -100,14 +100,14 @@ const LoginPage = () => {
 						{errors.password && <span className='text-sm text-red-500 mt-1'>{errors.password.message}</span>}
 					</div>
 
-					<button type='submit' className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600'>
+					<button type='submit' className='w-full bg-[#fc8019] text-white py-2  rounded-md hover:bg-[#e57312] focus:shadow-lg focus:border-orange-600 focus:ring focus:ring-orange-400 focus:ring-opacity-50 outline-none duration-500'>
 						Login
 					</button>
 				</form>
 
 				<div className='mt-4 text-center'>
 					<span className='text-sm text-gray-600'>Don't have an account?</span>
-					<button onClick={() => navigate('/signup')} className='ml-2 text-blue-500 hover:underline'>
+					<button onClick={() => navigate('/signup')} className='ml-2 text-[#fc8019] hover:underline duration-700'>
 						Sign up
 					</button>
 				</div>
