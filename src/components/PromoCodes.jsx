@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ThreeDots } from 'react-loader-spinner'; // Import React Loader Simple
 
 const PromoCodes = () => {
 	const [promoCodes, setPromoCodes] = useState([]);
 	const [code, setCode] = useState('');
 	const [discount, setDiscount] = useState('');
-	const [editId, setEditId] = useState(null);
-	const [editField, setEditField] = useState(null);
-	const [editValue, setEditValue] = useState('');
+	const [emailBody, setEmailBody] = useState('');
+	const [loading, setLoading] = useState(false);
 	const API_URL = 'http://localhost:5000/api/promocodes';
 
 	useEffect(() => {
@@ -93,11 +95,46 @@ const PromoCodes = () => {
 		setCode(randomCode);
 	};
 
+	const handleSendEmail = async () => {
+		const token = localStorage.getItem('authToken');
+		if (!token) {
+			toast.error('No auth token found.');
+			return;
+		}
+
+		if (!emailBody.trim()) {
+			toast.error('Please enter the email body.');
+			return;
+		}
+
+		setLoading(true);
+
+		try {
+			const response = await fetch(`${API_URL}/send-email`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				body: JSON.stringify({ emailBody }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to send email');
+			}
+
+			toast.success('Email sent successfully!');
+			setEmailBody('');
+		} catch (error) {
+			console.error(error.message);
+			toast.error(error.message || 'Failed to send email.');
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<div className='p-6 max-w-3xl mx-auto'>
 			<h2 className='text-2xl font-bold mb-4 text-center'>Manage Promo Codes</h2>
 
-			{/* Add Promo Code Form */}
 			<form onSubmit={handleAddPromoCode} className='flex gap-2 mb-6'>
 				<input
 					onChange={(e) => setCode(e.target.value)}
@@ -122,7 +159,22 @@ const PromoCodes = () => {
 				</button>
 			</form>
 
-			{/* Promo Codes List */}
+			<div className='mb-6'>
+				<textarea
+					value={emailBody}
+					onChange={(e) => setEmailBody(e.target.value)}
+					placeholder='Enter email body for the offer...'
+					className='w-full p-2 border rounded-md bg-gray-100'
+					rows={4}
+				/>
+				<button
+					onClick={handleSendEmail}
+					disabled={loading}
+					className='mt-2 bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 disabled:bg-purple-300 disabled:cursor-not-allowed'>
+					{loading ? 'Sending...' : 'Send Email to All Customers'}
+				</button>
+			</div>
+
 			<div className='grid gap-4'>
 				{promoCodes.map((promo) => (
 					<div key={promo._id} className='p-4 border rounded-md shadow-md flex justify-between items-center'>
@@ -130,9 +182,7 @@ const PromoCodes = () => {
 							<span className='font-semibold'>{promo.code}</span>
 						</div>
 
-						{/* Toggle and Delete Button Container */}
 						<div className='flex items-center gap-2'>
-							{/* Toggle Switch */}
 							<div
 								className={`w-14 h-7 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
 									promo.status === 'active' ? 'bg-green-500' : 'bg-gray-300'
@@ -144,7 +194,6 @@ const PromoCodes = () => {
 									}`}></div>
 							</div>
 
-							{/* Delete Button */}
 							<button
 								onClick={() => handleDeletePromoCode(promo._id)}
 								className='bg-red-500 text-white px-2 py-1 rounded-md'>
@@ -154,6 +203,15 @@ const PromoCodes = () => {
 					</div>
 				))}
 			</div>
+
+			{loading && (
+      <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='bg-white p-6 rounded-lg shadow-lg flex flex-col items-center'>
+          <p className='text-lg font-semibold mb-4'>Sending emails...</p>
+          <ThreeDots height='50' width='50' color='#6B46C1' />
+        </div>
+      </div>
+    )}
 		</div>
 	);
 };

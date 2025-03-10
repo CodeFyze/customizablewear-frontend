@@ -1,125 +1,145 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addItem } from "../store/cartSlice";
-import SizeSelection from "./SizeSelection";
-import Popup from "./shirtpopup";
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../store/cartSlice';
+import SizeSelection from './SizeSelection';
+import Popup from './shirtpopup';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const TShirtSelector = () => {
-  const [selectedShirt, setSelectedShirt] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [products, setProducts] = useState([]);  // List of all products
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const dispatch = useDispatch();
+	const [selectedShirt, setSelectedShirt] = useState(null);
+	const [isAnimating, setIsAnimating] = useState(false);
+	const [products, setProducts] = useState([]); // List of all products
+	const [selectedProduct, setSelectedProduct] = useState(null);
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [selectedSize, setSelectedSize] = useState(null);
+  const [ selectedColor, setSelectedColor ] = useState(null);
+  const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 
-  // ✅ Handle Shirt View Change
-  const handleShirtChange = (shirt) => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setSelectedShirt(shirt);
-      setIsAnimating(false);
-    }, 300);
-  };
+	// ✅ Handle Shirt View Change
+	const handleShirtChange = (shirt) => {
+		setIsAnimating(true);
+		setTimeout(() => {
+			setSelectedShirt(shirt);
+			setIsAnimating(false);
+		}, 300);
+	};
 
-  // ✅ Handle Product Selection
-  const handleProductSelect = (product) => {
-    setSelectedProduct(product);
-    setSelectedShirt(product.frontImage);
-    setSelectedSize(null);
-    setSelectedColor(null);
-  };
+	// ✅ Handle Product Selection
+	const handleProductSelect = (product) => {
+		setSelectedProduct(product);
+		setSelectedShirt(product.frontImage);
+		setSelectedSize(null);
+		setSelectedColor(null);
+	};
 
-  // ✅ Handle Color Selection (Display Corresponding Color Image)
-  const handleColorSelect = (color) => {
-    console.log("Color selected:", color);
-    setSelectedColor(color);
+	// ✅ Handle Color Selection (Display Corresponding Color Image)
+	const handleColorSelect = (color) => {
+		console.log('Color selected:', color);
+		setSelectedColor(color);
 
-    // Find the index of the selected color
-    const colorIndex = selectedProduct.colors.indexOf(color);
-    
-    // Get the corresponding color image (if available)
-    if (colorIndex !== -1 && selectedProduct.colorImages[colorIndex]) {
-      setSelectedShirt(selectedProduct.colorImages[colorIndex]); // ✅ Display color image
-    } else {
-      setSelectedShirt(selectedProduct.frontImage); // ✅ Fallback to front image
-    }
-  };
+		// Find the index of the selected color
+		const colorIndex = selectedProduct.colors.indexOf(color);
 
-  // ✅ Handle Adding to Cart
-  console.log("selected size",selectedSize)
-  const handleAddToCart = async() => {
-    if (!selectedProduct) {
-      toast.error('Please select a product first.');
-      return;
-    }
+		// Get the corresponding color image (if available)
+		if (colorIndex !== -1 && selectedProduct.colorImages[colorIndex]) {
+			setSelectedShirt(selectedProduct.colorImages[colorIndex]); // ✅ Display color image
+		} else {
+			setSelectedShirt(selectedProduct.frontImage); // ✅ Fallback to front image
+		}
+	};
 
-    if (!selectedSize || selectedSize.quantity === 0) {
-      toast.error("Please select a size.");
-      return;
-    }
+	// ✅ Handle Adding to Cart
+	console.log('selected size', selectedSize);
+const handleAddToCart = async () => {
+	if (!selectedProduct) {
+		toast.error('Please select a product first.');
+		return;
+	}
 
-    if (!selectedColor) {
-      toast.error("Please select a color.");
-      return;
-    }
-    console.log("selected product id------> ", selectedProduct._id);
+	if (!selectedSize || selectedSize.quantity === 0) {
+		toast.error('Please select a size.');
+		return;
+	}
 
-    const productToAdd = {
-      
-      _id: selectedProduct._id,
-      image: selectedShirt || selectedProduct.frontImage,
-      title: selectedProduct.title,
-      size: selectedSize.size,
-      color: selectedColor,
-      quantity: selectedSize.quantity,
-      price: selectedProduct.price,
-    };
+	if (!selectedColor) {
+		toast.error('Please select a color.');
+		return;
+	}
+	console.log('selected product id------> ', selectedProduct._id);
 
-    console.log("productToAdd--->",productToAdd)
-    
-    dispatch(addItem(productToAdd));
+	const productToAdd = {
+		productId: selectedProduct._id,
+		image: selectedShirt || selectedProduct.frontImage,
+		title: selectedProduct.title,
+		size: selectedSize.size,
+		color: selectedColor,
+		finalQuantity: selectedSize.quantity,
+		price: selectedProduct.price,
+	};
 
-     // ✅ Await Swal.fire to pause execution until the user dismisses the alert
-  await Swal.fire({
-    title: "Added",
-    text: "Item added to cart",
-    icon: "success",
-    confirmButtonText: "OK",
-  });
-};
+	console.log('productToAdd--->', productToAdd);
+	try {
+		setLoading(true);
+		const token = localStorage.getItem('authToken');
+		const response = await fetch('http://localhost:5000/api/cart/add', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(productToAdd),
+		});
 
-  // ✅ Fetch Products on Component Mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/products/", {
-          credentials: "include",
-          method: "GET",
-        });
-        const data = await response.json();
+		const data = await response.json();
+    if (response.ok) {
+			Swal.fire({
+				title: 'Added',
+				text: 'Item added to cart',
+				icon: 'success',
+			});
+			dispatch(addItem(productToAdd)); // Dispatch after successful API call
+		} else {
+			toast.error(data.message || 'Failed to add item to cart.');
+		}
+	} catch (error) {
+		console.error('❌ Error adding to cart:', error.message);
+		toast.error('An error occurred while adding to the cart.');
+	} finally {
+		setLoading(false);
+	}
 
-        if (data.products && data.products.length > 0) {
-          // Filter products to only show those with productType 'shirt'
-          const shirtProducts = data.products.filter(product =>
-            product.productType && product.productType.includes('shirt')
-          );
-          setProducts(shirtProducts);
-          setSelectedProduct(shirtProducts[0]);
-          setSelectedShirt(shirtProducts[0]?.frontImage);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+};  
 
-    fetchProducts();
-  }, []);
+	// ✅ Fetch Products on Component Mount
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const response = await fetch('http://localhost:5000/api/products/', {
+					credentials: 'include',
+					method: 'GET',
+				});
+				const data = await response.json();
 
-  return (
+				if (data.products && data.products.length > 0) {
+					// Filter products to only show those with productType 'shirt'
+					const shirtProducts = data.products.filter(
+						(product) => product.productType && product.productType.includes('shirt'),
+					);
+					setProducts(shirtProducts);
+					setSelectedProduct(shirtProducts[0]);
+					setSelectedShirt(shirtProducts[0]?.frontImage);
+				}
+			} catch (error) {
+				console.error('Error fetching products:', error);
+			}
+		};
+
+		fetchProducts();
+	}, []);
+
+	return (
 		<div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
 			{/* ✅ Shirt Display Area */}
 			<div className='w-full md:w-[1000px] flex justify-center'>
@@ -153,8 +173,7 @@ const TShirtSelector = () => {
 					))}
 				</div>
 
-
-        {/* <div className="mt-4 font-medium text-lg text-center md:text-left">
+				{/* <div className="mt-4 font-medium text-lg text-center md:text-left">
 Select Your T-Shirt View
 </div>
 <div className="grid grid-cols-3 gap-4 mt-4 p-2">

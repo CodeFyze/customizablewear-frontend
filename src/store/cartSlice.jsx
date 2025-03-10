@@ -14,8 +14,20 @@ export const cartSlice = createSlice({
 		},
 
 		addItem: (state, action) => {
-			const {  _id:productId, size, color, method,logo, frontImage,position, textLine, font, notes, quantity } = action.payload;
-console.log(productId)
+			const {
+				_id: productId,
+				size,
+				color,
+				method,
+				logo,
+				frontImage,
+				position,
+				textLine,
+				font,
+				notes,
+				quantity,
+			} = action.payload;
+			console.log(productId);
 			const existingItem = state.items.find(
 				(item) =>
 					item.productId === productId &&
@@ -38,7 +50,8 @@ console.log(productId)
 					quantity: quantity || 1,
 				});
 			}
-			// console.log('state.items---->', JSON.stringify(state.items, null, 2));
+
+			console.log('state.items---->', JSON.stringify(state.items, null, 2));
 		},
 
 		removeItem: (state, action) => {

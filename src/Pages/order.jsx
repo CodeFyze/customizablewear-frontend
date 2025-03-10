@@ -24,7 +24,6 @@ const OrderDetails = () => {
 	const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
 
 	const fetchOrderDetails = async () => {
-		
 		try {
 			const token = localStorage.getItem('authToken');
 
@@ -48,7 +47,10 @@ const OrderDetails = () => {
 
 			const data = await response.json();
 			setOrder(data.order);
-			setStatus(data.order.status); // Set initial status from fetched order
+			setStatus(data.order.status);
+			// Restore the status from localStorage
+			const savedStatus = localStorage.getItem(`orderStatus_${orderId}`) || data.order.status;
+			setStatus(savedStatus);
 		} catch (error) {
 			console.error('Error fetching order details:', error);
 			setError(error.message || 'Failed to fetch order details');
@@ -60,7 +62,7 @@ const OrderDetails = () => {
 
 	useEffect(() => {
 		fetchOrderDetails();
-	}, [ orderId ]);
+	}, [orderId]);
 
 	const handleStatusChange = async (newStatus) => {
 		try {
@@ -71,13 +73,13 @@ const OrderDetails = () => {
 			}
 
 			const response = await fetch(`http://localhost:5000/api/orders/update/${orderId}`, {
-				method: 'PUT', 
+				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
-				body: JSON.stringify({ status: newStatus }), 
+				body: JSON.stringify({ status: newStatus }),
 			});
 
 			if (!response.ok) {
@@ -86,15 +88,20 @@ const OrderDetails = () => {
 			}
 
 			const data = await response.json();
-			setOrder({ ...order, status: newStatus });
+
+			// Update the local state with the new status
+			setOrder((prevOrder) => ({ ...prevOrder, status: newStatus }));
+			setStatus(newStatus); // Update the dropdown value
+
+			// Save the status to localStorage
+			localStorage.setItem(`orderStatus_${orderId}`, newStatus);
+
 			toast.success('Order status updated successfully!', { position: 'top-right' });
 		} catch (error) {
-			console.log(error)
 			console.error('Error updating order status:', error);
 			toast.error(error.message || 'Failed to update order status', { position: 'top-right' });
 		}
 	};
-
 	const handleDownload = async (imageUrl) => {
 		try {
 			const response = await fetch(imageUrl, { mode: 'cors' });
