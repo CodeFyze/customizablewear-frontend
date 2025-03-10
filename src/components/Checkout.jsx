@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'; // ✅ Add useEffect import
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { applyPromoCode } from '../store/promoCodeSlice'; // Assuming you have a Redux slice for promo codes
+import 'react-toastify/dist/ReactToastify.css';
 
 const Checkout = () => {
 	const cart = useSelector((state) => state.cart.items) || [];
-	console.log(cart);
-	const promoCode = useSelector((state) => state.promoCode);
+	const storeCodeAndDiscount = useSelector((state) => state.promoCode);
+	let {code,discount:promoDiscount} = storeCodeAndDiscount
+
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
@@ -22,40 +26,99 @@ const Checkout = () => {
 		paymentMode: 'Cash on Delivery',
 	});
 
+	const [enteredPromoCode, setEnteredPromoCode] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [activePromoCodes, setActivePromoCodes] = useState([]); // ✅ Add state for active promo codes
 
 	const totalAmount = cart.reduce((total, item) => total + (item.price || 0) * (item.quantity || 1), 0);
-
-	const discountedAmount = totalAmount - (totalAmount * (promoCode.discount || 0)) / 100;
+	const discountedAmount = totalAmount - (totalAmount * (promoDiscount || 0)) / 100;
 
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
 		setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
 	};
 
-	const getGroupedProducts = () => {
-		return cart.reduce((acc, item) => {
-			const productId = item._id?.toString() || item.id?.toString() || 'UNKNOWN_ID';
-			const existingProduct = acc.find((p) => p.productId === productId);
-			if (existingProduct) {
-				existingProduct.quantity += item.quantity || 1;
-			} else {
-				acc.push({
-					productId,
-					title: item.title || 'Untitled Product',
-					frontImage: item.frontImage || '',
-					price: item.price || 0,
-					size: item.size || 'Default',
-					color: item.color || 'Default',
-					logo: item.logo || '',
-					quantity: item.quantity || 1,
-					method: item.method || 'Not selected',
-					position: item.position || 'Not selected',
+	// ✅ Fetch active promo codes on component mount
+	useEffect(() => {
+		const fetchActivePromoCodes = async () => {
+			try {
+				const token = localStorage.getItem('authToken'); // Get the token from localStorage
+				const response = await fetch('http://localhost:5000/api/promocodes/active', {
+					headers: {
+						Authorization: `Bearer ${token}`, // Include the token in the request headers
+					},
 				});
+				const data = await response.json();
+				if (response.ok) {
+					setActivePromoCodes(data.promos); // Set active promo codes in state
+				} else {
+					console.error('Failed to fetch active promo codes:', data.message);
+					toast.error('Failed to fetch active promo codes.');
+				}
+			} catch (error) {
+				console.error('Error fetching active promo codes:', error);
+				toast.error('Something went wrong while fetching active promo codes.');
 			}
-			return acc;
-		}, []);
+		};
+		fetchActivePromoCodes();
+	}, []);
+
+	const handleApplyPromo = async () => {
+		if (!enteredPromoCode) {
+			toast.error('Please enter a promo code.');
+			return;
+		}
+
+		try {
+			const token = localStorage.getItem('authToken');
+			const response = await fetch('http://localhost:5000/api/promocodes/validate', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+				credentials: 'include',
+				body: JSON.stringify({ code: enteredPromoCode }),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				dispatch(applyPromoCode({ code: data.promoCode, discount: data.discount }));
+
+				setDiscount(data.discount);
+				setEnteredPromoCode(data.promoCode);
+
+				// **Step 1: Show Popup for Successful Code Application**
+				Swal.fire({
+					icon: 'success',
+					title: 'Promo Code Applied!',
+					text: `You've unlocked a ${data.discount}% discount!`,
+				}).then(() => {
+					// **Step 2: Show Final Discount Calculation Popup**
+					const discountAmount = (totalAmount * (promoDiscount || 0)) / 100;
+					const finalAmount = totalAmount - discountAmount;
+
+					Swal.fire({
+						icon: 'info',
+						title: 'Discount Applied!',
+						html: `
+                        <p>Original Price: <b>$${totalAmount.toFixed(2)}</b></p>
+                        <p>Discount: <b>${data.discount}%</b> (-$${discountAmount.toFixed(2)})</p>
+                        <p><b>Final Price: $${finalAmount.toFixed(2)}</b></p>
+                    `,
+						confirmButtonText: 'Proceed to Checkout',
+					});
+				});
+			} else {
+				toast.error(data.message || 'Invalid promo code.');
+			}
+		} catch (error) {
+			console.error(error);
+			toast.error('Something went wrong while applying the promo code.');
+		}
 	};
+
 
 	const handlePlaceOrder = async () => {
 		if (!formData.firstName || !formData.address || !formData.email || !formData.phone) {
@@ -87,8 +150,8 @@ const Checkout = () => {
 			},
 			products: getGroupedProducts(),
 			totalAmount,
-			promoCode: promoCode.code || '',
-			discount: promoCode.discount || 0,
+			promoCode: code || '',
+			discount: promoDiscount|| 0,
 			finalAmount: discountedAmount,
 			paymentMode: formData.paymentMode,
 		};
@@ -133,6 +196,30 @@ const Checkout = () => {
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const getGroupedProducts = () => {
+		return cart.reduce((acc, item) => {
+			const productId = item._id?.toString() || item.id?.toString() || 'UNKNOWN_ID';
+			const existingProduct = acc.find((p) => p.productId === productId);
+			if (existingProduct) {
+				existingProduct.quantity += item.quantity || 1;
+			} else {
+				acc.push({
+					productId,
+					title: item.title || 'Untitled Product',
+					frontImage: item.frontImage || '',
+					price: item.price || 0,
+					size: item.size || 'Default',
+					color: item.color || 'Default',
+					logo: item.logo || '',
+					quantity: item.quantity || 1,
+					method: item.method || 'Not selected',
+					position: item.position || 'Not selected',
+				});
+			}
+			return acc;
+		}, []);
 	};
 
 	return (
@@ -204,14 +291,34 @@ const Checkout = () => {
 					<h2 className='text-lg font-bold text-gray-800 mb-4'>The Total Amount</h2>
 					<div className='bg-white shadow-lg rounded-md p-4 mb-4'>
 						<p className='text-gray-600 text-sm'>Total Amount: ${totalAmount.toFixed(2)}</p>
-						{promoCode.code && (
+						{code && (
 							<p className='text-green-600 text-sm'>
-								Promo Code Applied: {promoCode.code} ({promoCode.discount || 0}% off)
+								Promo Code Applied: {code} ({promoDiscount || 0}% off)
 							</p>
 						)}
 						<p className='text-gray-800 font-bold text-lg mt-2'>
 							Total (Including VAT): ${discountedAmount.toFixed(2)}
 						</p>
+
+						{/* Conditionally render promo code field */}
+						{activePromoCodes.length > 0 && (
+							<div className='flex items-center mt-4'>
+								<input
+									type='text'
+									placeholder='Enter Promo Code'
+									value={enteredPromoCode}
+									onChange={(e) => setEnteredPromoCode(e.target.value)}
+									className='p-2 border rounded w-full'
+								/>
+								<button
+									onClick={handleApplyPromo}
+									disabled={loading}
+									className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300'>
+									Apply
+								</button>
+							</div>
+						)}
+
 						<button
 							onClick={handlePlaceOrder}
 							disabled={loading}

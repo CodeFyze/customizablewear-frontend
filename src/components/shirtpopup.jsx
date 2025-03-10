@@ -10,6 +10,7 @@ import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2'; // Import SweetAlert
 
 const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor }) => {
+	console.log(selectedProduct, selectedSize, selectedColor);
 	const [selectedMethod, setSelectedMethod] = useState('Embroidery');
 	const [selectedPosition, setSelectedPosition] = useState('Large Front');
 	const [showSizePopup, setShowSizePopup] = useState(false);
@@ -118,9 +119,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 								BACK
 							</button>
 							<button
-								onClick={() => {
+								onClick={ () => {
+									
 									setShowSizePopup(true);
-									console.log('Selected method:', selectedMethod);
+									console.log('Selected method:', selectedMethod,selectedPosition);
 								}}
 								className='bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
 								NEXT STEP
@@ -134,7 +136,8 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					visible={showSizePopup}
 					onClose={() => setShowSizePopup(false)}
 					selectedPosition={selectedPosition}
-					setSelectedPosition={setSelectedPosition}
+					setSelectedPosition={ setSelectedPosition }
+					selectedMethod = {selectedMethod}
 					onNext={() => {
 						setShowSizePopup(false);
 						setIsAddLogoPopupVisible(true);
@@ -159,7 +162,9 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					onClose={() => setIsAddLogoPopupVisible(false)} // Add this line
 				/>
 			)}
-
+{isAddLogoPopupVisible && (
+	console.log(selectedMethod, selectedPosition, selectedColor, selectedProduct)
+)}
 			{isAddTextLogoPopupVisible && (
 				<AddTextLogoPopup
 					selectedProduct={selectedProduct}

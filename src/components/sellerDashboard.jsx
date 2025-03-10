@@ -6,6 +6,7 @@ import Products from './products';
 import Earnings from './earnings';
 import Customers from './customers';
 import Logout from './logout';
+import PromoCodes from './PromoCodes';
 
 const SellerDashboard = () => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -134,6 +135,13 @@ const SellerDashboard = () => {
 						<Customers />
 					</div>
 				);
+			case 'PromoCodes':
+				return (
+					<div className='p-4'>
+						<PromoCodes />
+					</div>
+				);
+
 			case 'Dashboard':
 				return (
 					<div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
@@ -196,6 +204,12 @@ const SellerDashboard = () => {
 							text='Customers'
 							isActive={activeTab === 'Customers'}
 							onClick={() => setActiveTab('Customers')}
+						/>
+						<MenuItem
+							icon={<FaChartBar />}
+							text='Promo Codes'
+							isActive={activeTab === 'PromoCodes'}
+							onClick={() => setActiveTab('PromoCodes')}
 						/>
 						<Logout />
 					</ul>

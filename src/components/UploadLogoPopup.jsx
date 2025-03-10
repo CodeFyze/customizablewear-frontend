@@ -2,18 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../store/cartSlice';
 import PropTypes from 'prop-types';
-import { FaTimes } from 'react-icons/fa'; 
-import { toast } from 'react-toastify'; 
+import { FaTimes } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const UploadLogoPopup = ({
 	onBack,
 	onClose,
-	selectedProduct = {},
-	selectedSize = {},
-	selectedPosition = '',
-	selectedMethod = '',
-	selectedColor = '',
+	// selectedProduct = {},
+	// selectedSize = {},
+	// selectedPosition = '',
+	// selectedMethod = '',
+	// selectedColor = '',
+	selectedProduct,
+	selectedSize,
+	selectedPosition,
+	selectedMethod,
+	selectedColor,
 }) => {
 	const [userId, setUserId] = useState(null);
 	const [selectedFile, setSelectedFile] = useState(null);
@@ -142,55 +147,67 @@ const UploadLogoPopup = ({
 			selectedSize?.quantity && Number.isInteger(Number(selectedSize.quantity)) && selectedSize.quantity > 0
 				? selectedSize.quantity
 				: 1;
+console.log(selectedFile)
+		// sending data to the cart store
+		// starting
+		const requestData = {
+			productId: selectedProduct?._id,
+			title: selectedProduct?.title,
+			frontImage: selectedProduct?.frontImage || selectedProduct?.image,
+			size: selectedSize.size,
+			color: selectedColor,
+			quantity, // ✅ Now correctly defined
+			method: selectedMethod,
+			position: selectedPosition,
+			logo: selectedFile || previousLogo,
+		};
+		console.log('sending data to the store', selectedProduct);
 
-		let finalPrice = selectedProduct?.price || 200;
+		dispatch(addItem(requestData));
 
-		if (selectedFile) {
-			finalPrice += 5; // ✅ Charge $5 for a new logo
-		}
-
-		const token = localStorage.getItem('authToken');
-		const userId = localStorage.getItem('userId');
-
-		if (!token) {
-			toast.error('No auth token found! Please login.');
-			return;
-		}
-
-		if (!userId) {
-			toast.error('User ID missing! Please log in again.');
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append('productId', selectedProduct._id);
-		formData.append('title', selectedProduct?.title || 'Custom T-Shirt');
-		formData.append('size', selectedSize?.size);
-		formData.append('color', selectedColor);
-		formData.append('quantity', quantity);
-		formData.append('price', finalPrice);
-		formData.append('usePreviousLogo', usePreviousLogo);
-
-		if (usePreviousLogo) {
-			formData.append('logo', previousLogo);
-		} else {
-			formData.append('logo', selectedFile);
-		}
-
-		formData.append('method', selectedMethod);
-		formData.append('position', selectedPosition);
-
+		// ending
 		try {
+			const token = localStorage.getItem('authToken');
+			const userId = localStorage.getItem('userId');
+
+			if (!token) {
+				toast.error('No auth token found! Please login.');
+				return;
+			}
+
+			if (!userId) {
+				toast.error('User ID missing! Please log in again.');
+				return;
+			}
+
+			const formData = new FormData();
+			formData.append('productId', selectedProduct._id);
+			formData.append('title', selectedProduct?.title || 'Custom T-Shirt');
+			formData.append('size', selectedSize?.size);
+			formData.append('color', selectedColor);
+			formData.append('quantity', quantity);
+			formData.append('price', selectedProduct?.price || 200);
+			formData.append('usePreviousLogo', usePreviousLogo);
+
+			if (usePreviousLogo) {
+				formData.append('logo', previousLogo);
+			} else {
+				formData.append('logo', selectedFile);
+			}
+
+			formData.append('method', selectedMethod);
+			formData.append('position', selectedPosition);
+
 			const response = await fetch('http://localhost:5000/api/cart/add', {
 				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+				headers: { Authorization: `Bearer ${token}` },
 				credentials: 'include',
 				body: formData,
 			});
 
 			const data = await response.json();
+			console.log('🛒 API Response:', data);
+
 			if (response.ok) {
 				Swal.fire({
 					title: 'Added!',
@@ -198,7 +215,6 @@ const UploadLogoPopup = ({
 					icon: 'success',
 					confirmButtonText: 'OK',
 				});
-				dispatch(addItem(data));
 				onClose();
 			} else {
 				toast.error(data.message || 'Failed to add item to cart.');

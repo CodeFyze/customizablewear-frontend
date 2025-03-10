@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Category = () => {
   const [products, setProducts] = useState([]);
-  const scrollRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -12,7 +13,7 @@ const Category = () => {
   const fetchProducts = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/products/", {
-        credentials: 'include',
+        credentials: "include",
         method: "GET",
       });
       const data = await response.json();
@@ -24,19 +25,13 @@ const Category = () => {
     }
   };
 
-  const scrollLeft = () => {
-    scrollRef.current.scrollBy({
-      left: -200,
-      behavior: "smooth",
-    });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current.scrollBy({
-      left: 200,
-      behavior: "smooth",
-    });
-  };
+  // Group products by productType (store only the first product of each type)
+  const groupedProducts = {};
+  products.forEach((product) => {
+    if (!groupedProducts[product.productType]) {
+      groupedProducts[product.productType] = product;
+    }
+  });
 
   return (
     <div className=" w-full h-auto mx-auto my-2 px-4">
@@ -45,52 +40,38 @@ const Category = () => {
         <div className="flex space-x-3">
           <button
             className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-[#4bf6d4] transition-colors"
-            onClick={scrollLeft}
           >
-            <FaArrowLeft className="text-xl text-gray-600  hover:text-white" />
+            <FaArrowLeft className="text-xl text-gray-600 hover:text-white" />
           </button>
           <button
-            className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-[#4bf6d4]  transition-colors"
-            onClick={scrollRight}
+            className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-[#4bf6d4] transition-colors"
           >
-            <FaArrowRight className="text-xl text-gray-600  hover:text-white" />
+            <FaArrowRight className="text-xl text-gray-600 hover:text-white" />
           </button>
         </div>
       </div>
-      <div
-        ref={scrollRef}
-        className="flex overflow-x-auto scrollbar-hide space-x-4 md:space-x-3 lg:space-x-3 py-3"
-      >
-        {products && products.map((product) => (
+      <div className="flex items-center overflow-x-auto scrollbar-hide space-x-4 py-7">
+        {Object.values(groupedProducts).map((product) => (
           <div
             key={product.product_id}
-            className="border-[1px] border-solid border-gray-200 w-52 h-80 flex-shrink-0 transition-transform duration-700 transform hover:scale-105 p-2 rounded-lg shadow-md"
+            className="w-44 h-64 flex-shrink-0 transition-transform transform hover:scale-105 p-4 rounded-lg shadow-md relative cursor-pointer"
+            onClick={() => navigate(`/products/${product.productType}`)}
           >
-            <div className="h-full flex flex-col items-start gap-y-1">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-40 object-cover rounded-lg transition-transform duration-500  hover:rotate-3 hover:scale-105"
-              />
-              <div className="text-start font-semibold text-gray-700">
-                {product.title} 
+            <div className="h-full flex flex-col justify-between">
+              <div className="relative w-full h-36">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover rounded-lg transition-transform duration-500 hover:rotate-3 hover:scale-110"
+                />
+                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-sm font-semibold text-center py-1 rounded-b-lg">
+                  {product.productType}
+                </div>
               </div>
-              <div className="text-start font-normal text-gray-700">
-                Kid's Section
+              <div className="text-center mt-2 font-semibold text-gray-700">
+                {product.name}
               </div>
-          
-               {/* <div className="text-start font-semibold text-gray-700 text-[14px]">
-                {product.description}
-              </div> */}
-              <div className="border-t-[1px] bordert-t-gray-600 border-solid w-full"></div>
-              <div className="text-start font-semibold text-gray-700 text-[14px]">
-               Available
-              </div>
-              
-              
-              <button className="bg-[#E57312] border-2 border-solid border-[#E57312] w-full px-2 py-1 rounded-full mt-1 hover:bg-transparent duration-500 hover:text-black text-white">click</button>
-
-             
+              <div className="text-center text-gray-500">{product.category}</div>
             </div>
           </div>
         ))}
