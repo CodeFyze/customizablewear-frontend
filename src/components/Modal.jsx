@@ -125,68 +125,6 @@ const Modal = ({ isOpen, onClose, initialData }) => {
     setSizeImages((prev) => ({ ...prev, [size]: file }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const token = localStorage.getItem("authToken");
-  //   if (!token) {
-  //     toast.error("Unauthorized! Please log in again.");
-  //     return;
-  //   }
-
-  //   if (!frontImage || !backImage || !sideImage) {
-  //     toast.error("Please upload all three main images (front, back, side)!");
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("title", productTitle);
-  //   formData.append("price", productPrice);
-  //   formData.append("stock", productStock);
-  //   formData.append("description", productDescription); // Append description
-  //   formData.append("front", frontImage);
-  //   formData.append("back", backImage);
-  //   formData.append("side", sideImage);
-
-  //   // Append additional images
-  //   images.forEach((img) => formData.append("images", img));
-
-  //   // Send colors as JSON string, filtering out any null values
-  //   formData.append("colors", JSON.stringify(colors.filter(color => color !== null)));
-
-  //   // Append color images, filtering out null images
-  //   Object.entries(colorImages).forEach(([index, img]) => {
-  //     if (img !== null) {
-  //       formData.append("colorImages", img);
-  //     }
-  //   });
-
-  //   // Append sizes data
-  //   formData.append("sizes", JSON.stringify(sizes));
-  //   Object.entries(sizeImages).forEach(([size, img]) => {
-  //     formData.append("sizeImages", img);
-  //   });
-
-  //   try {
-  //     const response = await fetch("http://localhost:5000/api/products/add", {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-
-  //     const data = await response.json();
-  //     if (!data.success) {
-  //       toast.error(`Error: ${data.message}`);
-  //     } else {
-  //       toast.success("Product added successfully!");
-  //       onClose();
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding product:", error);
-  //     toast.error("Failed to add product. Please try again.");
-  //   }
-  // };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -345,6 +283,30 @@ const Modal = ({ isOpen, onClose, initialData }) => {
                 checked={productType.trouser}
                 onChange={handleProductTypeChange}
               /> Trouser
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="polo"
+                checked={productType.polo}
+                onChange={handleProductTypeChange}
+              /> polo
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="pant"
+                checked={productType.pant}
+                onChange={handleProductTypeChange}
+              /> pant
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="sweatShirt"
+                checked={productType.sweatShirt}
+                onChange={handleProductTypeChange}
+              /> sweatShirt
             </label>
           </div>
           <button className="px-4 py-2 bg-orange-400 text-white rounded" type="button" onClick={addColor}>
