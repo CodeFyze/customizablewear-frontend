@@ -34,7 +34,6 @@ const AddTextLogoPopup = ({
 	}, [selectedProduct, selectedSize, selectedColor, selectedMethod, selectedPosition]);
 
 	const handleFinish = async () => {
-		console.log(textLine,font,notes)
 		// Validation
 		if (!textLine.trim()) {
 			toast.error('Please enter text for the logo.');
@@ -76,7 +75,7 @@ const AddTextLogoPopup = ({
 			notes,
 		};
 
-		console.log(requestData)
+		console.log("request data-->",requestData)
 		dispatch(addItem(requestData));
 		try {
 			setLoading(true);

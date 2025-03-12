@@ -29,7 +29,7 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer  />
+      {/* <ToastContainer  /> */}
 
       {!isSellerPage && <Navigation />}
 
@@ -46,8 +46,7 @@ const App = () => {
         <Route path="/seller" element={<SellPage />} />
         <Route path="/order" element={<Order />} />
         <Route path="/orders/:orderId" element={<OrderDetails />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
+        <Route path="/success" element={<Success />} />cart
         <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
         <Route path="/products/:productType" element={<ProductTypePage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
