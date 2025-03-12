@@ -50,25 +50,26 @@ const SignUp = () => {
 	};
 
 	return (
-		<div className='h-screen flex justify-center items-center relative'>
+		<div className=' flex items-center justify-center p-5 min-h-screen bg-gray-100'>
+
 			{/* Background overlay when loading */}
 			{loading && (
-				<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg z-50'>
+				<div className=' max-w-md fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg '>
 					<Audio height='100' width='100' color='white' ariaLabel='loading' />
 				</div>
 			)}
 
 			{/* Sign Up Form */}
 			{showForm && (
-				<div className='p-8 w-full max-w-6xl bg-white rounded-lg shadow-lg z-20 relative'>
+				<div className='p-8 mt-6 w-full max-w-md bg-white rounded-lg shadow-lg  relative'>
 					{/* Close button positioned at top-right corner */}
 					<button
 						onClick={() => setShowForm(false)} // Close the form
-						className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
+						className='absolute top-4 right-4 text-gray-600 hover:text-gray-700 p-2'>
 						<FaTimes size={20} />
 					</button>
 
-					<h2 className='text-2xl font-semibold text-center text-gray-700 mb-6'>Sign Up</h2>
+					<h2 className='text-2xl font-semibold text-center  mb-6'>Sign Up</h2>
 
 					<form onSubmit={handleSubmit} className='space-y-6'>
 						{/* Form Fields */}
@@ -83,7 +84,8 @@ const SignUp = () => {
 								value={formData.firstName}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								placeholder='First Name'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							/>
 						</div>
 						<div>
@@ -97,7 +99,8 @@ const SignUp = () => {
 								value={formData.lastName}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								placeholder='Last Name'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							/>
 						</div>
 						<div>
@@ -111,7 +114,8 @@ const SignUp = () => {
 								value={formData.email}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								placeholder='Email'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							/>
 						</div>
 						<div className='relative mt-2'>
@@ -125,7 +129,8 @@ const SignUp = () => {
 								value={formData.password}
 								onChange={handleChange}
 								required
-								className='p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 pr-10'
+								placeholder='Password'
+								className='p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
 							/>
 							<button
 								type='button'
@@ -143,15 +148,15 @@ const SignUp = () => {
 								id='role'
 								value={formData.role}
 								onChange={handleChange}
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'>
-								<option value='user'>User</option>
-								<option value='seller'>Seller</option>
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 '>
+								<option className='' value='user'>User</option>
+								<option className='' value='seller'>Seller</option>
 							</select>
-						</div>
+						</div> 
 						<div className='flex justify-center'>
 							<button
 								type='submit'
-								className='w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
+								className='w-full bg-orange-400 text-white p-3 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-600'>
 								Sign Up
 							</button>
 						</div>
@@ -160,7 +165,7 @@ const SignUp = () => {
 					<div className='mt-4 text-center text-sm text-gray-600'>
 						<p>
 							Already have an account?{' '}
-							<a href='/login' className='text-indigo-600 hover:text-indigo-700'>
+							<a href='/login' className='text-orange-400 hover:text-orange-600'>
 								Login here
 							</a>
 						</p>

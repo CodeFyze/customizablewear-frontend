@@ -44,7 +44,7 @@ const Navigation = () => {
 							<NavLink to='/contact' text='Contact' className='text-red-300' />
 							{!isAuthenticated && (
 								<>
-									<NavLink to='/Signup' text='Sign Up' />
+									<NavLink to='/signup' text='Sign Up' />
 									<NavLink to='/login' text='Login' />
 								</>
 							)}

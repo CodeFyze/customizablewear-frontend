@@ -67,9 +67,8 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-center p-8 min-h-screen bg-gray-100'>
-			<div className=' w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
-				<div className='flex items-center justify-center min-h-screen bg-gray-100'>
+		
+				<div className='flex items-center p-5 justify-center min-h-screen bg-gray-100'>
 					<div className='w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
 						{/* Background overlay when loading */}
 						{loading && (
@@ -114,7 +113,7 @@ const LoginPage = () => {
 								{errors.password && <span className='text-sm text-red-500 mt-1'>{errors.password.message}</span>}
 							</div>
 
-							<button type='submit' className='w-full bg-[#fc8019] text-white py-2  rounded-md hover:bg-[#e57312] focus:shadow-lg focus:border-orange-600 focus:ring focus:ring-orange-400 focus:ring-opacity-50 outline-none duration-500'>
+							<button type='submit' className='w-full bg-[#fc8019] text-white py-2  rounded-md hover:bg-[#e57312] focus:shadow-lg focus:border-orange-400 focus:ring focus:ring-orange-400 focus:ring-opacity-50 outline-none duration-500'>
 								Login
 							</button>
 						</form>
@@ -127,8 +126,7 @@ const LoginPage = () => {
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+		
 	);
 };
 
