@@ -161,9 +161,7 @@ console.log(selectedFile)
 			position: selectedPosition,
 			logo: selectedFile || previousLogo,
 		};
-		console.log('sending data to the store', selectedProduct);
-
-		dispatch(addItem(requestData));
+		
 
 		// ending
 		try {
@@ -207,6 +205,8 @@ console.log(selectedFile)
 
 			const data = await response.json();
 			console.log('🛒 API Response:', data);
+			dispatch(addItem(formData)); // Dispatch after successful API call
+			console.log("formData-->",formData)	
 
 			if (response.ok) {
 				Swal.fire({

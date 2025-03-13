@@ -47,14 +47,12 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 
 		console.log('Text logo details:', details);
 	};
-
 	const handleClose = () => {
-		// Reset all popup states when closing the main popup
 		setShowSizePopup(false);
 		setIsAddLogoPopupVisible(false);
 		setIsAddTextLogoPopupVisible(false);
 		setIsUploadLogoPopupVisible(false);
-		onClose();
+		onClose(); // This closes the main popup
 	};
 
 	if (!visible) return null;
@@ -119,10 +117,9 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 								BACK
 							</button>
 							<button
-								onClick={ () => {
-									
+								onClick={() => {
 									setShowSizePopup(true);
-									console.log('Selected method:', selectedMethod,selectedPosition);
+									console.log('Selected method:', selectedMethod, selectedPosition);
 								}}
 								className='bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
 								NEXT STEP
@@ -134,10 +131,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 			{showSizePopup && (
 				<SizePopup
 					visible={showSizePopup}
-					onClose={() => setShowSizePopup(false)}
+					onClose={handleClose}
 					selectedPosition={selectedPosition}
-					setSelectedPosition={ setSelectedPosition }
-					selectedMethod = {selectedMethod}
+					setSelectedPosition={setSelectedPosition}
+					selectedMethod={selectedMethod}
 					onNext={() => {
 						setShowSizePopup(false);
 						setIsAddLogoPopupVisible(true);
@@ -159,12 +156,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 						setIsAddLogoPopupVisible(false);
 						setIsUploadLogoPopupVisible(true);
 					}}
-					onClose={() => setIsAddLogoPopupVisible(false)} // Add this line
+					onClose={handleClose} // Add this line
 				/>
 			)}
-{isAddLogoPopupVisible && (
-	console.log(selectedMethod, selectedPosition, selectedColor, selectedProduct)
-)}
+			{isAddLogoPopupVisible && console.log(selectedMethod, selectedPosition, selectedColor, selectedProduct)}
 			{isAddTextLogoPopupVisible && (
 				<AddTextLogoPopup
 					selectedProduct={selectedProduct}
@@ -177,7 +172,7 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 						setIsAddLogoPopupVisible(true);
 					}}
 					onFinish={handleFinishTextLogo}
-					onClose={() => setIsAddTextLogoPopupVisible(false)}
+					onClose={handleClose}
 				/>
 			)}
 			{isUploadLogoPopupVisible && (

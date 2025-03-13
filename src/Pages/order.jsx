@@ -11,6 +11,7 @@ import {
 	FaInfoCircle,
 	FaEye,
 	FaDownload,
+	FaEnvelope, // Add email icon
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -19,7 +20,11 @@ const OrderDetails = () => {
 	const [order, setOrder] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [status, setStatus] = useState('Pending'); // State for dropdown value
+	const [status, setStatus] = useState('Pending');
+	const [isNotePopupOpen, setIsNotePopupOpen] = useState(false);
+	const [noteMessage, setNoteMessage] = useState('');
+	const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false); // State for email popup
+	const [emailMessage, setEmailMessage] = useState(''); // State for email message
 
 	const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
 
@@ -48,9 +53,7 @@ const OrderDetails = () => {
 			const data = await response.json();
 			setOrder(data.order);
 			setStatus(data.order.status);
-			// Restore the status from localStorage
-			const savedStatus = localStorage.getItem(`orderStatus_${orderId}`) || data.order.status;
-			setStatus(savedStatus);
+			setNoteMessage(data.order.internalNote || ''); // Initialize note message
 		} catch (error) {
 			console.error('Error fetching order details:', error);
 			setError(error.message || 'Failed to fetch order details');
@@ -102,6 +105,70 @@ const OrderDetails = () => {
 			toast.error(error.message || 'Failed to update order status', { position: 'top-right' });
 		}
 	};
+
+	const handleSaveNote = async () => {
+		try {
+			const token = localStorage.getItem('authToken');
+
+			if (!token) {
+				throw new Error('Unauthorized - No token found.');
+			}
+
+			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/message`, {
+				method: 'PUT',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ message: noteMessage }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to save note');
+			}
+
+			const data = await response.json();
+			setOrder((prevOrder) => ({ ...prevOrder, internalNote: noteMessage }));
+			setIsNotePopupOpen(false);
+			toast.success('Note saved successfully!', { position: 'top-right' });
+		} catch (error) {
+			console.error('Error saving note:', error);
+			toast.error(error.message || 'Failed to save note', { position: 'top-right' });
+		}
+	};
+
+	const handleSendEmail = async () => {
+		try {
+			const token = localStorage.getItem('authToken');
+
+			if (!token) {
+				throw new Error('Unauthorized - No token found.');
+			}
+
+			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/send-email`, {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ message: emailMessage }),
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to send email');
+			}
+
+			const data = await response.json();
+			setIsEmailPopupOpen(false);
+			toast.success('Email sent successfully!', { position: 'top-right' });
+		} catch (error) {
+			console.error('Error sending email:', error);
+			toast.error(error.message || 'Failed to send email', { position: 'top-right' });
+		}
+	};
+
 	const handleDownload = async (imageUrl) => {
 		try {
 			const response = await fetch(imageUrl, { mode: 'cors' });
@@ -178,17 +245,28 @@ const OrderDetails = () => {
 								<option value='Cancelled'>Cancelled</option>
 							</select>
 						</div>
-						<p className='text-gray-700'>
-							<strong>Placed on:</strong> {new Date(order.createdAt).toLocaleDateString()}
-						</p>
-						<p className='text-gray-700'>
-							<strong>Total Amount:</strong> ${order.finalAmount.toFixed(2)}
-						</p>
-						<p className='text-gray-700'>
-							<strong>Payment:</strong> {order.paymentMode} ({order.paymentStatus})
-						</p>
+						<button
+							onClick={() => setIsNotePopupOpen(true)}
+							className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2'>
+							<FaInfoCircle /> Private Note
+						</button>
+						<button
+							onClick={() => setIsEmailPopupOpen(true)}
+							className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2'>
+							<FaEnvelope /> Send Email
+						</button>
 					</div>
 				</div>
+
+				{/* Display Saved Note */}
+				{order.internalNote && (
+					<div className='p-6 border-b border-gray-200'>
+						<h2 className='text-xl font-semibold mb-4 flex items-center'>
+							<FaInfoCircle className='mr-2 text-gray-700' /> Private Note
+						</h2>
+						<p className='text-gray-700'>{order.internalNote}</p>
+					</div>
+				)}
 
 				{/* Shipping Address */}
 				<div className='p-6 border-b border-gray-200'>
@@ -272,6 +350,63 @@ const OrderDetails = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Note Popup */}
+			{isNotePopupOpen && (
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
+					<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
+						<h2 className='text-xl font-semibold mb-4'>Add Private Note</h2>
+						<textarea
+							value={noteMessage}
+							onChange={(e) => setNoteMessage(e.target.value)}
+							className='w-full p-2 border border-gray-300 rounded-md mb-4'
+							rows='4'
+							placeholder='Type your note here...'
+						/>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => setIsNotePopupOpen(false)}
+								className='px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors'>
+								Cancel
+							</button>
+							<button
+								onClick={handleSaveNote}
+								className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'>
+								Save
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Email Popup */}
+			{isEmailPopupOpen && (
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
+					<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
+						<h2 className='text-xl font-semibold mb-4'>Send Email to Customer</h2>
+						<textarea
+							value={emailMessage}
+							onChange={(e) => setEmailMessage(e.target.value)}
+							className='w-full p-2 border border-gray-300 rounded-md mb-4'
+							rows='4'
+							placeholder='Type your message here...'
+						/>
+						<div className='flex justify-end gap-2'>
+							<button
+								onClick={() => setIsEmailPopupOpen(false)}
+								className='px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors'>
+								Cancel
+							</button>
+							<button
+								onClick={handleSendEmail}
+								className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors'>
+								Send
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
 			<ToastContainer />
 		</div>
 	);

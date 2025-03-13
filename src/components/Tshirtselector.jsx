@@ -5,6 +5,7 @@ import SizeSelection from './SizeSelection';
 import Popup from './shirtpopup';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { useNavigate, useLocation } from 'react-router-dom'; // Added useLocation
 
 const TShirtSelector = () => {
 	const [selectedShirt, setSelectedShirt] = useState(null);
@@ -13,9 +14,11 @@ const TShirtSelector = () => {
 	const [selectedProduct, setSelectedProduct] = useState(null);
 	const [popupVisible, setPopupVisible] = useState(false);
 	const [selectedSize, setSelectedSize] = useState(null);
-  const [ selectedColor, setSelectedColor ] = useState(null);
-  const [loading, setLoading] = useState(false);
+	const [selectedColor, setSelectedColor] = useState(null);
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
+	const navigate = useNavigate(); // Use lowercase navigate for consistency
+	const location = useLocation(); // Added useLocation
 
 	// ✅ Handle Shirt View Change
 	const handleShirtChange = (shirt) => {
@@ -52,92 +55,137 @@ const TShirtSelector = () => {
 
 	// ✅ Handle Adding to Cart
 	console.log('selected size', selectedSize);
-const handleAddToCart = async () => {
-	if (!selectedProduct) {
-		toast.error('Please select a product first.');
-		return;
-	}
-
-	if (!selectedSize || selectedSize.quantity === 0) {
-		toast.error('Please select a size.');
-		return;
-	}
-
-	if (!selectedColor) {
-		toast.error('Please select a color.');
-		return;
-	}
-	console.log('selected product id------> ', selectedProduct._id);
-
-	const productToAdd = {
-		productId: selectedProduct._id,
-		image: selectedShirt || selectedProduct.frontImage,
-		title: selectedProduct.title,
-		size: selectedSize.size,
-		color: selectedColor,
-		finalQuantity: selectedSize.quantity,
-		price: selectedProduct.price,
-	};
-
-	console.log('productToAdd--->', productToAdd);
-	try {
-		setLoading(true);
-		const token = localStorage.getItem('authToken');
-		const response = await fetch('http://localhost:5000/api/cart/add', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${token}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(productToAdd),
-		});
-
-		const data = await response.json();
-    if (response.ok) {
-			Swal.fire({
-				title: 'Added',
-				text: 'Item added to cart',
-				icon: 'success',
-			});
-			dispatch(addItem(productToAdd)); // Dispatch after successful API call
-		} else {
-			toast.error(data.message || 'Failed to add item to cart.');
+	const handleAddToCart = async () => {
+		if (!selectedProduct) {
+			toast.error('Please select a product first.');
+			return;
 		}
-	} catch (error) {
-		console.error('❌ Error adding to cart:', error.message);
-		toast.error('An error occurred while adding to the cart.');
-	} finally {
-		setLoading(false);
-	}
 
-};  
+		if (!selectedSize || selectedSize.quantity === 0) {
+			toast.error('Please select a size.');
+			return;
+		}
 
-	// ✅ Fetch Products on Component Mount
-	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				const response = await fetch('http://localhost:5000/api/products/', {
-					credentials: 'include',
-					method: 'GET',
-				});
-				const data = await response.json();
+		if (!selectedColor) {
+			toast.error('Please select a color.');
+			return;
+		}
+		console.log('selected product id------> ', selectedProduct._id);
 
-				if (data.products && data.products.length > 0) {
-					// Filter products to only show those with productType 'shirt'
-					const shirtProducts = data.products.filter(
-						(product) => product.productType && product.productType.includes('shirt'),
-					);
-					setProducts(shirtProducts);
-					setSelectedProduct(shirtProducts[0]);
-					setSelectedShirt(shirtProducts[0]?.frontImage);
-				}
-			} catch (error) {
-				console.error('Error fetching products:', error);
-			}
+		const productToAdd = {
+			productId: selectedProduct._id,
+			image: selectedShirt || selectedProduct.frontImage,
+			title: selectedProduct.title,
+			size: selectedSize.size,
+			color: selectedColor,
+			finalQuantity: selectedSize.quantity,
+			price: selectedProduct.price,
 		};
 
-		fetchProducts();
-	}, []);
+		console.log('productToAdd--->', productToAdd);
+		try {
+			setLoading(true);
+			const token = localStorage.getItem('authToken');
+			const response = await fetch('http://localhost:5000/api/cart/add', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(productToAdd),
+			});
+
+			const data = await response.json();
+			if (response.ok) {
+				Swal.fire({
+					title: 'Added',
+					text: 'Item added to cart',
+					icon: 'success',
+				});
+				dispatch(addItem(productToAdd)); // Dispatch after successful API call
+			} else {
+				toast.error(data.message || 'Failed to add item to cart.');
+			}
+		} catch (error) {
+			console.error('❌ Error adding to cart:', error.message);
+			toast.error('An error occurred while adding to the cart.');
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleAddLogoClick = async () => {
+		try {
+			setLoading(true);
+
+			// Get the authentication token from localStorage
+			const token = localStorage.getItem('authToken');
+			if (!token) {
+				navigate('/login', { state: { from: '/products', openPopup: true } }); // Redirect to login page with state
+				return;
+			}
+
+			// Call the API to verify authentication
+			const response = await fetch('http://localhost:5000/api/cart/addlogo', {
+				method: 'GET',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				// If authenticated, show the popup
+				setPopupVisible(true);
+			} else {
+				// If not authenticated, redirect to login
+				navigate('/login', { state: { from: '/products', openPopup: true } });
+			}
+		} catch (error) {
+			console.error('❌ Error verifying authentication:', error.message);
+			navigate('/login', { state: { from: '/products', openPopup: true } }); // Redirect to login page on error
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// ✅ Fetch Products on Component Mount
+useEffect(() => {
+	const fetchProducts = async () => {
+		try {
+			const response = await fetch('http://localhost:5000/api/products/', {
+				credentials: 'include',
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.products && data.products.length > 0) {
+				const shirtProducts = data.products.filter(
+					(product) => product.productType && product.productType.includes('shirt'),
+				);
+				setProducts(shirtProducts);
+				setSelectedProduct(shirtProducts[0]);
+				setSelectedShirt(shirtProducts[0]?.frontImage);
+			}
+		} catch (error) {
+			console.error('Error fetching products:', error);
+		}
+	};
+
+	fetchProducts();
+
+	// Open the popup only once, then reset the state
+	const { openPopup } = location.state || { openPopup: false };
+	if (openPopup) {
+		setPopupVisible(true);
+
+		// ✅ Clear the state in the history so it doesn't trigger again on refresh
+		navigate(location.pathname, { replace: true, state: {} });
+	}
+}, [location, navigate]);
+
 
 	return (
 		<div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
@@ -173,34 +221,6 @@ const handleAddToCart = async () => {
 					))}
 				</div>
 
-				{/* <div className="mt-4 font-medium text-lg text-center md:text-left">
-Select Your T-Shirt View
-</div>
-<div className="grid grid-cols-3 gap-4 mt-4 p-2">
-{selectedProduct &&
-  [
-    selectedProduct.frontImage,
-    selectedProduct.sideImage,
-    selectedProduct.backImage,
-  ].map((image, index) => (
-    <div
-      key={index}
-      onClick={() => handleShirtChange(image)}
-      className={`cursor-pointer w-full h-32 p-2 text-center transform transition-transform duration-300 ${
-        selectedShirt === image
-          ? "scale-105 outline outline-2 outline-orange-500"
-          : ""
-      }`}
-    >
-      <img
-        src={image}
-        alt={`T-Shirt View ${index + 1}`}
-        className="w-full h-24 object-cover rounded-md"
-      />
-    </div>
-  ))}
-</div>  */}
-
 				{/* Select Color */}
 				<div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
 				<div className='flex space-x-2 mt-4'>
@@ -227,8 +247,8 @@ Select Your T-Shirt View
 
 				{/* Buttons */}
 				<button
-					onClick={() => setPopupVisible(true)}
-					className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg  hover:bg-orange-600'>
+					onClick={handleAddLogoClick}
+					className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
 					ADD LOGO
 				</button>
 
@@ -240,9 +260,6 @@ Select Your T-Shirt View
 			</div>
 
 			{/* Popup */}
-
-			{popupVisible &&
-				console.log(JSON.stringify(selectedProduct, null, 2), selectedSize, selectedShirt, selectedColor)}
 			{popupVisible && (
 				<Popup
 					visible={popupVisible}
