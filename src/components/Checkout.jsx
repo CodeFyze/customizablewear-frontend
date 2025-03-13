@@ -9,7 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const Checkout = () => {
 	const cart = useSelector((state) => state.cart.items) || [];
 	const storeCodeAndDiscount = useSelector((state) => state.promoCode);
-	let {code,discount:promoDiscount} = storeCodeAndDiscount
+	let { code, discount: promoDiscount } = storeCodeAndDiscount
+	const [discount,setDiscount]= useState("")
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
