@@ -26,7 +26,6 @@ const UploadLogoPopup = ({
 	useEffect(() => {
 		const fetchPreviousLogo = async () => {
 			try {
-				setLoading(true); // Start loading
 				const storedUserId = localStorage.getItem('userId');
 				setUserId(storedUserId);
 
