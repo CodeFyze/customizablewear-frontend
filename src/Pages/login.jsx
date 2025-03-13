@@ -113,14 +113,14 @@ const LoginPage = () => {
 								{errors.password && <span className='text-sm text-red-500 mt-1'>{errors.password.message}</span>}
 							</div>
 
-							<button type='submit' className='w-full bg-[#fc8019] text-white py-2  rounded-md hover:bg-[#e57312] focus:shadow-lg focus:border-orange-400 focus:ring focus:ring-orange-400 focus:ring-opacity-50 outline-none duration-500'>
+							<button type='submit' className='w-full bg-[#ED5F1E] text-white py-2  rounded-md hover:bg-[#e57312] focus:shadow-lg focus:border-orange-400 focus:ring focus:ring-orange-400 focus:ring-opacity-50 outline-none duration-500'>
 								Login
 							</button>
 						</form>
 
 						<div className='mt-4 text-center'>
 							<span className='text-sm text-gray-600'>Don't have an account?</span>
-							<button onClick={() => navigate('/signup')} className='ml-2 text-[#fc8019] hover:underline duration-700'>
+							<button onClick={() => navigate('/signup')} className='ml-2 text-bg-[#ED5F1E] hover:underline duration-700'>
 								Sign up
 							</button>
 						</div>

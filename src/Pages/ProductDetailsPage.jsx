@@ -38,7 +38,7 @@ const ProductDetailsPage = () => {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-6">
+    <div className=" max-w-[1200px] mx-auto px-4 py-6">
       <button className="mb-4 text-blue-500 hover:underline" onClick={() => navigate(-1)}>
         ← Back to Products
       </button>

@@ -25,13 +25,13 @@ const About = () => {
           <p className="text-lg text-center sm:text-start text-gray-800 leading-relaxed mt-4">
             Our commitment to excellence extends beyond our product range. We strive to create a seamless and enjoyable shopping experience for our customers. Thank you for choosing Professor Store.
           </p>
-         <button className="my-3 mx-auto sm:mx-auto md:mx-0 sm:my-3  flex items-center gap-5 font-medium  bg-orange-400 text-white px-2 py-2 rounded-full hover:bg-orange-600"><span>Learn More </span> <FaArrowRightLong className="font-light" /></button>
+         <button className="my-3 mx-auto sm:mx-auto md:mx-0 sm:my-3  flex items-center gap-5 font-medium  bg-[#ED5F1E] text-white px-2 py-2 rounded-full hover:bg-orange-600 "><span>Learn More </span> <FaArrowRightLong className="font-light" /></button>
         </div>
         <div className=" w-full sm:w-4/5 md:w-1/3 h-96 sm:h-80 md:h-96 lg:h-96 flex justify-center  ">
        
             <img
               src={storeImage}
-              className="bg-[#EB5800] w-full md:w-4/5 lg:w-3/5 h-98  transition-transform duration-500 "
+              className="bg-[#ED5F1E] w-full md:w-4/5 lg:w-3/5 h-98  transition-transform duration-500 "
               alt="header"
               style={{borderBottomRightRadius:'200px'}}
             />

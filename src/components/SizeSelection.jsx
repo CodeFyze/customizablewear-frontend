@@ -183,7 +183,7 @@ const SizeSelection = ({ selectedProduct, onSizeSelect }) => {
       <div className="space-y-4">
         {sizes.map((size) => (
           <div key={size.size} className="flex justify-between items-center">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <span className="text-lg font-medium mr-4">{size.size}</span>
               <span className="line-through text-red-600 mr-4">
                 £{size.originalPrice}
@@ -192,11 +192,11 @@ const SizeSelection = ({ selectedProduct, onSizeSelect }) => {
                 £{size.price.toFixed(2)}
               </span>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center justify-center">
               {/* <span className="text-gray-500 mr-4">{size.stock} in stock</span> */}
               <button
                 onClick={() => handleQuantityChange(size.size, "decrease")}
-                className="text-lg bg-gray-200 px-2 py-1 rounded-md mr-2"
+                className="text-lg bg-gray-200 px-3 py-1 rounded-md mr-2 ml-2"
               >
                 -
               </button>

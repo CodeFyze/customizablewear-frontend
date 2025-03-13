@@ -140,25 +140,25 @@ const handleAddToCart = async () => {
 	}, []);
 
 	return (
-		<div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
+		<div className=' container flex flex-col md:flex-row justify-between items-center mx-auto p-8  md:gap-6 md:space-y-0'>
 			{/* ✅ Shirt Display Area */}
-			<div className='w-full md:w-[1000px] flex justify-center'>
+			<div className=' w-full h-auto md:w-2/3 flex justify-center shadow-lg'>
 				{selectedShirt && (
 					<img
 						src={selectedShirt}
 						alt='Selected T-Shirt'
-						className={`w-full h-auto md:m-10 max-w-xs md:max-w-2xl p-4 md:p-0 transform transition-transform duration-200 ${
-							isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
+						className={`w-full  object-contain h-96 md:m-10 max-w-xs md:max-w-3xl p-4 md:p-0 transform transition-transform duration-200 ${
+							isAnimating ? 'scale-10 opacity-50' : 'scale-10 opacity-100'
 						}`}
 					/>
 				)}
 			</div>
 
 			{/* ✅ Product & Selection Controls */}
-			<div className='w-full md:w-1/3 md:pr-10'>
+			<div className='h-auto px-2 w-full md:w-1/3 md:pr-10 '>
 				{/* Select Product */}
-				<div className='mt-4 font-medium text-lg text-center md:text-left'>Shirts</div>
-				<div className='overflow-x-auto flex space-x-2 mt-4 p-2'>
+				<div className='w-full mt-4 font-semibold text-lg text-center md:text-left'>Shirts</div>
+				<div className='w-full overflow-x-auto flex space-x-2 mt-4 p-2'>
 					{products.map((product, index) => (
 						<div key={index} className='text-center'>
 							<img
@@ -216,7 +216,7 @@ Select Your T-Shirt View
 				</div>
 
 				{/* Shirt Details */}
-				<div className='mt-6 p-4 md:mb-3'>
+				<div className=' mt-6 p-4 md:mb-3'>
 					<h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
 					<p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
 					<p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
@@ -226,17 +226,19 @@ Select Your T-Shirt View
 				<SizeSelection selectedProduct={selectedProduct} onSizeSelect={setSelectedSize} />
 
 				{/* Buttons */}
+				<div className='flex sm:flex-col md:flex-row sm:justify-center sm:items-center items-center justify-center sm:gap-2 gap-2'>
 				<button
 					onClick={() => setPopupVisible(true)}
-					className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg  hover:bg-orange-600'>
+					className=' bg-orange-500 text-white py-2 px-5 rounded-lg  hover:bg-orange-600'>
 					ADD LOGO
 				</button>
 
 				<button
 					onClick={handleAddToCart}
-					className='bg-orange-500 text-white py-2 px-4 ml-10 rounded-lg hover:bg-orange-600'>
+					className='bg-orange-500 text-white py-2 px-5 rounded-lg hover:bg-orange-600'>
 					ADD TO CART
 				</button>
+				</div>
 			</div>
 
 			{/* Popup */}

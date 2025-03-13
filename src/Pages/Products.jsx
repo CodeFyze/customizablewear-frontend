@@ -54,11 +54,11 @@ const Products = ({ showTShirtSelector = true }) => {
   };
  
   return (
-    <div className="my-2">
+    <div className="my-2 ">
       {showTShirtSelector && <TShirtSelector />}
       <div className="container py-2">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
-        <div className="w-full grid gap-2 sm:gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+        <div className="w-full  grid gap-2 sm:gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
           {/* {products.map((product) => (
             <div
               key={product._id}
@@ -140,7 +140,7 @@ const Products = ({ showTShirtSelector = true }) => {
                 Discount:{" "}
                 {product.discount ? `${product.discount}%` : "No discount"}
               </div> 
-                  <button onClick={() => handleAdd(product)} className="my-2 w-full flex items-center justify-around font-medium  bg-orange-400 text-white px-2 py-2 rounded-full hover:bg-orange-600"><span>Add to Cart </span> <FaArrowRightLong className="font-light" /></button>
+                  <button onClick={() => handleAdd(product)} className="my-2 w-full flex items-center justify-around font-medium  bg-[#ED5F1E] text-white px-2 py-2 rounded-full hover:bg-orange-600"><span>Add to Cart </span> <FaArrowRightLong className="font-light" /></button>
                 </div>
 
               </div>

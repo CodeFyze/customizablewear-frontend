@@ -6,8 +6,8 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white py-10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          <div>
+        <div className="grid grid-cols-1 place-items-center md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="text-center md:text-start">
             <h2 className="text-lg font-bold mb-4">About Us</h2>
             <p className="text-gray-400">
               We are a leading Professor Store providing a wide range of products to our customers.
@@ -16,7 +16,7 @@ const Footer = () => {
 
           <div>
             <h2 className="text-lg font-bold mb-4">Quick Links</h2>
-            <ul className="text-gray-400">
+            <ul className="text-gray-400 text-center md:text-start">
               <li className="mb-2">
                 <Link to="/" className="hover:underline">
                   Home
@@ -40,9 +40,9 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div>
-            <h2 className="text-lg font-bold mb-4">Contact Us</h2>
-            <ul className="text-gray-400">
+          <div >
+            <h2 className="text-lg text-center md:text-start font-bold mb-4">Contact Us</h2>
+            <ul className="text-gray-400 text-center md:text-start">
               <li className="mb-2">
                 <a href="tel:+1234567890" className="hover:underline">
                   +923093108513
