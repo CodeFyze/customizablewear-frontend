@@ -244,8 +244,8 @@ const TShirtSelector = () => {
 
 				{/* Buttons */}
 				<button
-					onClick={handleAddLogoClick}
-					className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
+					onClick={() => setPopupVisible(true)}
+					className=' bg-orange-500 text-white py-2 px-5 rounded-lg  hover:bg-orange-600'>
 					ADD LOGO
 				</button>
 
