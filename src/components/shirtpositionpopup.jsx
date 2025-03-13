@@ -6,9 +6,13 @@ import LeftSleeve from '../assets/shirtlogos/sleeve-left_1f_large.png';
 import NapeOfNeck from '../assets/shirtlogos/nape-of-neck_dq_large.png';
 import RightBreast from '../assets/shirtlogos/right-chest_no_large.png';
 import RightSleeve from '../assets/shirtlogos/sleeve-right_ju_large.png';
+import shirtPop from './shirtpopup';
+
+import Popup from './shirtpopup';
 import { FaTimes } from 'react-icons/fa'; // Import FaTimes for close icon
 
 const PositionPopup = ({ onClose, onNext, visible, selectedPosition, setSelectedPosition }) => {
+
 	if (!visible) return null;
 
 	const positions = [
@@ -20,6 +24,7 @@ const PositionPopup = ({ onClose, onNext, visible, selectedPosition, setSelected
 		{ label: 'Right Breast', image: RightBreast },
 		{ label: 'Right Sleeve', image: RightSleeve },
 	];
+
 
 	return (
 		<div className='fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50'>

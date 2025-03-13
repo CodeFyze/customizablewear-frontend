@@ -9,11 +9,6 @@ import Swal from 'sweetalert2';
 const UploadLogoPopup = ({
 	onBack,
 	onClose,
-	// selectedProduct = {},
-	// selectedSize = {},
-	// selectedPosition = '',
-	// selectedMethod = '',
-	// selectedColor = '',
 	selectedProduct,
 	selectedSize,
 	selectedPosition,
@@ -25,6 +20,7 @@ const UploadLogoPopup = ({
 	const [previewURL, setPreviewURL] = useState(null);
 	const [previousLogo, setPreviousLogo] = useState(null);
 	const [usePreviousLogo, setUsePreviousLogo] = useState(false);
+	const [loading, setLoading] = useState(false); // State for loader
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -74,6 +70,8 @@ const UploadLogoPopup = ({
 			} catch (error) {
 				toast.error('Error fetching previous logo. Please try again.');
 				console.error('❌ Error fetching previous logo:', error.message);
+			} finally {
+				setLoading(false); // Stop loading
 			}
 		};
 
@@ -147,26 +145,9 @@ const UploadLogoPopup = ({
 			selectedSize?.quantity && Number.isInteger(Number(selectedSize.quantity)) && selectedSize.quantity > 0
 				? selectedSize.quantity
 				: 1;
-console.log(selectedFile)
-		// sending data to the cart store
-		// starting
-		const requestData = {
-			productId: selectedProduct?._id,
-			title: selectedProduct?.title,
-			frontImage: selectedProduct?.frontImage || selectedProduct?.image,
-			size: selectedSize.size,
-			color: selectedColor,
-			quantity, // ✅ Now correctly defined
-			method: selectedMethod,
-			position: selectedPosition,
-			logo: selectedFile || previousLogo,
-		};
-		console.log('sending data to the store', selectedProduct);
 
-		dispatch(addItem(requestData));
-
-		// ending
 		try {
+			setLoading(true); // Start loading
 			const token = localStorage.getItem('authToken');
 			const userId = localStorage.getItem('userId');
 
@@ -207,6 +188,8 @@ console.log(selectedFile)
 
 			const data = await response.json();
 			console.log('🛒 API Response:', data);
+			dispatch(addItem(formData)); // Dispatch after successful API call
+			console.log('formData-->', formData);
 
 			if (response.ok) {
 				Swal.fire({
@@ -222,6 +205,8 @@ console.log(selectedFile)
 		} catch (error) {
 			toast.error('An error occurred while adding to the cart.');
 			console.error('❌ Error adding to cart:', error.message);
+		} finally {
+			setLoading(false); // Stop loading
 		}
 	};
 
@@ -282,8 +267,13 @@ console.log(selectedFile)
 					<button onClick={onBack} className='bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600'>
 						Back
 					</button>
-					<button onClick={handleFinish} className='bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600'>
-						Finish
+					<button
+						onClick={handleFinish}
+						className={`bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 ${
+							loading ? 'opacity-50 cursor-not-allowed' : ''
+						}`}
+						disabled={loading}>
+						{loading ? 'Adding...' : 'Finish'}
 					</button>
 				</div>
 			</div>
