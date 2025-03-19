@@ -18,7 +18,7 @@ const ImageUpload = ({ onUpload }) => {
       <input
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
+        onChange={(e) => handleColorImageChange(e, productIndex, colorIndex, products, setProducts)}
         className="border border-gray-300 p-2 rounded-md w-full"
       />
       {file && <p className="mt-2 text-gray-600">{file.name}</p>}

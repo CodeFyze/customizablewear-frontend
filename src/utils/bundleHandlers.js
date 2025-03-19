@@ -4,6 +4,16 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
     setProducts(updatedProducts);
   };
   
+  export const handleColorImageChange = (e, productIndex, colorIndex, products, setProducts) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    const updatedProducts = [...products];
+    updatedProducts[productIndex].colors[colorIndex].image = file;
+    setProducts(updatedProducts);
+  };
+  
+
   export const addColor = (productIndex, products, setProducts) => {
     const updatedProducts = [...products];
     updatedProducts[productIndex].colors.push({ color: '', image: null, sizes: [] });
@@ -17,15 +27,30 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
   };
   
   export const handleSizeChange = (productIndex, colorIndex, size, products, setProducts) => {
-    const updatedProducts = [...products];
-    const color = updatedProducts[productIndex].colors[colorIndex];
-    if (color.sizes.includes(size)) {
-      color.sizes = color.sizes.filter((s) => s !== size);
-    } else {
-      color.sizes.push(size);
-    }
-    setProducts(updatedProducts);
+    setProducts((prevProducts) => {
+      const updatedProducts = prevProducts.map((product, pIndex) => {
+        if (pIndex !== productIndex) return product; // Keep other products unchanged
+  
+        return {
+          ...product,
+          colors: product.colors.map((color, cIndex) => {
+            if (cIndex !== colorIndex) return color; // Keep other colors unchanged
+  
+            // Toggle size selection
+            const updatedSizes = color.sizes.includes(size)
+              ? color.sizes.filter((s) => s !== size) // Remove size
+              : [...color.sizes, size]; // Add size
+  
+            return { ...color, sizes: updatedSizes };
+          }),
+        };
+      });
+  
+      return updatedProducts;
+    });
   };
+  
+  
   
   export const removeColor = (productIndex, colorIndex, products, setProducts) => {
     const updatedProducts = [...products];
@@ -94,4 +119,4 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
       console.error('Upload failed', err);
     }
   };
-  
+ 
