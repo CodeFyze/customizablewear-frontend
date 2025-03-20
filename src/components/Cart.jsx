@@ -4,6 +4,9 @@ import { setCart, increaseQuantity, decreaseQuantity, removeItem } from '../stor
 import { useNavigate } from 'react-router-dom';
 import img from '../assets/images/empty-cart.png';
 
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
+
 const Cart = () => {
 	const cart = useSelector((state) => state.cart.items || []);
 	const dispatch = useDispatch();
@@ -21,7 +24,7 @@ const Cart = () => {
 			}
 
 			try {
-				const response = await fetch('http://localhost:5000/api/cart', {
+				const response = await fetch(`${apiUrl}/cart`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -59,7 +62,7 @@ const Cart = () => {
 		dispatch(increaseQuantity(item.product._id));
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/cart/increase/${item.product._id}`, {
+			const response = await fetch(`${apiUrl}/cart/increase/${item.product._id}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -92,7 +95,7 @@ const Cart = () => {
 		dispatch(decreaseQuantity(item.product._id));
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/cart/decrease/${item.product._id}`, {
+			const response = await fetch(`${apiUrl}/cart/decrease/${item.product._id}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -123,7 +126,7 @@ const Cart = () => {
 		}
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/cart/remove/${productId}`, {
+			const response = await fetch(`${apiUrl}/cart/remove/${productId}`, {
 				method: 'DELETE',
 				headers: {
 					Authorization: `Bearer ${token}`,
