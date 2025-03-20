@@ -57,7 +57,7 @@ export const cartSlice = createSlice({
 
     removeItem: (state, action) => {
       // Ensure you are filtering by the correct productId property
-      state.items = state.items.filter((item) => item.productId !== action.payload);
+      state.items = state.items.filter((item) => item.product._id !== action.payload);
       console.log('Item removed, updated state:', state.items);
     },
 
