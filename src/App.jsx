@@ -20,7 +20,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProductTypePage from "./Pages/ProductTypePage";
 import ProductDetailsPage from "./Pages/ProductDetailsPage";
-
+import Bundles from "./Pages/Bundles";
+import BundlesDetailsPage from "./Pages/BundlesDetailsPage";
 
 const App = () => {
   const location = useLocation();
@@ -28,33 +29,36 @@ const App = () => {
   
 
   return (
-    <>
-      {/* <ToastContainer  /> */}
+		<>
+			{/* <ToastContainer  /> */}
 
-      {!isSellerPage && <Navigation />}
+			{!isSellerPage && <Navigation />}
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/otp" element={<OtpPage />} />
-        <Route path="/seller" element={<SellPage />} />
-        <Route path="/order" element={<Order />} />
-        <Route path="/orders/:orderId" element={<OrderDetails />} />
-        <Route path="/success" element={<Success />} />cart
-        <Route path="/customers/:customerId/orders" element={<CustomerOrders />} />
-        <Route path="/products/:productType" element={<ProductTypePage />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
-      </Routes>
+			<Routes>
+				<Route path='/' element={<Home />} />
+				<Route path='/products' element={<Products />} />
+				<Route path='/contact' element={<Contact />} />
+				<Route path='/about' element={<About />} />
+				<Route path='/checkout' element={<Checkout />} />
+				<Route path='/cart' element={<Cart />} />
+				<Route path='/login' element={<LoginPage />} />
+				<Route path='/signup' element={<SignUp />} />
+				<Route path='/otp' element={<OtpPage />} />
+				<Route path='/seller' element={<SellPage />} />
+				<Route path='/order' element={<Order />} />
+				<Route path='/orders/:orderId' element={<OrderDetails />} />
+				<Route path='/success' element={<Success />} />
+				cart
+				<Route path='/customers/:customerId/orders' element={<CustomerOrders />} />
+				<Route path='/products/:productType' element={<ProductTypePage />} />
+				<Route path='/product/:id' element={<ProductDetailsPage />} />
+				<Route path='/bundles' element={<Bundles />} />
+				<Route path='/bundle/category/:category' element={<BundlesDetailsPage />} />
+			</Routes>
 
-      {!isSellerPage && <Footer />}
-    </>
-  );
+			{!isSellerPage && <Footer />}
+		</>
+	);
 };
 
 export default App;
