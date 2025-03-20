@@ -129,7 +129,7 @@ const Orders = () => {
                       : "text-yellow-600"
                   }`}
                 >
-                  {order.status}
+                  {order.paymentStatus}
                 </td>
                 <td className="px-4 py-2 text-sm text-gray-700">${order.finalAmount.toFixed(2)}</td>
                 <td className="px-4 py-2 text-sm">
