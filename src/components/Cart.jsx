@@ -126,7 +126,7 @@ const Cart = () => {
 		}
 
 		try {
-			const response = await fetch(`${apiUrl}/cart/remove/${productId}`, {
+			const response = await fetch(`http://localhost:5000/api/cart/remove/${productId}`, {
 				method: 'DELETE',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -245,7 +245,7 @@ const Cart = () => {
 									</div>
 
 									<button
-										onClick={() => handleRemove(item.product._id)}
+										onClick={() => handleRemove(item.product._id)} // Pass the product._id correctly
 										className='mt-2 text-red-500 text-sm underline hover:text-red-700'>
 										Remove
 									</button>
