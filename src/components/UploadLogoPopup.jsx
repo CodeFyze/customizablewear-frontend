@@ -6,6 +6,8 @@ import { FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
 const UploadLogoPopup = ({
 	onBack,
 	onClose,
@@ -40,7 +42,7 @@ const UploadLogoPopup = ({
 					return;
 				}
 
-				const response = await fetch(`http://localhost:5000/api/orders/order-user/${storedUserId}`, {
+				const response = await fetch(`${apiUrl}/orders/order-user/${storedUserId}`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -179,7 +181,7 @@ const UploadLogoPopup = ({
 			formData.append('method', selectedMethod);
 			formData.append('position', selectedPosition);
 
-			const response = await fetch('http://localhost:5000/api/cart/add', {
+			const response = await fetch(`${apiUrl}/cart/add`, {
 				method: 'POST',
 				headers: { Authorization: `Bearer ${token}` },
 				credentials: 'include',

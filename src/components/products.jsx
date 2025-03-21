@@ -8,9 +8,9 @@ const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [ selectedProduct, setSelectedProduct ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
-  const API_URL = "http://localhost:5000/api/products";
 
   // const fetchProducts = async () => {
   //   try {
@@ -37,10 +37,10 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_URL}`, {
-        credentials: "include",
-        method: "GET",
-      });
+      const response = await fetch(`${apiUrl}/products`, {
+				credentials: 'include',
+				method: 'GET',
+			});
   
       if (!response.ok) throw new Error("Failed to fetch products");
   
@@ -88,13 +88,13 @@ const Products = () => {
 
       let response;
       if (selectedProduct) {
-        response = await fetch(`${API_URL}/update/${selectedProduct._id}`, {
+        response = await fetch(`${apiUrl}/update/${selectedProduct._id}`, {
           credentials: "include",
           method: "PUT",
           body: formData,
         });
       } else {
-        response = await fetch(`${API_URL}/add`, {
+        response = await fetch(`${apiUrl}/add`, {
           credentials: "include",
           method: "POST",
           body: formData,
@@ -125,7 +125,7 @@ const Products = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`${API_URL}/delete/${productId}`, {
+      const response = await fetch(`${apiUrl}/delete/${productId}`, {
         credentials: "include",
         method: "DELETE",
       });

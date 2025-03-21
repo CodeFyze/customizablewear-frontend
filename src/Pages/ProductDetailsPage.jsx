@@ -6,6 +6,8 @@ const ProductDetailsPage = () => {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
+  	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
 
   useEffect(() => {
     fetchProductDetails();
@@ -13,7 +15,7 @@ const ProductDetailsPage = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const response = await fetch(`${apiUrl}/products/${id}`, {
         credentials: "include",
         method: "GET",
       });

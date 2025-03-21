@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { Audio } from 'react-loader-spinner';
 import { loginSuccess } from '../store/authSlice';
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const LoginPage = () => {
 	const [isLogin, setIsLogin] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const LoginPage = () => {
 
 		try {
 			setLoading(true);
-			const response = await fetch('http://localhost:5000/api/auth/login', {
+			const response = await fetch(`${apiUrl}/auth/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

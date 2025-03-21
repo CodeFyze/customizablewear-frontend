@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { applyPromoCode } from '../store/promoCodeSlice'; // Assuming you have a Redux slice for promo codes
 import 'react-toastify/dist/ReactToastify.css';
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const Checkout = () => {
 	const cart = useSelector((state) => state.cart.items) || [];
 	const storeCodeAndDiscount = useSelector((state) => state.promoCode);
@@ -44,7 +44,7 @@ const Checkout = () => {
 		const fetchActivePromoCodes = async () => {
 			try {
 				const token = localStorage.getItem('authToken'); // Get the token from localStorage
-				const response = await fetch('http://localhost:5000/api/promocodes/active', {
+				const response = await fetch(`${apiUrl}/promocodes/active`, {
 					headers: {
 						Authorization: `Bearer ${token}`, // Include the token in the request headers
 					},
@@ -72,7 +72,7 @@ const Checkout = () => {
 
 		try {
 			const token = localStorage.getItem('authToken');
-			const response = await fetch('http://localhost:5000/api/promocodes/validate', {
+			const response = await fetch(`${apiUrl}/promocodes/validate`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ const Checkout = () => {
 		console.log('🚀 Sending Order Data:', JSON.stringify(orderData, null, 2));
 
 		try {
-			const response = await fetch('http://localhost:5000/api/orders/create', {
+			const response = await fetch(`${apiUrl}/orders/create`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

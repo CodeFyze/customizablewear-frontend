@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const useOtpVerification = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const useOtpVerification = () => {
     const otpCode = otp.join("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup/verify", {
+      const response = await fetch(`${apiUrl}/auth/signup/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

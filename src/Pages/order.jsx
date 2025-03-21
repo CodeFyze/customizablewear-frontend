@@ -30,8 +30,7 @@ const OrderDetails = () => {
 	const [trackingId, setTrackingId] = useState(''); // State for tracking ID
 	const [isTrackingIdSaved, setIsTrackingIdSaved] = useState(false);
 
-	const API_URL = `http://localhost:5000/api/orders/orders/${orderId}`;
-
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 	// Fetch order details and message on component mount
 	useEffect(() => {
 		fetchStatus();
@@ -50,7 +49,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(API_URL, {
+			const response = await fetch(`${apiUrl}/orders/orders/${orderId}`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -85,7 +84,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/tracking`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -110,7 +109,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/tracking`, {
+			const response = await fetch(`${apiUrl}/${orderId}/tracking`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -140,7 +139,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/tracking`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'DELETE',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -171,7 +170,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/message`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -196,7 +195,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/getEmailMessage`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/getEmailMessage`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -228,7 +227,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/update/${orderId}`, {
+			const response = await fetch(`${apiUrl}/orders/update/${orderId}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -263,7 +262,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/message`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -296,7 +295,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/message`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -327,7 +326,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/deleteEmail`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/deleteEmail`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -359,7 +358,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/send-email`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/send-email`, {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -390,7 +389,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`http://localhost:5000/api/orders/${orderId}/invoice`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/invoice`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`,
