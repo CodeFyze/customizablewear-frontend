@@ -126,7 +126,7 @@ const Cart = () => {
 		}
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/cart/remove/${productId}`, {
+			const response = await fetch(`${apiUrl}/cart/remove/${productId}`, {
 				method: 'DELETE',
 				headers: {
 					Authorization: `Bearer ${token}`,
