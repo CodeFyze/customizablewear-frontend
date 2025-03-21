@@ -12,7 +12,8 @@ dist
 dist-ssr
 *.local
 .env
-git commit -m "Deleted .env file"# Editor directories and files
+
+
 .vscode/*
 !.vscode/extensions.json
 .idea
