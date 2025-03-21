@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ImageUpload from './ImageUpload';
 import { IoClose } from 'react-icons/io5';
-import { handleImageUpload, addColor, handleColorChange, handleSizeChange, removeColor, handleCategoryChange, handleFormSubmit } from "../utils/bundleHandlers"
+import { handleImageUpload, addColor, handleColorChange, handleSizeChange, removeColor, handleCategoryChange, handleFormSubmit,handleColorImageChange as handleChange} from "../utils/bundleHandlers"
 
 const Popup = ({ closePopup }) => {
   const [products, setProducts] = useState([
@@ -46,7 +46,11 @@ const Popup = ({ closePopup }) => {
 
             {/* Color Inputs */}
             {product.colors.map((color, colorIndex) => (
+             
+              
               <div key={colorIndex} className="mb-4">
+                 {console.log(color)
+                 }
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -65,10 +69,12 @@ const Popup = ({ closePopup }) => {
                 </div>
 
                 {/* Color image upload */}
+                {console.log('product',product)
+                }
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => handleColorImageChange(e, productIndex, colorIndex)}
+                  onChange={(e) => handleChange(e, productIndex, colorIndex,products, setProducts)}
                   className="border border-gray-300 p-2 rounded-md w-full mt-2"
                 />
 

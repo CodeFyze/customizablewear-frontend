@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { handleColorImageChange } from '../utils/bundleHandlers';
 
 const ImageUpload = ({ onUpload }) => {
   const [file, setFile] = useState(null);
@@ -18,7 +19,8 @@ const ImageUpload = ({ onUpload }) => {
       <input
         type="file"
         accept="image/*"
-        onChange={(e) => handleColorImageChange(e, productIndex, colorIndex, products, setProducts)}
+        // onChange={(e) => handleColorImageChange(e, productIndex, colorIndex, products, setProducts)}
+        onChange={handleFileChange}
         className="border border-gray-300 p-2 rounded-md w-full"
       />
       {file && <p className="mt-2 text-gray-600">{file.name}</p>}

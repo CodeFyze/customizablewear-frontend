@@ -72,10 +72,12 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
     }
   
     for (let product of products) {
-      if (!product.image || product.colors.length === 0) {
-        alert('Each product must have an image and at least one color.');
-        return;
-      }
+      // if (!product.image || product.colors.length === 0) {
+      //   alert('Each product must have an image and at least one color.');
+      //   return;
+      // }
+      console.log('check product loop',product);
+      
   
       for (let color of product.colors) {
         if (!color.color || !color.image || color.sizes.length === 0) {
@@ -97,16 +99,30 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
     });
   
     Object.keys(selectedCategories).forEach((category) => {
+      
+      
       if (selectedCategories[category]) {
         formData.append(`category_${category}`, category);
+        console.log("category front---",category);
+        
       }
     });
-  
+    const token = localStorage.getItem('authToken')
+    
+    
     try {
-      const response = await fetch('/api/upload', {
+      console.log(token);
+      const response = await fetch('http://localhost:5000/api/bundle/add', {
         method: 'POST',
-        body: formData,
+        headers: {  
+          Accept: 'application/json',
+          
+           Authorization: `Bearer ${token}` 
+        },
+        body:formData,
       });
+      
+      
   
       if (response.ok) {
         const data = await response.json();
