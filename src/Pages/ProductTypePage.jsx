@@ -5,14 +5,14 @@ const ProductTypePage = () => {
   const { productType } = useParams();
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products/", {
+      const response = await fetch(`${apiUrl}/products/`, {
         credentials: "include",
         method: "GET",
       });

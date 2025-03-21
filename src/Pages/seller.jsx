@@ -6,20 +6,20 @@ const SellPage = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
         const token = localStorage.getItem("authToken"); 
 
-        const response = await fetch("http://localhost:5000/api/auth/isAdmin", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, 
-          },
-          credentials: "include",
-        });
+        const response = await fetch(`${apiUrl}/auth/isAdmin`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					credentials: 'include',
+				});
 
         const data = await response.json();
         console.log("Admin Check Response:", data);

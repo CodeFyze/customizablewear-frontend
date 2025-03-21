@@ -9,13 +9,13 @@ const BundleSelectionPage = () => {
 	const [selectedSweatshirts, setSelectedSweatshirts] = useState([]);
 	const [selectedJackets, setSelectedJackets] = useState([]);
 	const [categoryImage, setCategoryImage] = useState('');
-
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
 				const token = localStorage.getItem('authToken');
 
-				const response = await fetch(`http://localhost:5000/api/bundle/category/${category}`, {
+				const response = await fetch(`${apiUrl}/bundle/category/${category}`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,

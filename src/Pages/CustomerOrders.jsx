@@ -5,8 +5,9 @@ const CustomerOrders = () => {
 	const { customerId } = useParams();
 	const [orders, setOrders] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-	const API_URL = `http://localhost:5000/api/orders/order-user/${customerId}`;
+	const [ error, setError ] = useState(null);
+	
+		const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
 	useEffect(() => {
 		const fetchOrders = async () => {
@@ -18,7 +19,7 @@ const CustomerOrders = () => {
 					return;
 				}
 
-				const response = await fetch(API_URL, {
+				const response = await fetch(`${apiUrl}/orders/order-user/${customerId}`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,

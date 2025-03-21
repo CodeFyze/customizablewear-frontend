@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // ✅ Hook for navigation
-  const API_URL = "http://localhost:5000/api/orders/customers";
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -18,13 +19,13 @@ const Customers = () => {
           return;
         }
 
-        const response = await fetch(API_URL, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(`${apiUrl}/orders/customers`, {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				});
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Failed to fetch customers");

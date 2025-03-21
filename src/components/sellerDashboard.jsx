@@ -18,7 +18,7 @@ const SellerDashboard = () => {
 	const [totalCustomers, setTotalCustomers] = useState(0);
 
 	const navigate = useNavigate();
-	const API_URL = 'http://localhost:5000/api';
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
 	// ✅ Check if the user is an admin before allowing access
 	const checkAdminStatus = async () => {
@@ -32,7 +32,7 @@ const SellerDashboard = () => {
 		}
 
 		try {
-			const response = await fetch(`${API_URL}/auth/isAdmin`, {
+			const response = await fetch(`${apiUrl}/auth/isAdmin`, {
 				method: 'GET',
 				headers: {
 					Authorization: `Bearer ${token}`, // ✅ Send Token
@@ -69,15 +69,15 @@ const SellerDashboard = () => {
 
 		try {
 			const [ordersRes, productsRes, customersRes] = await Promise.all([
-				fetch(`${API_URL}/orders`, {
+				fetch(`${apiUrl}/orders`, {
 					headers: { Authorization: `Bearer ${token}` },
 					credentials: 'include',
 				}),
-				fetch(`${API_URL}/products`, {
+				fetch(`${apiUrl}/products`, {
 					headers: { Authorization: `Bearer ${token}` },
 					credentials: 'include',
 				}),
-				fetch(`${API_URL}/orders/customers`, {
+				fetch(`${apiUrl}/orders/customers`, {
 					headers: { Authorization: `Bearer ${token}` },
 					credentials: 'include',
 				}),
