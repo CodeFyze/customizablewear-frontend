@@ -3,6 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCross1 } from "react-icons/rx";
 
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const Modal = ({ isOpen, onClose, initialData }) => {
   const [productTitle, setProductTitle] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -173,7 +174,7 @@ const Modal = ({ isOpen, onClose, initialData }) => {
     formData.append("productType", JSON.stringify(selectedProductTypes));
   
     try {
-      const response = await fetch("http://localhost:5000/api/products/add", {
+      const response = await fetch(`${apiUrl}/products/add`, {
         method: "POST",
         body: formData,
         headers: { Authorization: `Bearer ${token}` },

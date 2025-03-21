@@ -8,8 +8,8 @@ const PromoCodes = () => {
 	const [code, setCode] = useState('');
 	const [discount, setDiscount] = useState('');
 	const [emailBody, setEmailBody] = useState('');
-	const [loading, setLoading] = useState(false);
-	const API_URL = 'http://localhost:5000/api/promocodes';
+	const [ loading, setLoading ] = useState(false);
+const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`; 
 
 	useEffect(() => {
 		fetchPromoCodes();
@@ -20,7 +20,7 @@ const PromoCodes = () => {
 		if (!token) return console.error('No auth token found');
 
 		try {
-			const response = await fetch(`${API_URL}/all`, {
+			const response = await fetch(`${apiUrl}/all`, {
 				method: 'GET',
 				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			});
@@ -39,7 +39,7 @@ const PromoCodes = () => {
 
 		const newCode = { code, discount: parseFloat(discount), status: 'active' };
 		try {
-			const response = await fetch(`${API_URL}/create`, {
+			const response = await fetch(`${apiUrl}/create`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify(newCode),
@@ -59,7 +59,7 @@ const PromoCodes = () => {
 		if (!token) return console.error('No auth token found');
 
 		try {
-			const response = await fetch(`${API_URL}/delete/${id}`, {
+			const response = await fetch(`${apiUrl}/delete/${id}`, {
 				method: 'DELETE',
 				headers: { Authorization: `Bearer ${token}` },
 			});
@@ -77,7 +77,7 @@ const PromoCodes = () => {
 
 		const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
 		try {
-			const response = await fetch(`${API_URL}/toggle/${id}`, {
+			const response = await fetch(`${apiUrl}/toggle/${id}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ status: newStatus }),
@@ -110,7 +110,7 @@ const PromoCodes = () => {
 		setLoading(true);
 
 		try {
-			const response = await fetch(`${API_URL}/send-email`, {
+			const response = await fetch(`${apiUrl}/send-email`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 				body: JSON.stringify({ emailBody }),

@@ -4,6 +4,9 @@ import { FaRegEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import { Audio } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
 
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
+
 const SignUp = () => {
 	const [formData, setFormData] = useState({
 		firstName: '',
@@ -13,8 +16,8 @@ const SignUp = () => {
 		role: 'user',
 	});
 	const [showPassword, setShowPassword] = useState(false);
-	const [loading, setLoading] = useState(false); // <-- Added state for loader
-	const [showForm, setShowForm] = useState(true); // <-- State to control form visibility
+	const [loading, setLoading] = useState(false);
+	const [showForm, setShowForm] = useState(true);
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -30,14 +33,14 @@ const SignUp = () => {
 		setLoading(true);
 
 		try {
-			const response = await fetch('http://localhost:5000/api/auth/signup', {
+			const response = await fetch(`${apiUrl}/auth/signup`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(formData),
 			});
 
 			setLoading(false);
-			if (response.ok && response.role == 'user') {
+			if (response.ok && response.role === 'user') {
 				navigate('/products');
 			} else {
 				navigate('/');
@@ -63,7 +66,7 @@ const SignUp = () => {
 				<div className='p-8 w-full max-w-6xl bg-white rounded-lg shadow-lg z-20 relative'>
 					{/* Close button positioned at top-right corner */}
 					<button
-						onClick={() => setShowForm(false)} // Close the form
+						onClick={() => setShowForm(false)}
 						className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
 						<FaTimes size={20} />
 					</button>

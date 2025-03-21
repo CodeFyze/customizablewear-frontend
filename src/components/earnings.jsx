@@ -125,9 +125,9 @@ import "react-toastify/dist/ReactToastify.css";
 const Earnings = ({ setTotalEarnings }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [ error, setError ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
-  const API_URL = "http://localhost:5000/api/orders"; // API URL for fetching orders
 
   // Fetch orders from the API
   const fetchOrders = async () => {
@@ -138,14 +138,14 @@ const Earnings = ({ setTotalEarnings }) => {
         throw new Error("Unauthorized - No token found.");
       }
 
-      const response = await fetch(`${API_URL}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ Add token in headers
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(`${apiUrl}/orders`, {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					Authorization: `Bearer ${token}`, // ✅ Add token in headers
+					'Content-Type': 'application/json',
+				},
+			});
 
       if (!response.ok) {
         const errorData = await response.json();

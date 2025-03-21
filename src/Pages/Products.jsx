@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 // import { add } from "../store/cartSlice";
 import { addItem } from "../store/cartSlice";
 import TShirtSelector from "../components/Tshirtselector";
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
 const Products = ({ showTShirtSelector = true }) => {
   const [products, setProducts] = useState([]);
@@ -14,7 +15,7 @@ const Products = ({ showTShirtSelector = true }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products/", {
+      const response = await fetch(`${apiUrl}/products/`, {
         method: "GET",
         credentials: "include",
         headers: {

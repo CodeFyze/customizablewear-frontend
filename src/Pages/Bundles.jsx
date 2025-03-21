@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const Bundles = () => {
 	const [categories, setCategories] = useState([]);
 
@@ -9,7 +10,8 @@ const Bundles = () => {
 		const fetchCategories = async () => {
 			try {
 				const token = localStorage.getItem('authToken');
-				const response = await fetch('http://localhost:5000/api/bundle/categories', {
+				
+				const response = await fetch(`${apiUrl}/bundle/categories`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,

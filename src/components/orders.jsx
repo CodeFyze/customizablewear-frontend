@@ -7,9 +7,9 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [viewedOrders, setViewedOrders] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [ error, setError ] = useState(null);
+  const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
-  const API_URL = "http://localhost:5000/api/orders";
 
   useEffect(() => {
     fetchOrders();
@@ -23,14 +23,14 @@ const Orders = () => {
         throw new Error("Unauthorized - No token found");
       }
 
-      const response = await fetch(API_URL, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(`${apiUrl}/orders`, {
+				method: 'GET',
+				credentials: 'include',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+			});
 
       if (!response.ok) {
         if (response.status === 401) {

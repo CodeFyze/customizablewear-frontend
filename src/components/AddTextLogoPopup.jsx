@@ -5,7 +5,7 @@ import { FaTimes } from 'react-icons/fa';
 import { addItem } from '../store/cartSlice'; 
 import { useDispatch } from 'react-redux';
 
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const AddTextLogoPopup = ({
 	onBack,
 	onFinish,
@@ -80,7 +80,8 @@ const AddTextLogoPopup = ({
 		try {
 			setLoading(true);
 			const token = localStorage.getItem('authToken');
-			const response = await fetch('http://localhost:5000/api/cart/add', {
+
+			const response = await fetch(`${apiUrl}/cart/add`, {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -121,7 +122,7 @@ const AddTextLogoPopup = ({
 					<p className='text-gray-600 mb-4'>
 						Create your text logo, we have no setup fees! We will always send a design proof for your approval before
 						production.
-					</p>
+					</p>Add Your Text Logo
 					{selectedProduct?.frontImage && (
 						<img
 							src={selectedProduct.frontImage}
