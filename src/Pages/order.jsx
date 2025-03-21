@@ -109,7 +109,7 @@ const OrderDetails = () => {
 				throw new Error('Unauthorized - No token found.');
 			}
 
-			const response = await fetch(`${apiUrl}/${orderId}/tracking`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
