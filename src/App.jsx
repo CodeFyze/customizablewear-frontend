@@ -53,7 +53,7 @@ const App = () => {
 				<Route path='/products/:productType' element={<ProductTypePage />} />
 				<Route path='/product/:id' element={<ProductDetailsPage />} />
 				<Route path='/bundles' element={<Bundles />} />
-				<Route path='/bundle/category/:category' element={<BundlesDetailsPage />} />
+				{/* <Route path='/bundle/category/:category' element={<BundlesDetailsPage />} /> */}
 			</Routes>
 
 			{!isSellerPage && <Footer />}

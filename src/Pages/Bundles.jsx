@@ -2,18 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL; 
-console.log(apiUrl);
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
+console.log(apiUrl)
 const Bundles = () => {
-	const [categories, setCategories] = useState([]);
+	const [bundles, setBundles] = useState([]);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
 				const token = localStorage.getItem('authToken');
-				
-				const response = await fetch(`${apiUrl}/bundle/categories`, {
+				console.log(apiUrl)
+				const response = await fetch(`${apiUrl}/bundle`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ const Bundles = () => {
 
 				const data = await response.json();
 				console.log(data);
-				setCategories(data.categories); // Use `data.categories`
+				setBundles(data.bundles); // Use `data.categories`
 			} catch (error) {
 				console.error('Error fetching categories:', error);
 			}
@@ -44,17 +44,17 @@ const Bundles = () => {
 				</h2>
 
 				<div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8'>
-					{categories.map((category, index) => (
+					{bundles.map((bundle, index) => (
 						<div key={index} className='group relative'>
-							<Link to={`bundle/category/${category.name}`}>
+							<Link to={`bundle/bundle/${bundle.name}`}>
 								<div className='aspect-square w-full rounded-md bg-gray-200 overflow-hidden'>
 									<img
-										src={category.image} // Display the category image
-										alt={category.name}
+										src={bundle.image} // Display the bundle image
+										alt={bundle.name}
 										className='w-full h-full object-cover object-center'
 									/>
 								</div>
-								<h3 className='mt-2 text-lg font-medium text-gray-900 text-center'>{category.name}</h3>
+								<h3 className='mt-2 text-lg font-medium text-gray-900 text-center'>{bundle.name}</h3>
 							</Link>
 						</div>
 					))}
