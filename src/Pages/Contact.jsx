@@ -46,22 +46,19 @@ const Contact = () => {
 				throw new Error(result.error || 'Failed to send message');
 			}
 
-			// Handle new and existing user response
-			if (result.user=="New User") {
+			// Handle  user response
 				Swal.fire({
 					title: 'Success!',
 					text: 'Your message has been submitted!',
 					icon: 'success',
 					confirmButtonColor: '#fc8019',
 				});
-			} else {
-				Swal.fire({
-					title: 'Submitted Again!',
-					text: 'Your response has been submitted again!',
-					icon: 'info',
-					confirmButtonColor: '#fc8019',
-				});
-			}
+				// Swal.fire({
+				// 	title: 'Submitted Again!',
+				// 	text: 'Your response has been submitted again!',
+				// 	icon: 'info',
+				// 	confirmButtonColor: '#fc8019',
+				// });
 
 			setFormData({ name: '', email: '', message: '' });
 
