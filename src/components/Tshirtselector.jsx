@@ -270,6 +270,7 @@ const TShirtSelector = () => {
           onClose={() => setPopupVisible(false)}
           selectedProduct={selectedProduct}
           selectedSize={selectedSize}
+          
           selectedColor={selectedColor}
           selectedShirt={selectedShirt}
         />

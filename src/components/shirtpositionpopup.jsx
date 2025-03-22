@@ -11,7 +11,7 @@ import shirtPop from './shirtpopup';
 import Popup from './shirtpopup';
 import { FaTimes } from 'react-icons/fa'; // Import FaTimes for close icon
 
-const PositionPopup = ({ onClose, onNext, visible, selectedPosition, setSelectedPosition }) => {
+const PositionPopup = ({ onClose,onBack, onNext, visible, selectedPosition, setSelectedPosition }) => {
 
 	if (!visible) return null;
 
@@ -56,7 +56,7 @@ const PositionPopup = ({ onClose, onNext, visible, selectedPosition, setSelected
 				</div>
 				<div className='flex justify-between items-center mt-6'>
 					<button
-						onClick={onClose} // Close popup when 'BACK' button is clicked
+						onClick={onBack}
 						className='bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg w-32 text-center'>
 						BACK
 					</button>

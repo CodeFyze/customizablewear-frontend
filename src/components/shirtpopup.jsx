@@ -138,6 +138,9 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					onNext={() => {
 						setShowSizePopup(false);
 						setIsAddLogoPopupVisible(true);
+					} }
+					onBack={ () => {
+						setShowSizePopup(false)
 					}}
 				/>
 			)}
