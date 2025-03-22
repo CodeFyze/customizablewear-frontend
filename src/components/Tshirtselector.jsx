@@ -185,98 +185,94 @@ const TShirtSelector = () => {
   }, [location, navigate]);
 
   return (
-    <div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
-      {/* Shirt Display Area */}
-      <div className='w-full md:w-[1000px] flex justify-center'>
-        {selectedShirt && (
-          <img
-            src={selectedShirt}
-            alt='Selected T-Shirt'
-            className={`w-full h-auto md:m-10 max-w-xs md:max-w-2xl p-4 md:p-0 transform transition-transform duration-200 ${
-              isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
-            }`}
-          />
-        )}
-      </div>
+		<div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
+			{/* Shirt Display Area */}
+			<div className='w-full md:w-[1000px] flex justify-center'>
+				{selectedShirt && (
+					<img
+						src={selectedShirt}
+						alt='Selected T-Shirt'
+						className={`w-full h-auto md:m-10 max-w-xs md:max-w-2xl p-4 md:p-0 transform transition-transform duration-200 ${
+							isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
+						}`}
+					/>
+				)}
+			</div>
 
-      {/* Product & Selection Controls */}
-      <div className='w-full md:w-1/3 md:pr-10'>
-        {/* Select Product */}
-        <div className='mt-4 font-medium text-lg text-center md:text-left'>Shirts</div>
-        <div className='overflow-x-auto flex space-x-2 mt-4 p-2'>
-          {products.map((product, index) => (
-            <div key={index} className='text-center'>
-              <img
-                src={product.frontImage}
-                alt={`Front View ${index + 1}`}
-                className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
-                  selectedProduct === product ? 'border-orange-500' : ''
-                }`}
-                onClick={() => handleProductSelect(product)}
-              />
-            </div>
-          ))}
-        </div>
+			{/* Product & Selection Controls */}
+			<div className='w-full md:w-1/3 md:pr-10'>
+				{/* Select Product */}
+				<div className='mt-4 font-medium text-lg text-center md:text-left'>Shirts</div>
+				<div className='overflow-x-auto flex space-x-2 mt-4 p-2'>
+					{products.map((product, index) => (
+						<div key={index} className='text-center'>
+							<img
+								src={product.frontImage}
+								alt={`Front View ${index + 1}`}
+								className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
+									selectedProduct === product ? 'border-orange-500' : ''
+								}`}
+								onClick={() => handleProductSelect(product)}
+							/>
+						</div>
+					))}
+				</div>
 
-        {/* Select Color */}
-        <div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
-        <div className='flex space-x-2 mt-4'>
-          {selectedProduct?.colors?.map((color, index) => (
-            <div
-              key={index}
-              className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer ${
-                selectedColor === color ? 'border-orange-500 outline outline-2' : 'hover:border-orange-500'
-              }`}
-              style={{ backgroundColor: color }}
-              onClick={() => handleColorSelect(color)}
-            ></div>
-          ))}
-        </div>
+				{/* Select Color */}
+				<div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
+				<div className='flex space-x-2 mt-4'>
+					{selectedProduct?.colors?.map((color, index) => (
+						<div
+							key={index}
+							className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer ${
+								selectedColor === color ? 'border-orange-500 outline outline-2' : 'hover:border-orange-500'
+							}`}
+							style={{ backgroundColor: color }}
+							onClick={() => handleColorSelect(color)}></div>
+					))}
+				</div>
 
-        {/* Shirt Details */}
-        <div className='mt-6 p-4 md:mb-3'>
-          <h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
-          <p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
-          <p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
-        </div>
+				{/* Shirt Details */}
+				<div className='mt-6 p-4 md:mb-3'>
+					<h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
+					<p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
+					<p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
+				</div>
 
-        {/* Size Selection */}
-        <SizeSelection
-          selectedProduct={selectedProduct}
-          onSizeSelect={setSelectedSize}
-          selectedSize={selectedSize}
-        />
+				{/* Size Selection */}
+				<SizeSelection selectedProduct={selectedProduct} onSizeSelect={setSelectedSize} selectedSize={selectedSize} />
 
-        {/* Buttons */}
-        <button
-          onClick={handleAddLogoClick}
-          className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'
-        >
-          ADD LOGO
-        </button>
+				{/* Buttons */}
+				<button
+					onClick={handleAddLogoClick}
+					className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
+					ADD LOGO
+				</button>
 
-        <button
-          onClick={handleAddToCart}
-          className='bg-orange-500 text-white py-2 px-4 ml-10 rounded-lg hover:bg-orange-600'
-        >
-          ADD TO CART
-        </button>
-      </div>
+			
+				<button
+					onClick={handleAddToCart}
+					className={`mt-4 bg-orange-500 text-white  ml-10 py-2 px-4 rounded-lg hover:bg-orange-600 ${
+						loading ? 'opacity-50 cursor-not-allowed' : ''
+					}`}
+					disabled={loading}>
+					{loading ? 'Adding...' : 'ADD TO CART'}
+				</button>
+			</div>
 
-      {/* Popup */}
-      {popupVisible && (
-        <Popup
-          visible={popupVisible}
-          onClose={() => setPopupVisible(false)}
-          selectedProduct={selectedProduct}
-          selectedSize={selectedSize}
-          
-          selectedColor={selectedColor}
-          selectedShirt={selectedShirt}
-        />
-      )}
-    </div>
-  );
+			{/* Popup */}
+			{popupVisible && (
+				<Popup
+					visible={popupVisible}
+					onClose={() => setPopupVisible(false)}
+					selectedProduct={selectedProduct}
+					selectedSize={selectedSize}
+					selectedColor={selectedColor}
+					selectedShirt={selectedShirt}
+				/>
+			)}
+		</div>
+	);
 };
 
 export default TShirtSelector;
