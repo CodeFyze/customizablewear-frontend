@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2'; // Import SweetAlert
 
-const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor }) => {
+const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor ,resetSelectedColor,resetSelectedSize}) => {
 	console.log(selectedProduct, selectedSize, selectedColor);
 	const [selectedMethod, setSelectedMethod] = useState('Embroidery');
 	const [selectedPosition, setSelectedPosition] = useState('Large Front');
@@ -46,7 +46,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 		});
 
 		console.log('Text logo details:', details);
+	
 	};
+	// Reset functions
+	
 	const handleClose = () => {
 		setShowSizePopup(false);
 		setIsAddLogoPopupVisible(false);
@@ -138,9 +141,9 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					onNext={() => {
 						setShowSizePopup(false);
 						setIsAddLogoPopupVisible(true);
-					} }
-					onBack={ () => {
-						setShowSizePopup(false)
+					}}
+					onBack={() => {
+						setShowSizePopup(false);
 					}}
 				/>
 			)}
@@ -176,6 +179,8 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					}}
 					onFinish={handleFinishTextLogo}
 					onClose={handleClose}
+					resetSelectedColor={resetSelectedColor} // Pass reset function
+					resetSelectedSize={resetSelectedSize} // Pass reset function
 				/>
 			)}
 			{isUploadLogoPopupVisible && (
@@ -189,6 +194,8 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 						setIsUploadLogoPopupVisible(false);
 						setIsAddLogoPopupVisible(true);
 					}}
+					resetSelectedColor={resetSelectedColor} // Pass reset function
+					resetSelectedSize={resetSelectedSize} // Pass reset function
 					onClose={handleClose}
 				/>
 			)}

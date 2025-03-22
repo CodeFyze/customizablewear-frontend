@@ -30,6 +30,9 @@ const TShirtSelector = () => {
       setIsAnimating(false);
     }, 300);
   };
+  //resset function
+  const resetSelectedColor = () => setSelectedColor(null);
+	const resetSelectedSize = () => setSelectedSize(null);
 
   // Handle Product Selection
   const handleProductSelect = (product) => {
@@ -107,13 +110,14 @@ const TShirtSelector = () => {
       toast.error('An error occurred while adding to the cart.');
     } finally {
       setLoading(false);
+      setSelectedColor(null)
+      setSelectedSize(null)
     }
   };
 
   // Handle Add Logo Click
   const handleAddLogoClick = async () => {
     try {
-      setLoading(true);
       const token = localStorage.getItem('authToken');
       if (!token) {
         navigate('/login', { state: { from: '/products', openPopup: true } });
@@ -249,7 +253,6 @@ const TShirtSelector = () => {
 					ADD LOGO
 				</button>
 
-			
 				<button
 					onClick={handleAddToCart}
 					className={`mt-4 bg-orange-500 text-white  ml-10 py-2 px-4 rounded-lg hover:bg-orange-600 ${
@@ -269,6 +272,8 @@ const TShirtSelector = () => {
 					selectedSize={selectedSize}
 					selectedColor={selectedColor}
 					selectedShirt={selectedShirt}
+					resetSelectedSize={resetSelectedSize}
+					resetSelectedColor={resetSelectedColor}
 				/>
 			)}
 		</div>

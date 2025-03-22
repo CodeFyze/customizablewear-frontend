@@ -16,6 +16,8 @@ const AddTextLogoPopup = ({
 	selectedMethod,
 	selectedPosition,
 	onClose,
+	resetSelectedSize,
+	resetSelectedColor,
 }) => {
 	const [textLine, setTextLine] = useState(selectedProduct?.textLine || '');
 	const [font, setFont] = useState(selectedProduct?.font || 'Standard');
@@ -103,6 +105,9 @@ const AddTextLogoPopup = ({
 					icon: 'success',
 				});
 				onFinish();
+				// Reset selected color and size
+				resetSelectedColor();
+				resetSelectedSize();
 			} else {
 				toast.error(data.message || 'Failed to add item to cart.');
 			}
