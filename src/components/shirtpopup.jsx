@@ -112,10 +112,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 							</div>
 						</div>
 
-						<div className='flex justify-between mt-6'>
-							<button onClick={handleClose} className='bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600'>
+						<div className='flex justify-end mt-6'>
+							{/* <button onClick={handleClose} className='bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600'>
 								BACK
-							</button>
+							</button> */}
 							<button
 								onClick={() => {
 									setShowSizePopup(true);
