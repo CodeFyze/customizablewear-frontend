@@ -51,7 +51,7 @@ const Products = ({ showTShirtSelector = true }) => {
       <div className="container mx-auto pb-24 py-4">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
         <div className="flex flex-wrap justify-center">
-          {products.map((product) => (
+          { products.map((product) => (
             <div
               key={product._id}
               className="min-w-[300px] max-w-[200px] m-2 p-4 bg-white shadow-md border-2 rounded-lg transition-transform transform hover:scale-100"
