@@ -130,8 +130,18 @@ const TShirtSelector = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setPopupVisible(true);
-      } else {
+				// Check if color or size is not selected
+				if (!selectedColor || !selectedSize) {
+					let missingFields = [];
+					if (!selectedColor) missingFields.push('color');
+					if (!selectedSize) missingFields.push('size');
+
+					toast.error(`Please select ${missingFields.join(' and ')}.`);
+					return;
+				}
+
+				setPopupVisible(true);
+			} else {
         navigate('/login', { state: { from: '/products', openPopup: true } });
       }
     } catch (error) {
