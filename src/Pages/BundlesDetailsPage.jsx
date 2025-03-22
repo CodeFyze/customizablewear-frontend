@@ -1,4 +1,3 @@
-// BundleSelectionPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -15,7 +14,7 @@ const BundleSelectionPage = () => {
 			try {
 				const token = localStorage.getItem('authToken');
 
-				const response = await fetch(`${apiUrl}/bundle/category/${category}`, {
+				const response = await fetch(`${apiUrl}/bundle/${category}`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,

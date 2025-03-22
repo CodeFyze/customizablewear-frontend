@@ -11,7 +11,7 @@ const Bundles = () => {
 			try {
 				const token = localStorage.getItem('authToken');
 				
-				const response = await fetch(`${apiUrl}/bundle/categories`, {
+				const response = await fetch(`${apiUrl}/bundle/`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,
