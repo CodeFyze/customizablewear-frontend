@@ -224,7 +224,7 @@ const Checkout = () => {
 	};
 
 	return (
-		<div className='checkout-container mx-4 my-8'>
+		<div className='checkout-container mx-4 my-8 px-6 md:px-10 pt-8'>
 			<div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
 				<div>
 					<h2 className='text-2xl font-bold mb-4'>Shipping Address</h2>
@@ -314,7 +314,7 @@ const Checkout = () => {
 								<button
 									onClick={handleApplyPromo}
 									disabled={loading}
-									className='ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300'>
+									className='ml-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-transparent hover:text-black transition duration-300'>
 									Apply
 								</button>
 							</div>
@@ -323,7 +323,7 @@ const Checkout = () => {
 						<button
 							onClick={handlePlaceOrder}
 							disabled={loading}
-							className='mt-4 w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600 transition duration-300'>
+							className='mt-4 w-full bg-[#091638] text-white py-2  hover:text-black rounded-md hover:bg-transparent transition duration-300'>
 							{loading ? 'Placing Order...' : 'PLACE ORDER'}
 						</button>
 					</div>

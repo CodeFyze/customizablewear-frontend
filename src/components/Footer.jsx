@@ -4,7 +4,7 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/f
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-10">
+    <footer className="bg-[#000000] text-white py-10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div>
@@ -16,7 +16,7 @@ const Footer = () => {
 
           <div>
             <h2 className="text-lg font-bold mb-4">Quick Links</h2>
-            <ul className="text-gray-400">
+            <ul className="text-gray-400 text-center md:text-left">
               <li className="mb-2">
                 <Link to="/" className="hover:underline">
                   Home

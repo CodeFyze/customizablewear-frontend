@@ -37,15 +37,18 @@ const Bundles = () => {
 	}, []);
 
 	return (
-		<div className='bg-white'>
-			<div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
+		<div className=''>
+			<div className=' mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
 				<h2 className='text-2xl font-bold tracking-tight text-gray-900'>
-					Uniform Deals that Add Up: SAVE UP TO 60% ON OUR MIX & MATCH BUNDLES
+					<span className='text-[#002DA1] font-bold'>Uniform Deals that Add Up: </span>SAVE UP TO <span className='text-[#FF4545]'>60%</span>  ON <br /> OUR MIX & MATCH BUNDLES
 				</h2>
 
-				<div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8'>
+				<div className='mt-6 grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-3'>
 					{bundles.map((bundle, index) => (
-						<div key={index} className='group relative'>
+						
+						<div key={index} className='group relative shadow-md'>
+							{console.log(bundle)
+							}
 							<Link to={`bundle/bundle/${bundle.name}`}>
 								<div className='aspect-square w-full rounded-md bg-gray-200 overflow-hidden'>
 									<img

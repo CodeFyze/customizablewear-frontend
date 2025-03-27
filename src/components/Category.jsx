@@ -3,7 +3,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 
-	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Category = () => {
   const [products, setProducts] = useState([]);
@@ -35,10 +35,10 @@ const Category = () => {
   });
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4">
+    <div className=" mx-auto px-4">
       <div className="flex items-center justify-between my-8">
-        <div className="text-2xl font-bold">Product Categories</div>
-        <div className="flex space-x-2">
+        <div className="text-2xl md:text-4xl font-bold"><span className="text-[#002DA1]">Shop </span> Our Best Sellers</div>
+        {/* <div className="flex space-x-2">
           <button
             className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-[#4bf6d4] transition-colors"
           >
@@ -49,23 +49,23 @@ const Category = () => {
           >
             <FaArrowRight className="text-xl text-gray-600 hover:text-white" />
           </button>
-        </div>
+        </div> */}
       </div>
-      <div className="flex items-center overflow-x-auto scrollbar-hide space-x-4 py-7">
+      <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {Object.values(groupedProducts).map((product) => (
           <div
             key={product._id}
-            className="w-44 h-64 flex-shrink-0 transition-transform transform hover:scale-105 p-4 rounded-lg shadow-md relative cursor-pointer"
+            className="bg-[#1A1A1A] h-60 flex-shrink-0  rounded-lg shadow-md relative cursor-pointer"
             onClick={() => navigate(`/products/${product.productType}`)}
           >
             <div className="h-full flex flex-col justify-between">
-              <div className="relative w-full h-36">
+              <div className="relative w-full h-full">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-cover rounded-lg transition-transform duration-500 hover:rotate-3 hover:scale-110"
+                  className="w-full h-full p-3 object-cover drop-shadow-md- rounded-lg "
                 />
-                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white text-sm font-semibold text-center py-1 rounded-b-lg">
+                <div className="absolute top-3/4 left-0 w-1/2 bg-white  text-black text-sm font-semibold text-center py-1 ">
                   {product.productType}
                 </div>
               </div>
@@ -77,7 +77,7 @@ const Category = () => {
           </div>
         ))}
       </div>
-      <hr className="my-4 border-gray-500" />
+     
     </div>
   );
 };

@@ -175,27 +175,31 @@ const TShirtSelector = () => {
   }, [location, navigate]);
 
   return (
-    <div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
+    <div className='container mx-auto  pt-2'>
+    <div className=' grid grid-cols-1 md:grid-cols-4'>
       {/* Shirt Display Area */}
-      <div className='w-full md:w-[1000px] flex justify-center'>
+      <div className=' w-full  md:col-span-2 flex justify-center items-center'>
         {selectedShirt && (
+          <div className=' p-3 w-full m-8 rounded-md shadow-md'>
           <img
             src={selectedShirt}
             alt='Selected T-Shirt'
-            className={`w-full h-auto md:m-10 max-w-xs md:max-w-2xl p-4 md:p-0 transform transition-transform duration-200 ${
+            className={` rounded-md  w-full transform transition-transform duration-200 ${
               isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
             }`}
           />
+          </div>
         )}
       </div>
 
       {/* Product & Selection Controls */}
-      <div className='w-full md:w-1/3 md:pr-10'>
+      <div className=' col-span-2 w-full  h-auto md:px-5'>
         {/* Select Product */}
-        <div className='mt-4 font-medium text-lg text-center md:text-left'>Shirts</div>
-        <div className='overflow-x-auto flex space-x-2 mt-4 p-2'>
+        <div className='bg-white mt-4 p-3 shadow-md rounded-md'>
+        <div className='ml-7 font-medium text-lg text-center md:text-left '>Shirts</div>
+        <div className='overflow-x-auto ml-6 flex gap-x-1 mt-4 p-2'>
           {products.map((product, index) => (
-            <div key={index} className='text-center'>
+            <div key={index} className='text-center '>
               <img
                 src={product.frontImage}
                 alt={`Front View ${index + 1}`}
@@ -209,8 +213,8 @@ const TShirtSelector = () => {
         </div>
 
         {/* Select Color */}
-        <div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
-        <div className='flex space-x-2 mt-4'>
+        <div className='mt-3 ml-7 font-medium text-lg text-center md:text-left'>Select Color</div>
+        <div className=' ml-7 flex gap-x-2'>
           {selectedProduct?.colors?.map((color, index) => (
             <div
               key={index}
@@ -224,7 +228,7 @@ const TShirtSelector = () => {
         </div>
 
         {/* Shirt Details */}
-        <div className='mt-6 p-4 md:mb-3'>
+        <div className='mt-3 ml-7  md:mb-3'>
           <h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
           <p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
           <p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
@@ -235,22 +239,26 @@ const TShirtSelector = () => {
           selectedProduct={selectedProduct}
           onSizeSelect={setSelectedSize}
           selectedSize={selectedSize}
+          
         />
+        <div className='flex items-center gap-x-2'>
 
         {/* Buttons */}
         <button
           onClick={handleAddLogoClick}
-          className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'
+          className=' bg-black text-white py-2 px-4 rounded-lg hover:bg-orange-600'
         >
           ADD LOGO
         </button>
 
         <button
           onClick={handleAddToCart}
-          className='bg-orange-500 text-white py-2 px-4 ml-10 rounded-lg hover:bg-orange-600'
+          className='bg-black text-white py-2 px-4 rounded-lg hover:bg-orange-600'
         >
           ADD TO CART
         </button>
+        </div>
+        </div>
       </div>
 
       {/* Popup */}
@@ -264,6 +272,7 @@ const TShirtSelector = () => {
           selectedShirt={selectedShirt}
         />
       )}
+    </div>
     </div>
   );
 };
