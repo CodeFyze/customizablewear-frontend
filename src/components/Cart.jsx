@@ -171,7 +171,7 @@ const Cart = () => {
 	};
 
 	return (
-		<div className='mx-auto my-8 container px-6 md:px-10 pt-8'>
+		<div className='mx-auto my-8 container min-h-96 px-6 md:px-10 pt-8'>
 			<h1 className='text-2xl font-bold mb-4'>Shopping Cart</h1>
 			<div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3  '>
 				<div className=' md:col-span-2 lg:col-span-2 flex flex-col '>

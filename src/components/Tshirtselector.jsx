@@ -41,7 +41,7 @@ const TShirtSelector = () => {
 
   // Handle Color Selection
   const handleColorSelect = (color) => {
-    console.log('Color selected:', color);
+    
     setSelectedColor(color);
 
     const colorIndex = selectedProduct.colors.indexOf(color);
@@ -175,16 +175,16 @@ const TShirtSelector = () => {
   }, [location, navigate]);
 
   return (
-    <div className='container mx-auto  pt-2'>
-    <div className=' grid grid-cols-1 md:grid-cols-4'>
+    <div className='container mx-auto  pt-3'>
+    <div className=' flex flex-col md:flex-row'>
       {/* Shirt Display Area */}
-      <div className=' w-full  md:col-span-2 flex justify-center items-center'>
+      <div className=' w-full mt-4 md:w-3/5 flex justify-center items-center'>
         {selectedShirt && (
-          <div className=' p-3 w-full m-8 rounded-md shadow-md'>
+          <div className='bg-white p-3 w-3/5 h-[250px] md:h-[450px] md:w-[450px] rounded-xl shadow-md'>
           <img
             src={selectedShirt}
             alt='Selected T-Shirt'
-            className={` rounded-md  w-full transform transition-transform duration-200 ${
+            className={` rounded-md object-contain h-full  w-full transform transition-transform duration-200 ${
               isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
             }`}
           />
@@ -193,18 +193,18 @@ const TShirtSelector = () => {
       </div>
 
       {/* Product & Selection Controls */}
-      <div className=' col-span-2 w-full  h-auto md:px-5'>
+      <div className=' w-full  md:w-2/5 h-auto  md:px-5 py-4'>
         {/* Select Product */}
-        <div className='bg-white mt-4 p-3 shadow-md rounded-md'>
-        <div className='ml-7 font-medium text-lg text-center md:text-left '>Shirts</div>
+        <div className=' my-4 p-5 shadow-md rounded-md'>
+        <div className='ml-7 font-medium text-lg text-start md:text-left '>Shirts</div>
         <div className='overflow-x-auto ml-6 flex gap-x-1 mt-4 p-2'>
           {products.map((product, index) => (
             <div key={index} className='text-center '>
               <img
                 src={product.frontImage}
                 alt={`Front View ${index + 1}`}
-                className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
-                  selectedProduct === product ? 'border-orange-500' : ''
+                className={`w-24 h-24 object-cover rounded-md cursor-pointer border-[2px] border-gray-300 hover:border-[#091638] ${
+                  selectedProduct === product ? 'border-[#091638]' : ''
                 }`}
                 onClick={() => handleProductSelect(product)}
               />
@@ -213,13 +213,13 @@ const TShirtSelector = () => {
         </div>
 
         {/* Select Color */}
-        <div className='mt-3 ml-7 font-medium text-lg text-center md:text-left'>Select Color</div>
+        <div className='mt-3  ml-7 font-medium text-lg text-start md:text-left'>Select Color</div>
         <div className=' ml-7 flex gap-x-2'>
           {selectedProduct?.colors?.map((color, index) => (
             <div
               key={index}
               className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer ${
-                selectedColor === color ? 'border-orange-500 outline outline-2' : 'hover:border-orange-500'
+                selectedColor === color ? 'border-[#091638] outline outline-2' : 'hover:border-[#091638]'
               }`}
               style={{ backgroundColor: color }}
               onClick={() => handleColorSelect(color)}
@@ -228,7 +228,7 @@ const TShirtSelector = () => {
         </div>
 
         {/* Shirt Details */}
-        <div className='mt-3 ml-7  md:mb-3'>
+        <div className='mt-3 ml-7 '>
           <h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
           <p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
           <p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
@@ -241,19 +241,19 @@ const TShirtSelector = () => {
           selectedSize={selectedSize}
           
         />
-        <div className='flex items-center gap-x-2'>
+        <div className='flex flex-col md:flex-col lg:flex-row md:items-start lg:items-center gap-2'>
 
         {/* Buttons */}
         <button
           onClick={handleAddLogoClick}
-          className=' bg-black text-white py-2 px-4 rounded-lg hover:bg-orange-600'
+          className=' bg-black text-white md:w-36 py-3 px-2 md:px-4 md:py-2 md:text-md border-[1px] border-black font-semibold rounded-full hover:bg-white hover:text-black '
         >
           ADD LOGO
         </button>
 
         <button
           onClick={handleAddToCart}
-          className='bg-black text-white py-2 px-4 rounded-lg hover:bg-orange-600'
+          className='bg-transparent text-black md:w-36 py-3 px-1 md:px-4 md:py-2 md:text-md border-[1px] border-black font-semibold rounded-full hover:bg-black hover:text-white '
         >
           ADD TO CART
         </button>

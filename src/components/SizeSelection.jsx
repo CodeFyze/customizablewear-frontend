@@ -64,9 +64,9 @@ const SizeSelection = ({ selectedProduct, onSizeSelect, selectedSize }) => {
 							key={size.size}
 							className={`py-2 px-4 rounded-lg border-2 ${
 								isSelected
-									? 'bg-orange-500 text-white border-orange-500'
+									? 'bg-transparent text-black border-black'
 									: isAvailable
-									? 'hover:bg-orange-500 hover:text-white hover:border-orange-500 border-gray-300'
+									? 'hover:transparent hover:text-black hover:border-black border-gray-300'
 									: 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-200'
 							}`}
 							onClick={() => handleSizeClick(size.size)}

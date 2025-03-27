@@ -48,7 +48,7 @@ const Products = ({ showTShirtSelector = true }) => {
   return (
     <div className="">
       {showTShirtSelector && <TShirtSelector />}
-      <div className=" container mx-auto py-4 ">
+      <div className=" container mx-auto px-4 py-4 ">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
         <div className="w-full  grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
           {products.map((product) => (
