@@ -8,50 +8,26 @@ const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const [ selectedProduct, setSelectedProduct ] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL; 
-
-
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await fetch(`${API_URL}`, {
-  //       credentials: "include",
-  //       method: "GET",
-  //     });
-  //     if (!response.ok) throw new Error("Failed to fetch products");
-  //     const data = await response.json();
-
-  //     if (data.success && Array.isArray(data.products)) {
-  //       setProducts(data.products);
-  //       console.log(data.products);
-  //     } else {
-  //       console.error("Unexpected API response:", data);
-  //       toast.error("Unexpected response format from API", { position: "top-right" });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //     toast.error("Failed to fetch products", { position: "top-right" });
-  //   }
-  // };
-
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${apiUrl}/products`, {
-				credentials: 'include',
-				method: 'GET',
-			});
-  
+        credentials: "include",
+        method: "GET",
+      });
+
       if (!response.ok) throw new Error("Failed to fetch products");
-  
+
       const data = await response.json();
-  
+
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
-        
+
         // ✅ Log all product details
         console.log("Fetched Products:", JSON.stringify(data.products, null, 2));
-        
       } else {
         console.error("Unexpected API response:", data);
         toast.error("Unexpected response format from API", { position: "top-right" });
@@ -61,12 +37,11 @@ const Products = () => {
       toast.error("Failed to fetch products", { position: "top-right" });
     }
   };
-  
+
   const handleProductSubmit = async (productData) => {
     try {
       const formData = new FormData();
       formData.append("title", productData.title);
-      // formData.append("description", productData.description);
       formData.append("price", productData.price);
 
       // Add images
@@ -125,16 +100,16 @@ const Products = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const token = localStorage.getItem("authToken")
+      const token = localStorage.getItem("authToken");
 
       const response = await fetch(`${apiUrl}/products/delete/${productId}`, {
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to delete product");
       setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
       toast.success("Product deleted successfully!", { position: "top-right" });
@@ -145,6 +120,13 @@ const Products = () => {
       setIsDeleteModalOpen(false);
     }
   };
+
+  // Filter products based on search term (name or price)
+  const filteredProducts = products.filter((product) => {
+    const matchesName = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPrice = product.price.toString().includes(searchTerm);
+    return matchesName || matchesPrice;
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -166,45 +148,55 @@ const Products = () => {
         </button>
       </div>
 
+      {/* Search Bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by product name or price"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+      </div>
+
       {/* Product Count Display */}
       <div className="mb-4 text-gray-600">
-        <p className="text-lg">Total Products: {products.length}</p>
+        <p className="text-lg">Total Products: {filteredProducts.length}</p>
       </div>
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {Array.isArray(products) &&
-          products.map((product) => (
-            <div key={product.id} className="bg-white shadow rounded-lg p-4">
-              <img
-                src={product.frontImage || product.backImage || product.sideImage}
-                alt={product.title}
-                className="w-32 h-32 object-cover rounded-lg mb-4"
-              />
-              <h2 className="text-lg font-semibold">{product.title}</h2>
-              <p>${product.price}</p>
-              <div className="flex space-x-2 mt-4">
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setIsModalOpen(true);
-                  }}
-                  className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-600"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    setIsDeleteModalOpen(true);
-                  }}
-                  className="bg-black text-white px-4 py-2 rounded hover:bg-red-700"
-                >
-                  Delete
-                </button>
-              </div>
+        {filteredProducts.map((product) => (
+          <div key={product.id} className="bg-white shadow rounded-lg p-4">
+            <img
+              src={product.frontImage || product.backImage || product.sideImage}
+              alt={product.title}
+              className="w-32 h-32 object-cover rounded-lg mb-4"
+            />
+            <h2 className="text-lg font-semibold">{product.title}</h2>
+            <p>${product.price}</p>
+            <div className="flex space-x-2 mt-4">
+              <button
+                onClick={() => {
+                  setSelectedProduct(product);
+                  setIsModalOpen(true);
+                }}
+                className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-600"
+              >
+                Update
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedProduct(product);
+                  setIsDeleteModalOpen(true);
+                }}
+                className="bg-black text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
 
       <ToastContainer />
