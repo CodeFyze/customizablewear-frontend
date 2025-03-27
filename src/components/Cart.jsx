@@ -59,10 +59,10 @@ const Cart = () => {
 			return;
 		}
 
-		dispatch(increaseQuantity(item._id));
+		dispatch(increaseQuantity(item.product._id));
 
 		try {
-			const response = await fetch(`${apiUrl}/cart/increase/${item._id}`, {
+			const response = await fetch(`${apiUrl}/cart/increase/${item.product._id}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ const Cart = () => {
 			console.log('Response after increase:', await response.json());
 		} catch (error) {
 			console.error('❌ Error increasing quantity:', error.message);
-			dispatch(decreaseQuantity(item._id));
+			dispatch(decreaseQuantity(item.product._id));
 		}
 	};
 
@@ -92,10 +92,10 @@ const Cart = () => {
 			return;
 		}
 
-		dispatch(decreaseQuantity(item._id));
+		dispatch(decreaseQuantity(item.product._id));
 
 		try {
-			const response = await fetch(`${apiUrl}/cart/decrease/${item._id}`, {
+			const response = await fetch(`${apiUrl}/cart/decrease/${item.product._id}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -111,7 +111,7 @@ const Cart = () => {
 			console.log('Response after decrease:', await response.json());
 		} catch (error) {
 			console.error('❌ Error decreasing quantity:', error.message);
-			// dispatch(increaseQuantity(item._id));
+			dispatch(increaseQuantity(item.product._id));
 		}
 	};
 
@@ -140,11 +140,10 @@ const Cart = () => {
 			}
 
 			const data = await response.json();
-const deletedCartId = data?.deletedProduct?._id;
-			console.log('Response after removal:', data?.deletedProduct?._id);
+			console.log('Response after removal:', data);
 
 			// Dispatch the removeItem action to instantly remove the item from Redux
-			dispatch(removeItem(deletedCartId));
+			dispatch(removeItem(productId));
 		} catch (error) {
 			console.error('❌ Error removing item:', error.message);
 		}
@@ -246,7 +245,7 @@ const deletedCartId = data?.deletedProduct?._id;
 									</div>
 
 									<button
-										onClick={() => handleRemove(item._id)} // Pass the product._id correctly
+										onClick={() => handleRemove(item.product._id)} // Pass the product._id correctly
 										className='mt-2 text-red-500 text-sm underline hover:text-red-700'>
 										Remove
 									</button>
@@ -273,3 +272,6 @@ const deletedCartId = data?.deletedProduct?._id;
 };
 
 export default Cart;
+
+
+
