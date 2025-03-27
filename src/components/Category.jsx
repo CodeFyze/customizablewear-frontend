@@ -22,7 +22,7 @@ const Category = () => {
       const data = await response.json();
       setProducts(data.products);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      consoyle.error("Error fetching products:", error);
     }
   };
 

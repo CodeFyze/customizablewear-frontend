@@ -1,40 +1,37 @@
-// Homepage.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-console.log(apiUrl)
 const Bundles = () => {
-	const [bundles, setBundles] = useState([]);
+  const [bundles, setBundles] = useState([]);
 
-	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const token = localStorage.getItem('authToken');
-				console.log(apiUrl)
-				const response = await fetch(`${apiUrl}/bundle`, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'application/json',
-					},
-				});
+  useEffect(() => {
+    const fetchBundles = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`${apiUrl}/bundle`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-				if (!response.ok) {
-					throw new Error('Failed to fetch categories');
-				}
+        if (!response.ok) {
+          throw new Error('Failed to fetch bundles');
+        }
 
-				const data = await response.json();
-				console.log(data);
-				setBundles(data.bundles); // Use `data.categories`
-			} catch (error) {
-				console.error('Error fetching categories:', error);
-			}
-		};
+        const data = await response.json();
+        console.log('Bundles data:', data);
+        setBundles(data.bundles || []);
+      } catch (error) {
+        console.error('Error fetching bundles:', error);
+      }
+    };
 
-		fetchCategories();
-	}, []);
+    fetchBundles();
+  }, []);
 
 	return (
 		<div className=''>

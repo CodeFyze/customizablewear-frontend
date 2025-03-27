@@ -30,6 +30,9 @@ const TShirtSelector = () => {
       setIsAnimating(false);
     }, 300);
   };
+  //resset function
+  const resetSelectedColor = () => setSelectedColor(null);
+	const resetSelectedSize = () => setSelectedSize(null);
 
   // Handle Product Selection
   const handleProductSelect = (product) => {
@@ -107,13 +110,14 @@ const TShirtSelector = () => {
       toast.error('An error occurred while adding to the cart.');
     } finally {
       setLoading(false);
+      setSelectedColor(null)
+      setSelectedSize(null)
     }
   };
 
   // Handle Add Logo Click
   const handleAddLogoClick = async () => {
     try {
-      setLoading(true);
       const token = localStorage.getItem('authToken');
       if (!token) {
         navigate('/login', { state: { from: '/products', openPopup: true } });
@@ -130,8 +134,18 @@ const TShirtSelector = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setPopupVisible(true);
-      } else {
+				// Check if color or size is not selected
+				if (!selectedColor || !selectedSize) {
+					let missingFields = [];
+					if (!selectedColor) missingFields.push('color');
+					if (!selectedSize) missingFields.push('size');
+
+					toast.error(`Please select ${missingFields.join(' and ')}.`);
+					return;
+				}
+
+				setPopupVisible(true);
+			} else {
         navigate('/login', { state: { from: '/products', openPopup: true } });
       }
     } catch (error) {
