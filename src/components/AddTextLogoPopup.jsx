@@ -121,7 +121,7 @@ const AddTextLogoPopup = ({
 
 	return (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-			<div className='bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 relative'>
+			<div className='bg-white overflow-x-auto h-full rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 relative'>
 				{/* Close Button */}
 				<button onClick={onClose} className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
 					<FaTimes size={20} />

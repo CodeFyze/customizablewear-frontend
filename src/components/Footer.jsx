@@ -8,14 +8,14 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div>
-            <h2 className="text-lg font-bold mb-4">About Us</h2>
-            <p className="text-gray-400">
+            <h2 className="text-lg text-center md:text-start font-bold mb-4">About Us</h2>
+            <p className="text-gray-400 text-center md:text-left">
               We are a leading Professor Store providing a wide range of products to our customers.
             </p>
           </div>
 
           <div>
-            <h2 className="text-lg font-bold mb-4">Quick Links</h2>
+            <h2 className="text-lg font-bold mb-4 text-center md:text-left">Quick Links</h2>
             <ul className="text-gray-400 text-center md:text-left">
               <li className="mb-2">
                 <Link to="/" className="hover:underline">
@@ -41,8 +41,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold mb-4">Contact Us</h2>
-            <ul className="text-gray-400">
+            <h2 className="text-lg font-bold mb-4 text-center md:text-left">Contact Us</h2>
+            <ul className="text-gray-400 text-center md:text-left">
               <li className="mb-2">
                 <a href="tel:+1234567890" className="hover:underline">
                   +923093108513
@@ -58,13 +58,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold mb-4">Stay Connected</h2>
-            <div className="flex items-center space-x-4">
+            <h2 className="text-lg font-bold mb-4 text-center md:text-left">Stay Connected</h2>
+            <div className="flex items-center justify-center md:justify-start space-x-4 text-center md:text-left">
               <a
                 href="https://www.facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-700 rounded-full  hover:bg-[#e57312]"
+                className="p-2 bg-gray-200 text-black rounded-full shadow-[#172751] shadow-lg hover:bg-white hover:text-black"
               >
                 <FaFacebookF />
               </a>
@@ -72,7 +72,7 @@ const Footer = () => {
                 href="https://www.twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-700 rounded-full hover:bg-[#e57312]"
+                className="p-2 bg-gray-200 text-black rounded-full shadow-[#172751] shadow-lg hover:bg-white hover:text-black"
               >
                 <FaTwitter />
               </a>
@@ -80,7 +80,7 @@ const Footer = () => {
                 href="https://www.instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-700 rounded-full hover:bg-[#e57312]"
+                className="p-2 bg-gray-200 text-black rounded-full shadow-[#172751] shadow-lg hover:bg-white hover:text-black"
               >
                 <FaInstagram />
               </a>
@@ -88,7 +88,7 @@ const Footer = () => {
                 href="https://www.linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-700 rounded-full  hover:bg-[#e57312]"
+                className="p-2 bg-gray-200 text-black rounded-full shadow-[#172751] shadow-lg hover:bg-white hover:text-black"
               >
                 <FaLinkedinIn />
               </a>
@@ -108,7 +108,7 @@ const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="p-2 bg-[#fc8019] text-white rounded-r-md hover:bg-[#e57312] transition duration-300"
+                  className="p-2 bg-[#FF4545] text-white rounded-r-md hover:bg-tranparent transition duration-300"
                 >
                   Subscribe
                 </button>

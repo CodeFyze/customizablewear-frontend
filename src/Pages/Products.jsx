@@ -46,7 +46,7 @@ const Products = ({ showTShirtSelector = true }) => {
   };
 
   return (
-    <div className="">
+    <div className="bg-[#F3F4F6]">
       {showTShirtSelector && <TShirtSelector />}
       <div className=" container mx-auto px-4 py-4 ">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>

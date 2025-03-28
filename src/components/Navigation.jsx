@@ -83,7 +83,7 @@ const Navigation = () => {
 										<FaTimes className='h-6 w-6' />
 									</button>
 								</div>
-				<div className='px-2 pt-2 pb-3 mx-auto space-y-1'>
+				<div className='px-2 pt-2 pb-3 mx-auto space-y-1 text-white'>
 					<NavLinkMobile to='/' text='Home' onClick={toggleMenu} />
 					<NavLinkMobile to='/products' text='Products' onClick={toggleMenu} />
 					<NavLinkMobile to='/about' text='About' onClick={toggleMenu} />
@@ -111,7 +111,7 @@ const NavLinkMobile = ({ to, text, onClick }) => (
 	<Link
 		to={to}
 		onClick={onClick}
-		className='block py-2 px-3 text-base font-medium text-gray-500 hover:text-gray-800 transition duration-150 relative group'>
+		className='block py-2 px-3 text-base font-medium text-white hover:text-gray-800 transition duration-150 relative group'>
 		<span>{text}</span>
 		<span className='absolute bottom-0 left-0 w-full bg-orange-500 h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left'></span>
 	</Link>

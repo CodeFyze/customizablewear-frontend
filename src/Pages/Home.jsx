@@ -11,7 +11,7 @@ import BrandCarousel from "../components/Brands";
 
 const Home = () => {
   return (
-		<div className='bg-green-50  pb-24 md:py-0  lg:px-0'>
+		<div className='bg-[#F3F4F6]  pb-24 md:py-0  lg:px-0'>
 			<div className=''>
 				<Hero />
 			</div>
