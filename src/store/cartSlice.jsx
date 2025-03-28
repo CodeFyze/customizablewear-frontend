@@ -57,18 +57,18 @@ export const cartSlice = createSlice({
 
     removeItem: (state, action) => {
       // Ensure you are filtering by the correct productId property
-      state.items = state.items.filter((item) => item._id !== action.payload);
+      state.items = state.items.filter((item) => item.product._id !== action.payload);
       console.log('Item removed, updated state:', state.items);
     },
 
     increaseQuantity: (state, action) => {
       state.items = state.items.map((item) =>
-        item._id === action.payload ? { ...item, quantity: item.quantity + 1 } : item,
+        item.product?._id === action.payload ? { ...item, quantity: item.quantity + 1 } : item,
       );
     },
 
     decreaseQuantity: (state, action) => {
-      const item = state.items.find((item) => item._id === action.payload);
+      const item = state.items.find((item) => item.product._id === action.payload);
       
       if (item && item.quantity > 1) {
         // Optimistically decrease the quantity in Redux state
