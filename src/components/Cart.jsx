@@ -111,7 +111,7 @@ const Cart = () => {
 			console.log('Response after decrease:', await response.json());
 		} catch (error) {
 			console.error('❌ Error decreasing quantity:', error.message);
-			dispatch(increaseQuantity(item.product._id));
+			dispatch(increaseQuantity(item._id));
 		}
 	};
 
