@@ -2,7 +2,7 @@ import React from "react";
 
 import Hero from "../components/hero";
 import Category from "../components/Category";
-import Products from "./Products";
+// import Products from "./Products";
 import Bundles from "./Bundles";
 
 
@@ -16,9 +16,9 @@ const Home = () => {
 				<Category />
 			</div>
 
-			<div className='container mx-auto px-6 md:px-10 pt-8'>
+			{/* <div className='container mx-auto px-6 md:px-10 pt-8'>
 				<Products showTShirtSelector={false} />
-			</div>
+			</div> */}
 			<div className='container mx-auto px-6 md:px-10 pt-8'>
 				<Bundles  />
 			</div>
