@@ -45,7 +45,7 @@ const Bundles = () => {
 
 				<div className='mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8'>
 					{bundles.map((bundle, index) => (
-						<div key={index} className='group relative'>
+						<div key={ index } className='group relative'>
 							<Link to={`bundle/bundle/${bundle.name}`}>
 								<div className='aspect-square w-full rounded-md bg-gray-200 overflow-hidden'>
 									<img
