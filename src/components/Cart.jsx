@@ -4,8 +4,7 @@ import { setCart, increaseQuantity, decreaseQuantity, removeItem } from '../stor
 import { useNavigate } from 'react-router-dom';
 import img from '../assets/images/empty-cart.png';
 
-	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Cart = () => {
 	const cart = useSelector((state) => state.cart.items || []);
@@ -50,37 +49,39 @@ const Cart = () => {
 	}, [dispatch, navigate]);
 
 	// Optimistic UI Update for increasing quantity
-	const handleIncrease = async (item) => {
-		const token = localStorage.getItem('authToken');
+const handleIncrease = async (item) => {
+	const token = localStorage.getItem('authToken');
 
-		if (!token) {
-			console.error('You need to log in first!');
-			navigate('/login');
-			return;
+	if (!token) {
+		console.error('You need to log in first!');
+		navigate('/login');
+		return;
+	}
+
+	try {
+		// Make API call first
+		const response = await fetch(`${apiUrl}/cart/increase/${item._id}`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
 
-		dispatch(increaseQuantity(item.product._id));
+		const updatedCartItem = await response.json();
+		console.log('Response after increase:', updatedCartItem);
 
-		try {
-			const response = await fetch(`${apiUrl}/cart/increase/${item.product._id}`, {
-				method: 'PUT',
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
-			console.log('Response after increase:', await response.json());
-		} catch (error) {
-			console.error('❌ Error increasing quantity:', error.message);
-			dispatch(decreaseQuantity(item.product._id));
-		}
-	};
+		// Only update UI after success
+		 dispatch(increaseQuantity(updatedCartItem?.updatedCart?._id || item._id));
+	} catch (error) {
+		console.error('❌ Error increasing quantity:', error.message);
+	}
+};
 
 	// Optimistic UI Update for decreasing quantity
 	const handleDecrease = async (item) => {
@@ -92,10 +93,9 @@ const Cart = () => {
 			return;
 		}
 
-		dispatch(decreaseQuantity(item.product._id));
 
 		try {
-			const response = await fetch(`${apiUrl}/cart/decrease/${item.product._id}`, {
+			const response = await fetch(`${apiUrl}/cart/decrease/${item._id}`, {
 				method: 'PUT',
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -107,11 +107,12 @@ const Cart = () => {
 			if (!response.ok) {
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
+		dispatch(decreaseQuantity(item._id));
 
 			console.log('Response after decrease:', await response.json());
 		} catch (error) {
 			console.error('❌ Error decreasing quantity:', error.message);
-			dispatch(increaseQuantity(item.product._id));
+			// dispatch(increaseQuantity(item._id));
 		}
 	};
 
@@ -140,10 +141,11 @@ const Cart = () => {
 			}
 
 			const data = await response.json();
-			console.log('Response after removal:', data);
+			const deletedCartId = data?.deletedProduct?._id;
+			console.log('Response after removal:', data?.deletedProduct?._id);
 
 			// Dispatch the removeItem action to instantly remove the item from Redux
-			dispatch(removeItem(productId));
+			dispatch(removeItem(deletedCartId));
 		} catch (error) {
 			console.error('❌ Error removing item:', error.message);
 		}
@@ -245,7 +247,7 @@ const Cart = () => {
 									</div>
 
 									<button
-										onClick={() => handleRemove(item.product._id)} // Pass the product._id correctly
+										onClick={() => handleRemove(item._id)} // Pass the product._id correctly
 										className='mt-2 text-red-500 text-sm underline hover:text-red-700'>
 										Remove
 									</button>
@@ -272,6 +274,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-
-
