@@ -171,26 +171,7 @@ const ProductDetailsPage = () => {
         {/* Price */}
         <p className="text-2xl font-bold text-green-600">${product.price}</p>
     
-        {/* Quantity Selector */}
-        <div>
-          <p className="font-semibold">Quantity:</p>
-          <div className="flex items-center space-x-2">
-            <button 
-              className="px-3 py-1 bg-gray-200 rounded-md"
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              disabled={quantity <= 1}
-            >
-              -
-            </button>
-            <span>{quantity}</span>
-            <button 
-              className="px-3 py-1 bg-gray-200 rounded-md"
-              onClick={() => setQuantity(quantity + 1)}
-            >
-              +
-            </button>
-          </div>
-        </div>
+    
     
         {/* Colors */}
         {product.colors && product.colors.length > 0 && (
