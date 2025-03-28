@@ -22,7 +22,7 @@ import ProductTypePage from "./Pages/ProductTypePage";
 import ProductDetailsPage from "./Pages/ProductDetailsPage";
 import Bundles from "./Pages/Bundles";
 import BundlesDetailsPage from "./Pages/BundlesDetailsPage";
-import BundleSelectionPage from "./Pages/BundlesDetailsPage";
+import ProductDetail from "./Pages/ProductDetail";
 
 const App = () => {
   const location = useLocation();
@@ -55,6 +55,7 @@ const App = () => {
 				<Route path='/product/:id' element={<ProductDetailsPage />} />
 				<Route path="/bundle/:id" element={<BundlesDetailsPage />} />
 				<Route path='/bundles' element={<Bundles />} />
+				<Route path="/products/:productId" element={<ProductDetail />} />
 				{/* <Route path='/bundle/category/:category' element={<BundlesDetailsPage />} /> */}
 			</Routes>
 
