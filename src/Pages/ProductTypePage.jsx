@@ -36,7 +36,7 @@ const ProductTypePage = () => {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4">
+    <div className=" max-w-[1200px] mx-auto px-4 pt-3 h-auto">
       <button className="mb-4 text-blue-500 hover:underline" onClick={() => navigate(-1)}>
         ← Back to Categories
       </button>
@@ -45,8 +45,9 @@ const ProductTypePage = () => {
       {products.length === 0 ? (
         <p className="text-gray-600">No products found for {productType}.</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-5 mb-5">
           {products.map((product) => (
+          
             <div 
               key={product._id} 
               className="p-4 rounded-lg shadow-md border bg-white cursor-pointer"

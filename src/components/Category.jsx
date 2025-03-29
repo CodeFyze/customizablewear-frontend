@@ -35,7 +35,7 @@ const Category = () => {
   });
 
   return (
-    <div className=" mx-auto px-4">
+    <div className=" mx-auto md:px-4">
       <div className="flex items-center justify-between my-8">
         <div className="text-2xl md:text-4xl font-bold"><span className="text-[#002DA1]">Shop </span> Our Best Sellers</div>
         {/* <div className="flex space-x-2">
@@ -51,11 +51,11 @@ const Category = () => {
           </button>
         </div> */}
       </div>
-      <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className=" grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
         {Object.values(groupedProducts).map((product) => (
           <div
             key={product._id}
-            className="bg-[#1A1A1A] h-60 flex-shrink-0  rounded-lg shadow-md relative cursor-pointer"
+            className="bg-[#1A1A1A] h-48 md:h-60 flex-shrink-0  rounded-lg shadow-md relative cursor-pointer"
             onClick={() => navigate(`/products/${product.productType}`)}
           >
             <div className="h-full flex flex-col justify-between">

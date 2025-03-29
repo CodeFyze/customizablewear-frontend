@@ -49,7 +49,7 @@ const Bundles = () => {
 							<Link to={`bundle/bundle/${bundle.name}`}>
 								<div className='aspect-square w-full rounded-md bg-gray-200 overflow-hidden'>
 									<img
-										src={bundle.image} // Display the bundle image
+										src={bundle.thumbnail} // Display the bundle image
 										alt={bundle.name}
 										className='w-full h-full object-cover object-center'
 									/>
