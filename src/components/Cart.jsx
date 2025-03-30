@@ -8,7 +8,7 @@ import { FaMinus } from "react-icons/fa6";
 import { RiDeleteBin4Line } from "react-icons/ri";
 import { BiCheckShield } from "react-icons/bi";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Cart = () => {
@@ -262,7 +262,7 @@ const handleIncrease = async (item) => {
 										</div>
 
 										<button
-											onClick={() => handleRemove(item.product._id)} // Pass the product._id correctly
+											onClick={() => handleRemove(item._id)} // Pass the product._id correctly
 											className=' text-xl text-red-500  underline hover:text-red-700'>
 											<RiDeleteBin4Line className='inline-block' />
 										</button>
