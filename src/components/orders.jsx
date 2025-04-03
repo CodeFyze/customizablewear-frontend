@@ -7,9 +7,9 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [viewedOrders, setViewedOrders] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const [ error, setError ] = useState(null);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL; 
-
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     fetchOrders();
@@ -24,13 +24,13 @@ const Orders = () => {
       }
 
       const response = await fetch(`${apiUrl}/orders`, {
-				method: 'GET',
-				credentials: 'include',
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-				},
-			});
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -65,7 +65,13 @@ const Orders = () => {
     setViewedOrders((prev) => new Set([...prev, orderId]));
   };
 
-  const sortedOrders = [...orders].sort((a, b) => {
+  // Filter orders based on search term
+  const filteredOrders = orders.filter((order) =>
+    order._id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Sort orders (new orders first)
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
     const aNew = isNewOrder(a.createdAt, a._id);
     const bNew = isNewOrder(b.createdAt, b._id);
     return bNew - aNew;
@@ -82,11 +88,24 @@ const Orders = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-semibold text-gray-800 mb-4">Orders</h1>
+
+      {/* Search Bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by Order ID"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+        />
+      </div>
+
+      {/* Orders Table */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse bg-white shadow-md rounded-lg overflow-hidden">
           <thead className="bg-orange-400 text-white">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-medium">#</th> {/* Order Index */}
+              <th className="px-4 py-2 text-left text-sm font-medium">#</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Order ID</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Date</th>
               <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
@@ -103,9 +122,7 @@ const Orders = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 } ${isNewOrder(order.createdAt, order._id) ? "bg-yellow-100 font-bold" : "hover:bg-gray-100"}`}
               >
-                <td className="px-4 py-2 text-sm text-gray-700">
-                  {index + 1} {/* Displaying the order number (1, 2, 3...) */}
-                </td>
+                <td className="px-4 py-2 text-sm text-gray-700">{index + 1}</td>
                 <td className="px-4 py-2 text-sm text-gray-700">
                   <Link
                     to={`/orders/${order._id}`}

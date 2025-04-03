@@ -16,6 +16,8 @@ const UploadLogoPopup = ({
 	selectedPosition,
 	selectedMethod,
 	selectedColor,
+	resetSelectedSize,
+	resetSelectedColor,
 }) => {
 	const [userId, setUserId] = useState(null);
 	const [selectedFile, setSelectedFile] = useState(null);
@@ -201,6 +203,9 @@ const UploadLogoPopup = ({
 					confirmButtonText: 'OK',
 				});
 				onClose();
+				// Reset selected color and size
+				resetSelectedColor();
+				resetSelectedSize();
 			} else {
 				toast.error(data.message || 'Failed to add item to cart.');
 			}

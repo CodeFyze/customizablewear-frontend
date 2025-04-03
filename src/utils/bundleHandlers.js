@@ -1,11 +1,9 @@
 export const handleImageUpload = (fileData, productIndex, products, setProducts) => {
-  setProducts((prevProducts) => {
-    const updatedProducts = [...prevProducts];
-    updatedProducts[productIndex] = { ...updatedProducts[productIndex], image: fileData };
-    return updatedProducts;
-  });
-};
-
+    const updatedProducts = [...products];
+    updatedProducts[productIndex].image = fileData;
+    setProducts(updatedProducts); 
+    
+  };
   
   export const handleColorImageChange = (e, productIndex, colorIndex, products, setProducts) => {
     const file = e.target.files[0];
@@ -132,26 +130,53 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
   //   }
   // };
   export const handleFormSubmit = async (products, selectedCategories) => {
+    // Debugging: Log the current state of products
+    console.log('Products before validation:', products);
+  
+    // Validation
     if (products.length < 2) {
       alert('You must have at least two products.');
       return;
     }
   
     for (let product of products) {
-      if (!product.image || product.colors.length === 0) {
-        alert('Each product must have an image and at least one color.');
+      // Check if product image is a valid file
+      if (!(product.image instanceof File)) {
+        alert('Each product must have a valid image.');
+        return;
+      }
+  
+      // Check if product has at least one color
+      if (product.colors.length === 0) {
+        alert('Each product must have at least one color.');
         return;
       }
   
       for (let color of product.colors) {
-        if (!color.color || !color.image || color.sizes.length === 0) {
-          alert('Each color must have an image and at least one selected size.');
+        // Check if color is a non-empty string
+        if (!color.color || typeof color.color !== 'string' || color.color.trim() === '') {
+          alert('Each color must have a valid color value.');
+          return;
+        }
+  
+        // Check if color image is a valid file
+        if (!(color.image instanceof File)) {
+          alert('Each color must have a valid image.');
+          return;
+        }
+  
+        // Check if at least one size is selected
+        if (color.sizes.length === 0) {
+          alert('Each color must have at least one selected size.');
           return;
         }
       }
     }
   
+    // Prepare FormData
     const formData = new FormData();
+  
+    // Append product images and color details
     products.forEach((product, productIndex) => {
       formData.append(`productImage_${productIndex}`, product.image);
   
@@ -162,28 +187,30 @@ export const handleImageUpload = (fileData, productIndex, products, setProducts)
       });
     });
   
+    // Append selected categories
     Object.keys(selectedCategories).forEach((category) => {
       if (selectedCategories[category]) {
         formData.append(`category_${category}`, category);
       }
     });
   
+    // Send data to backend
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('http://localhost:5000/api/bundle/add', {
         method: 'POST',
         body: formData,
       });
   
       if (response.ok) {
         const data = await response.json();
-        console.log('Images uploaded successfully', data);
-        alert('Products uploaded successfully!');
+        console.log('Bundle created successfully:', data);
+        alert('Bundle created successfully!');
       } else {
-        console.error('Error uploading images');
+        console.error('Error creating bundle:', response.statusText);
+        alert('Failed to create bundle. Please try again.');
       }
     } catch (err) {
-      console.error('Upload failed', err);
+      console.error('Error:', err);
+      alert('An error occurred. Please try again.');
     }
   };
-  
-  

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { FaTimes } from 'react-icons/fa'; 
-import { addItem } from '../store/cartSlice'; 
+import { FaTimes } from 'react-icons/fa';
+import { addItem } from '../store/cartSlice';
 import { useDispatch } from 'react-redux';
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
 const AddTextLogoPopup = ({
 	onBack,
 	onFinish,
@@ -14,16 +15,22 @@ const AddTextLogoPopup = ({
 	selectedColor,
 	selectedMethod,
 	selectedPosition,
-	onClose, 
+	onClose,
+	resetSelectedSize,
+	resetSelectedColor,
 }) => {
-
-
 	const [textLine, setTextLine] = useState(selectedProduct?.textLine || '');
 	const [font, setFont] = useState(selectedProduct?.font || 'Standard');
 	const [notes, setNotes] = useState(selectedProduct?.notes || '');
-	const [ loading, setLoading ] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 
+	// Font styles mapping
+	const fontStyles = {
+		Standard: 'font-sans', // Default font
+		Serif: 'font-serif', // Serif font
+		'Sans-serif': 'font-sans', // Sans-serif font
+	};
 
 	useEffect(() => {
 		console.log('Product:', selectedProduct);
@@ -75,7 +82,7 @@ const AddTextLogoPopup = ({
 			notes,
 		};
 
-		console.log("request data-->",requestData)
+		console.log('request data-->', requestData);
 		dispatch(addItem(requestData));
 		try {
 			setLoading(true);
@@ -98,6 +105,9 @@ const AddTextLogoPopup = ({
 					icon: 'success',
 				});
 				onFinish();
+				// Reset selected color and size
+				resetSelectedColor();
+				resetSelectedSize();
 			} else {
 				toast.error(data.message || 'Failed to add item to cart.');
 			}
@@ -111,7 +121,7 @@ const AddTextLogoPopup = ({
 
 	return (
 		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-			<div className='bg-white rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 relative'>
+			<div className='bg-white overflow-x-auto h-full rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 relative'>
 				{/* Close Button */}
 				<button onClick={onClose} className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
 					<FaTimes size={20} />
@@ -122,7 +132,7 @@ const AddTextLogoPopup = ({
 					<p className='text-gray-600 mb-4'>
 						Create your text logo, we have no setup fees! We will always send a design proof for your approval before
 						production.
-					</p>Add Your Text Logo
+					</p>
 					{selectedProduct?.frontImage && (
 						<img
 							src={selectedProduct.frontImage}
@@ -161,7 +171,9 @@ const AddTextLogoPopup = ({
 					<div>
 						<h3 className='text-lg font-semibold mb-2'>Text Preview</h3>
 						<div className='bg-black text-center py-3 rounded-md'>
-							<span className='px-4 py-2 bg-orange-500 text-white font-bold rounded-md'>
+							<span
+								className={`px-4 py-2 bg-orange-500 text-white font-bold rounded-md ${fontStyles[font]}`} // Apply selected font
+							>
 								{textLine || 'Preview Text'}
 							</span>
 						</div>
@@ -189,7 +201,9 @@ const AddTextLogoPopup = ({
 					</button>
 					<button
 						onClick={handleFinish}
-						className='bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none'
+						className={`mt-4 bg-orange-500 text-white  ml-10 py-2 px-4 rounded-lg hover:bg-orange-600 ${
+							loading ? 'opacity-50 cursor-not-allowed' : ''
+						}`}
 						disabled={loading}>
 						{loading ? 'Adding...' : 'Finish'}
 					</button>

@@ -53,7 +53,7 @@ const AddLogoPopup = ({ onBack, onNext, onUpload, onClose }) => {
 						<p className='text-sm text-gray-500'>Your setup will be completely free!</p>
 					</div>
 				</div>
-				<div className='flex justify-between mt-6'>
+				<div className='flex justify-center mt-6'>
 					<button
 						onClick={onBack}
 						className='bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none'>

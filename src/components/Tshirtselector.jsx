@@ -30,6 +30,9 @@ const TShirtSelector = () => {
       setIsAnimating(false);
     }, 300);
   };
+  //resset function
+  const resetSelectedColor = () => setSelectedColor(null);
+	const resetSelectedSize = () => setSelectedSize(null);
 
   // Handle Product Selection
   const handleProductSelect = (product) => {
@@ -41,7 +44,7 @@ const TShirtSelector = () => {
 
   // Handle Color Selection
   const handleColorSelect = (color) => {
-    console.log('Color selected:', color);
+    
     setSelectedColor(color);
 
     const colorIndex = selectedProduct.colors.indexOf(color);
@@ -107,13 +110,14 @@ const TShirtSelector = () => {
       toast.error('An error occurred while adding to the cart.');
     } finally {
       setLoading(false);
+      setSelectedColor(null)
+      setSelectedSize(null)
     }
   };
 
   // Handle Add Logo Click
   const handleAddLogoClick = async () => {
     try {
-      setLoading(true);
       const token = localStorage.getItem('authToken');
       if (!token) {
         navigate('/login', { state: { from: '/products', openPopup: true } });
@@ -130,8 +134,18 @@ const TShirtSelector = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setPopupVisible(true);
-      } else {
+				// Check if color or size is not selected
+				if (!selectedColor || !selectedSize) {
+					let missingFields = [];
+					if (!selectedColor) missingFields.push('color');
+					if (!selectedSize) missingFields.push('size');
+
+					toast.error(`Please select ${missingFields.join(' and ')}.`);
+					return;
+				}
+
+				setPopupVisible(true);
+			} else {
         navigate('/login', { state: { from: '/products', openPopup: true } });
       }
     } catch (error) {
@@ -175,32 +189,36 @@ const TShirtSelector = () => {
   }, [location, navigate]);
 
   return (
-    <div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
+    <div className='container mx-auto  pt-3'>
+    <div className=' flex flex-col md:flex-row'>
       {/* Shirt Display Area */}
-      <div className='w-full md:w-[1000px] flex justify-center'>
+      <div className=' w-full mt-4 md:w-3/5 flex justify-center items-center'>
         {selectedShirt && (
+          <div className='bg-white p-3 w-3/5 h-[250px] md:h-[450px] md:w-[450px] rounded-xl shadow-md'>
           <img
             src={selectedShirt}
             alt='Selected T-Shirt'
-            className={`w-full h-auto md:m-10 max-w-xs md:max-w-2xl p-4 md:p-0 transform transition-transform duration-200 ${
+            className={` rounded-md object-contain h-full  w-full transform transition-transform duration-200 ${
               isAnimating ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
             }`}
           />
+          </div>
         )}
       </div>
 
       {/* Product & Selection Controls */}
-      <div className='w-full md:w-1/3 md:pr-10'>
+      <div className=' w-full  md:w-2/5 h-auto  md:px-5 py-4'>
         {/* Select Product */}
-        <div className='mt-4 font-medium text-lg text-center md:text-left'>Shirts</div>
-        <div className='overflow-x-auto flex space-x-2 mt-4 p-2'>
+        <div className=' my-4 p-5 shadow-md rounded-md'>
+        <div className='ml-7 font-medium text-lg text-start md:text-left '>Shirts</div>
+        <div className='overflow-x-auto ml-6 flex gap-x-1 mt-4 p-2'>
           {products.map((product, index) => (
-            <div key={index} className='text-center'>
+            <div key={index} className='text-center '>
               <img
                 src={product.frontImage}
                 alt={`Front View ${index + 1}`}
-                className={`w-24 h-24 object-cover rounded-md cursor-pointer border border-gray-300 hover:border-orange-500 ${
-                  selectedProduct === product ? 'border-orange-500' : ''
+                className={`w-24 h-24 object-cover rounded-md cursor-pointer border-[2px] border-gray-300 hover:border-[#091638] ${
+                  selectedProduct === product ? 'border-[#091638]' : ''
                 }`}
                 onClick={() => handleProductSelect(product)}
               />
@@ -209,13 +227,13 @@ const TShirtSelector = () => {
         </div>
 
         {/* Select Color */}
-        <div className='mt-6 font-medium text-lg text-center md:text-left'>Select Color</div>
-        <div className='flex space-x-2 mt-4'>
+        <div className='mt-3  ml-7 font-medium text-lg text-start md:text-left'>Select Color</div>
+        <div className=' ml-7 flex gap-x-2'>
           {selectedProduct?.colors?.map((color, index) => (
             <div
               key={index}
               className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer ${
-                selectedColor === color ? 'border-orange-500 outline outline-2' : 'hover:border-orange-500'
+                selectedColor === color ? 'border-[#091638] outline outline-2' : 'hover:border-[#091638]'
               }`}
               style={{ backgroundColor: color }}
               onClick={() => handleColorSelect(color)}
@@ -224,7 +242,7 @@ const TShirtSelector = () => {
         </div>
 
         {/* Shirt Details */}
-        <div className='mt-6 p-4 md:mb-3'>
+        <div className='mt-3 ml-7 '>
           <h3 className='text-lg font-bold mb-2'>Shirt Details</h3>
           <p className='text-sm text-gray-700'>{selectedProduct?.description || 'No description available.'}</p>
           <p className='text-sm font-bold mt-2'>Price: Rs. {selectedProduct?.price}</p>
@@ -235,22 +253,26 @@ const TShirtSelector = () => {
           selectedProduct={selectedProduct}
           onSizeSelect={setSelectedSize}
           selectedSize={selectedSize}
+          
         />
+        <div className='flex flex-col md:flex-col lg:flex-row md:items-start lg:items-center gap-2'>
 
         {/* Buttons */}
         <button
           onClick={handleAddLogoClick}
-          className='mt-4 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'
+          className=' bg-black text-white md:w-36 py-3 px-2 md:px-4 md:py-2 md:text-md border-[1px] border-black font-semibold rounded-full hover:bg-white hover:text-black '
         >
           ADD LOGO
         </button>
 
         <button
           onClick={handleAddToCart}
-          className='bg-orange-500 text-white py-2 px-4 ml-10 rounded-lg hover:bg-orange-600'
+          className='bg-transparent text-black md:w-36 py-3 px-1 md:px-4 md:py-2 md:text-md border-[1px] border-black font-semibold rounded-full hover:bg-black hover:text-white '
         >
           ADD TO CART
         </button>
+        </div>
+        </div>
       </div>
 
       {/* Popup */}
@@ -264,6 +286,7 @@ const TShirtSelector = () => {
           selectedShirt={selectedShirt}
         />
       )}
+    </div>
     </div>
   );
 };

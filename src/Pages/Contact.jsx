@@ -46,22 +46,19 @@ const Contact = () => {
 				throw new Error(result.error || 'Failed to send message');
 			}
 
-			// Handle new and existing user response
-			if (result.user=="New User") {
+			// Handle  user response
 				Swal.fire({
 					title: 'Success!',
 					text: 'Your message has been submitted!',
 					icon: 'success',
 					confirmButtonColor: '#fc8019',
 				});
-			} else {
-				Swal.fire({
-					title: 'Submitted Again!',
-					text: 'Your response has been submitted again!',
-					icon: 'info',
-					confirmButtonColor: '#fc8019',
-				});
-			}
+				// Swal.fire({
+				// 	title: 'Submitted Again!',
+				// 	text: 'Your response has been submitted again!',
+				// 	icon: 'info',
+				// 	confirmButtonColor: '#fc8019',
+				// });
 
 			setFormData({ name: '', email: '', message: '' });
 
@@ -77,7 +74,7 @@ const Contact = () => {
 	return (
 		<div className='bg-gray-100 py-16'>
 			<div className='max-w-7xl mx-auto px-6 lg:px-8'>
-				<h2 className='text-3xl font-bold text-gray-800 text-center mb-12'>Contact Us</h2>
+				<h2 className='text-3xl font-bold text-gray-800 text-center mb-12'>Contact <span className='text-[#002DA1]'> Us </span></h2>
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
 					<div className='bg-white p-8 shadow-lg rounded-lg'>
 						<h3 className='text-2xl font-bold text-gray-800 mb-4'>Get in Touch</h3>
@@ -128,7 +125,7 @@ const Contact = () => {
 							</div>
 							<button
 								type='submit'
-								className='w-full py-3 bg-[#fc8019] text-white rounded-lg hover:bg-[#e57312] transition duration-300 flex items-center justify-center'
+								className='w-full py-3 bg-black text-white rounded-lg hover:bg-white hover:text-black border-black  transition duration-300 flex items-center justify-center'
 								disabled={loading}>
 								{loading ? (
 									<span className='flex items-center'>

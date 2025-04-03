@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { FaTimes } from 'react-icons/fa';
 import Swal from 'sweetalert2'; // Import SweetAlert
 
-const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor }) => {
+const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor ,resetSelectedColor,resetSelectedSize}) => {
 	console.log(selectedProduct, selectedSize, selectedColor);
 	const [selectedMethod, setSelectedMethod] = useState('Embroidery');
 	const [selectedPosition, setSelectedPosition] = useState('Large Front');
@@ -46,7 +46,10 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 		});
 
 		console.log('Text logo details:', details);
+	
 	};
+	// Reset functions
+	
 	const handleClose = () => {
 		setShowSizePopup(false);
 		setIsAddLogoPopupVisible(false);
@@ -61,7 +64,7 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 		<>
 			{!showSizePopup && !isAddLogoPopupVisible && !isAddTextLogoPopupVisible && !isUploadLogoPopupVisible && (
 				<div className='fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50'>
-					<div className='bg-white p-8 rounded-lg w-96 md:w-[600px] z-60 relative'>
+					<div className='bg-white  overflow-x-auto  p-8 rounded-lg w-96 md:w-[600px] z-60 relative'>
 						<button onClick={handleClose} className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
 							<FaTimes size={20} />
 						</button>
@@ -112,16 +115,16 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 							</div>
 						</div>
 
-						<div className='flex justify-between mt-6'>
-							<button onClick={handleClose} className='bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600'>
+						<div className='flex justify-end mt-6'>
+							{/* <button onClick={handleClose} className='bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600'>
 								BACK
-							</button>
+							</button> */}
 							<button
 								onClick={() => {
 									setShowSizePopup(true);
 									console.log('Selected method:', selectedMethod, selectedPosition);
 								}}
-								className='bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600'>
+								className='bg-black text-white py-2 px-4 rounded-lg hover:bg-transparent hover:text-black'>
 								NEXT STEP
 							</button>
 						</div>
@@ -138,6 +141,9 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					onNext={() => {
 						setShowSizePopup(false);
 						setIsAddLogoPopupVisible(true);
+					}}
+					onBack={() => {
+						setShowSizePopup(false);
 					}}
 				/>
 			)}
@@ -173,6 +179,8 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 					}}
 					onFinish={handleFinishTextLogo}
 					onClose={handleClose}
+					resetSelectedColor={resetSelectedColor} // Pass reset function
+					resetSelectedSize={resetSelectedSize} // Pass reset function
 				/>
 			)}
 			{isUploadLogoPopupVisible && (
@@ -186,6 +194,8 @@ const Popup = ({ onClose, visible, selectedProduct, selectedSize, selectedColor 
 						setIsUploadLogoPopupVisible(false);
 						setIsAddLogoPopupVisible(true);
 					}}
+					resetSelectedColor={resetSelectedColor} // Pass reset function
+					resetSelectedSize={resetSelectedSize} // Pass reset function
 					onClose={handleClose}
 				/>
 			)}
