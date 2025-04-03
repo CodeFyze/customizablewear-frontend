@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+
+	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
 const Category = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
@@ -51,7 +54,7 @@ const Category = () => {
       <div className="flex items-center overflow-x-auto scrollbar-hide space-x-4 py-7">
         {Object.values(groupedProducts).map((product) => (
           <div
-            key={product.product_id}
+            key={product._id}
             className="w-44 h-64 flex-shrink-0 transition-transform transform hover:scale-105 p-4 rounded-lg shadow-md relative cursor-pointer"
             onClick={() => navigate(`/products/${product.productType}`)}
           >

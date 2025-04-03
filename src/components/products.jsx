@@ -88,13 +88,13 @@ const Products = () => {
 
       let response;
       if (selectedProduct) {
-        response = await fetch(`${apiUrl}/update/${selectedProduct._id}`, {
+        response = await fetch(`${apiUrl}/products/update/${selectedProduct._id}`, {
           credentials: "include",
           method: "PUT",
           body: formData,
         });
       } else {
-        response = await fetch(`${apiUrl}/add`, {
+        response = await fetch(`${apiUrl}/products/add`, {
           credentials: "include",
           method: "POST",
           body: formData,
@@ -125,10 +125,16 @@ const Products = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`${apiUrl}/delete/${productId}`, {
-        credentials: "include",
-        method: "DELETE",
-      });
+      const token = localStorage.getItem("authToken")
+
+      const response = await fetch(`${apiUrl}/products/delete/${productId}`, {
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
       if (!response.ok) throw new Error("Failed to delete product");
       setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productId));
       toast.success("Product deleted successfully!", { position: "top-right" });
