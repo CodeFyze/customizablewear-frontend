@@ -117,8 +117,9 @@ const handleIncrease = async (item) => {
 			console.log('Response after decrease:', await response.json());
 		} catch (error) {
 			console.error('❌ Error decreasing quantity:', error.message);
-			// dispatch(increaseQuantity(item._id));
-		}
+			dispatch(increaseQuantity(item._id));
+
+}
 	};
 
 	// Function to handle removal of an item from the cart

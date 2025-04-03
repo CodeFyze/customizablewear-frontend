@@ -1,8 +1,7 @@
 // components/PoloSelector.jsx
 import React from 'react';
 import { usePoloSelector } from '../hooks/usePoloSelector';
-// import ProductSection from './ProductSection';
-import ProductSection from './BundleSection';
+import BundleProductSection from './BundleProductSection';
 
 const PoloSelector = () => {
   const {
@@ -49,7 +48,7 @@ const PoloSelector = () => {
           <div className='w-full lg:w-full mt-6 lg:mt-0'>
             <div className='mt-6'>
               {/* First Product Section */}
-              <ProductSection
+              <BundleProductSection
                 title="Select Polo Shirt"
                 product={product1}
                 selectedPoloShirts={selectedPoloShirts1}
@@ -67,7 +66,7 @@ const PoloSelector = () => {
               />
 
               {/* Second Product Section */}
-              <ProductSection
+              <BundleProductSection
                 title="Select Polo Shirt"
                 product={product2}
                 selectedPoloShirts={selectedPoloShirts2}
