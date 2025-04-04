@@ -10,130 +10,124 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const TShirtSelector = () => {
-  const [selectedShirt, setSelectedShirt] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
+	const [selectedShirt, setSelectedShirt] = useState(null);
+	const [isAnimating, setIsAnimating] = useState(false);
+	const [products, setProducts] = useState([]);
+	const [selectedProduct, setSelectedProduct] = useState(null);
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [selectedSize, setSelectedSize] = useState(null);
+	const [selectedColor, setSelectedColor] = useState(null);
+	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
 
-  // Handle Shirt View Change
-  const handleShirtChange = (shirt) => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setSelectedShirt(shirt);
-      setIsAnimating(false);
-    }, 300);
-  };
-  //resset function
-  const resetSelectedColor = () => setSelectedColor(null);
+	// Handle Shirt View Change
+	const handleShirtChange = (shirt) => {
+		setIsAnimating(true);
+		setTimeout(() => {
+			setSelectedShirt(shirt);
+			setIsAnimating(false);
+		}, 300);
+	};
+	//resset function
+	const resetSelectedColor = () => setSelectedColor(null);
 	const resetSelectedSize = () => setSelectedSize(null);
 
-  // Handle Product Selection
-  const handleProductSelect = (product) => {
-    setSelectedProduct(product);
-    setSelectedShirt(product.frontImage);
-    setSelectedSize(null);
-    setSelectedColor(null);
-  };
+	// Handle Product Selection
+	const handleProductSelect = (product) => {
+		setSelectedProduct(product);
+		setSelectedShirt(product.frontImage);
+		setSelectedSize(null);
+		setSelectedColor(null);
+	};
 
-  // Handle Color Selection
-  const handleColorSelect = (color) => {
-    console.log('Color selected:', color);
-    setSelectedColor(color);
+	// Handle Color Selection
+	const handleColorSelect = (color) => {
+		console.log('Color selected:', color);
+		setSelectedColor(color);
 
-    const colorIndex = selectedProduct.colors.indexOf(color);
-    if (colorIndex !== -1 && selectedProduct.colorImages[colorIndex]) {
-      setSelectedShirt(selectedProduct.colorImages[colorIndex]);
-    } else {
-      setSelectedShirt(selectedProduct.frontImage);
-    }
-  };
+		const colorIndex = selectedProduct.colors.indexOf(color);
+		if (colorIndex !== -1 && selectedProduct.colorImages[colorIndex]) {
+			setSelectedShirt(selectedProduct.colorImages[colorIndex]);
+		} else {
+			setSelectedShirt(selectedProduct.frontImage);
+		}
+	};
 
-  // Handle Adding to Cart
-  const handleAddToCart = async () => {
-    if (!selectedProduct) {
-      toast.error('Please select a product first.');
-      return;
-    }
+	// Handle Adding to Cart
+	const handleAddToCart = async () => {
+		if (!selectedProduct) {
+			toast.error('Please select a product first.');
+			return;
+		}
 
-    if (!selectedSize || selectedSize.quantity === 0) {
-      toast.error('Please select a size.');
-      return;
-    }
+		if (!selectedSize || selectedSize.quantity === 0) {
+			toast.error('Please select a size.');
+			return;
+		}
 
-    if (!selectedColor) {
-      toast.error('Please select a color.');
-      return;
-    }
+		if (!selectedColor) {
+			toast.error('Please select a color.');
+			return;
+		}
 
-    const productToAdd = {
-      productId: selectedProduct._id,
-      image: selectedShirt || selectedProduct.frontImage,
-      title: selectedProduct.title,
-      size: selectedSize.size,
-      color: selectedColor,
-      finalQuantity: selectedSize.quantity,
-      price: selectedProduct.price,
-    };
+		const productToAdd = {
+			productId: selectedProduct._id,
+			image: selectedShirt || selectedProduct.frontImage,
+			title: selectedProduct.title,
+			size: selectedSize.size,
+			color: selectedColor,
+			finalQuantity: selectedSize.quantity,
+			price: selectedProduct.price,
+		};
 
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('authToken');
-      const response = await fetch(`${apiUrl}/cart/add`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productToAdd),
-      });
+		try {
+			setLoading(true);
+			const response = await fetch(`${apiUrl}/cart/add`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(productToAdd),
+			});
 
-      const data = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          title: 'Added',
-          text: 'Item added to cart',
-          icon: 'success',
-        });
-        dispatch(addItem(productToAdd));
-      } else {
-        toast.error(data.message || 'Failed to add item to cart.');
-      }
-    } catch (error) {
-      console.error('❌ Error adding to cart:', error.message);
-      toast.error('An error occurred while adding to the cart.');
-    } finally {
-      setLoading(false);
-      setSelectedColor(null)
-      setSelectedSize(null)
-    }
-  };
+			const data = await response.json();
+			if (response.ok) {
+				Swal.fire({
+					title: 'Added',
+					text: 'Item added to cart',
+					icon: 'success',
+				});
+				dispatch(addItem(productToAdd));
+			} else {
+				toast.error(data.message || 'Failed to add item to cart.');
+				navigate('/login');
+			}
+		} catch (error) {
+			console.error('❌ Error adding to cart:', error.message);
+			toast.error('An error occurred while adding to the cart.');
+		} finally {
+			setLoading(false);
+			setSelectedColor(null);
+			setSelectedSize(null);
+		}
+	};
 
-  // Handle Add Logo Click
-  const handleAddLogoClick = async () => {
-    try {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        navigate('/login', { state: { from: '/products', openPopup: true } });
-        return;
-      }
-
-      const response = await fetch(`${apiUrl}/cart/addlogo`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+	// Handle Add Logo Click
+	const handleAddLogoClick = async () => {
+		try {
+			const response = await fetch(`${apiUrl}/cart/addlogo`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
 
       const data = await response.json();
-      if (response.ok) {
+			if (response.ok) {
 				// Check if color or size is not selected
 				if (!selectedColor || !selectedSize) {
 					let missingFields = [];
@@ -146,49 +140,50 @@ const TShirtSelector = () => {
 
 				setPopupVisible(true);
 			} else {
-        navigate('/login', { state: { from: '/products', openPopup: true } });
-      }
-    } catch (error) {
-      console.error('❌ Error verifying authentication:', error.message);
-      navigate('/login', { state: { from: '/products', openPopup: true } });
-    } finally {
-      setLoading(false);
-    }
-  };
+				navigate('/login', { state: { from: '/products', openPopup: true } });
+			}
+		} catch (error) {
+			console.error('❌ Error verifying authentication:', error.message);
+			navigate('/login', { state: { from: '/products', openPopup: true } });
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  // Fetch Products on Component Mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/products/`, {
-          credentials: 'include',
-          method: 'GET',
-        });
-        const data = await response.json();
+	// Fetch Products on Component Mount
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const response = await fetch(`${apiUrl}/products/`, {
+					credentials: 'include',
 
-        if (data.products && data.products.length > 0) {
-          const shirtProducts = data.products.filter(
-            (product) => product.productType && product.productType.includes('shirt'),
-          );
-          setProducts(shirtProducts);
-          setSelectedProduct(shirtProducts[0]);
-          setSelectedShirt(shirtProducts[0]?.frontImage);
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+					method: 'GET',
+				});
+				const data = await response.json();
 
-    fetchProducts();
+				if (data.products && data.products.length > 0) {
+					const shirtProducts = data.products.filter(
+						(product) => product.productType && product.productType.includes('shirt'),
+					);
+					setProducts(shirtProducts);
+					setSelectedProduct(shirtProducts[0]);
+					setSelectedShirt(shirtProducts[0]?.frontImage);
+				}
+			} catch (error) {
+				console.error('Error fetching products:', error);
+			}
+		};
 
-    const { openPopup } = location.state || { openPopup: false };
-    if (openPopup) {
-      setPopupVisible(true);
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location, navigate]);
+		fetchProducts();
 
-  return (
+		const { openPopup } = location.state || { openPopup: false };
+		if (openPopup) {
+			setPopupVisible(true);
+			navigate(location.pathname, { replace: true, state: {} });
+		}
+	}, [location, navigate]);
+
+	return (
 		<div className='flex flex-col md:flex-row justify-between items-center space-y-8 md:space-x-8 md:space-y-0'>
 			{/* Shirt Display Area */}
 			<div className='w-full md:w-[1000px] flex justify-center'>

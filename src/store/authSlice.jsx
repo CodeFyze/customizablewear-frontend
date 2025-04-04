@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+
 
 const initialState = {
-	token: localStorage.getItem('authToken') || null,
-	userId: localStorage.getItem('userId') || null,
-	isAuthenticated: !!localStorage.getItem('authToken'), // Checks if token exists
+	token: null,
+	user: null,
+	isAuthenticated: null,
 };
 
 const authSlice = createSlice({
@@ -11,21 +13,34 @@ const authSlice = createSlice({
 	initialState,
 	reducers: {
 		loginSuccess: (state, action) => {
-			state.token = action.payload.token;
-			state.userId = action.payload.userId;
+		state.token = action.payload.token;
+			state.user = action.payload.user;
 			state.isAuthenticated = true;
 		},
 		logout: (state) => {
 			console.log("hello")
 			state.token = null;
-			state.userId = null;
+			state.user = null;
 			state.isAuthenticated = false;
-			localStorage.removeItem('authToken'); // Ensure token is removed
-			localStorage.removeItem('userId');
-			localStorage.clear()
 		},
 	},
 });
 
+export const checkAuthStatus = () => async (dispatch) => {
+	try {
+		const response = await fetch(`${apiUrl}/auth/check`, {
+			credentials: 'include', // Sends cookies
+		});
+
+		if (response.ok) {
+			const userData = await response.json();
+			dispatch(loginSuccess({ user: userData }));
+		} else {
+			dispatch(logout());
+		}
+	} catch (error) {
+		dispatch(logout());
+	} 
+};
 export const { loginSuccess, logout } = authSlice.actions;
 export default authSlice.reducer;

@@ -13,19 +13,14 @@ const Customers = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          setError("Unauthorized - Please log in.");
-          setLoading(false);
-          return;
-        }
+      
 
         const response = await fetch(`${apiUrl}/orders/customers`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
+          credentials:"include"
         });
 
         const data = await response.json();

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { Audio } from 'react-loader-spinner';
-import { loginSuccess } from '../store/authSlice';
 import { FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
+import { Audio } from 'react-loader-spinner';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { loginSuccess } from '../store/authSlice';
 const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const LoginPage = () => {
 	const [isLogin, setIsLogin] = useState(true);
@@ -39,17 +39,16 @@ const LoginPage = () => {
 
 			if (response.ok && result.success) {
 				toast.success('✅ Login successful!');
-				localStorage.setItem('authToken', result.token);
-				localStorage.setItem('userId', result.user?.id);
 
 				dispatch(
 					loginSuccess({
 						token: result.token,
 						user: result.user,
+						isAuthenticated:true
 					}),
 				);
 
-				// Check if the user was redirected from the "Add Logo" button
+				// Check if the user was redirected from the "" button
 				const { from, openPopup } = location.state || { from: null, openPopup: false };
 
 				if (from) {

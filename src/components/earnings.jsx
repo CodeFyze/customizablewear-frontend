@@ -11,17 +11,12 @@ const Earnings = ({ setTotalEarnings }) => {
   // Fetch total earnings from the API
   const fetchEarnings = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // Get token from localStorage
-
-      if (!token) {
-        throw new Error("Unauthorized - No token found.");
-      }
+      
 
       const response = await fetch(`${apiUrl}/orders/earnings`, {
         method: "GET",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`, // Add token in headers
           "Content-Type": "application/json",
         },
       });

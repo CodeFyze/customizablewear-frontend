@@ -10,7 +10,7 @@ const Navigation = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const cartItems = useSelector((state) => state.cart.items);
 	const totalCartQuantity = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-	const { token, userId, isAuthenticated } = useSelector((state) => state.auth);
+	const {isAuthenticated } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
 	// Toggle menu for mobile view

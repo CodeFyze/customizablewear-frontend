@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { applyPromoCode } from '../store/promoCodeSlice'; // Assuming you have a Redux slice for promo codes
+import { applyPromoCode ,clearPromoCode} from '../store/promoCodeSlice'; // Assuming you have a Redux slice for promo codes
 import 'react-toastify/dist/ReactToastify.css';
 const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 const Checkout = () => {
@@ -43,11 +43,8 @@ const Checkout = () => {
 	useEffect(() => {
 		const fetchActivePromoCodes = async () => {
 			try {
-				const token = localStorage.getItem('authToken'); // Get the token from localStorage
 				const response = await fetch(`${apiUrl}/promocodes/active`, {
-					headers: {
-						Authorization: `Bearer ${token}`, // Include the token in the request headers
-					},
+				credentials:"include"
 				});
 				const data = await response.json();
 				if (response.ok) {
@@ -55,6 +52,7 @@ const Checkout = () => {
 				} else {
 					console.error('Failed to fetch active promo codes:', data.message);
 					toast.error('Failed to fetch active promo codes.');
+					navigate("/login")
 				}
 			} catch (error) {
 				console.error('Error fetching active promo codes:', error);
@@ -71,12 +69,10 @@ const Checkout = () => {
 		}
 
 		try {
-			const token = localStorage.getItem('authToken');
 			const response = await fetch(`${apiUrl}/promocodes/validate`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
 				},
 				credentials: 'include',
 				body: JSON.stringify({ code: enteredPromoCode }),
@@ -98,7 +94,7 @@ const Checkout = () => {
 				}).then(() => {
 					// **Step 2: Show Final Discount Calculation Popup**
 					const discountAmount = (totalAmount * (promoDiscount || 0)) / 100;
-					const finalAmount = totalAmount - discountAmount;
+					const finalAmount = Math.round(totalAmount - discountAmount);
 
 					Swal.fire({
 						icon: 'info',
@@ -106,7 +102,7 @@ const Checkout = () => {
 						html: `
                         <p>Original Price: <b>$${totalAmount.toFixed(2)}</b></p>
                         <p>Discount: <b>${data.discount}%</b> (-$${discountAmount.toFixed(2)})</p>
-                        <p><b>Final Price: $${finalAmount.toFixed(2)}</b></p>
+                        <p><b>Final Price: $${finalAmount}</b></p>
                     `,
 						confirmButtonText: 'Proceed to Checkout',
 					});
@@ -129,15 +125,7 @@ const Checkout = () => {
 		}
 
 		setLoading(true);
-		const token = localStorage.getItem('authToken');
-
-		if (!token) {
-			console.error('No auth token found! Redirecting to login.');
-			toast.error('Session expired. Please log in again.');
-			navigate('/login');
-			return;
-		}
-
+		
 		const orderData = {
 			shippingAddress: {
 				firstName: formData.firstName,
@@ -164,7 +152,6 @@ const Checkout = () => {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${token}`,
 				},
 				credentials: 'include',
 				body: JSON.stringify(orderData),
@@ -175,7 +162,6 @@ const Checkout = () => {
 			if (response.status === 401) {
 				console.error('Unauthorized access - Token expired.');
 				toast.error('Session expired. Please log in again.');
-				localStorage.removeItem('authToken');
 				navigate('/login');
 				return;
 			}
@@ -187,6 +173,7 @@ const Checkout = () => {
 					text: 'Thank you for your purchase.',
 				});
 				navigate('/success');
+				dispatch(clearPromoCode())
 			} else {
 				console.error('Order placement failed:', responseData);
 				toast.error(responseData.message || 'Failed to place order.');

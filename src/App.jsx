@@ -23,12 +23,18 @@ import ProductDetailsPage from "./Pages/ProductDetailsPage";
 import Bundles from "./Pages/Bundles";
 import BundlesDetailsPage from "./Pages/BundlesDetailsPage";
 import ProductDetail from "./Pages/ProductDetail";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import {checkAuthStatus } from "./store/authSlice"
 
 const App = () => {
-  const location = useLocation();
-  const isSellerPage = location.pathname === "/seller";
+	const location = useLocation();
+	const isSellerPage = location.pathname === "/seller";
+	const dispatch = useDispatch();
   
-
+ useEffect(() => {
+		dispatch(checkAuthStatus());
+ }, [dispatch]);
   return (
 		<>
 			{/* <ToastContainer  /> */}

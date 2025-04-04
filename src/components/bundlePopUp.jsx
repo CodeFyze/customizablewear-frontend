@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
 const ImageUpload = ({ onUpload, handleColorImageChange, productIndex, colorIndex }) => {
   return (
@@ -103,11 +104,7 @@ const Popup = ({ closePopup, onBundleCreated }) => {
   };
 
   const handleFormSubmit = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      alert("Unauthorized! Please log in again.");
-      return;
-    }
+  
   
     // Validate required fields
     if (!title.trim()) {
@@ -173,12 +170,10 @@ const Popup = ({ closePopup, onBundleCreated }) => {
     });
   
     try {
-      const response = await fetch('http://localhost:5000/api/bundle/add', {
+      const response = await fetch(`${apiUrl}/bundle/add`, {
         method: 'POST',
         body: formData,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials:"include"
       });
   
       if (!response.ok) {

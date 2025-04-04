@@ -24,13 +24,12 @@ export const usePoloSelector = () => {
   useEffect(() => {
     const fetchBundle = async () => {
       try {
-        const token = localStorage.getItem('authToken');
         const response = await fetch(`${apiUrl}/bundle/${id}`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
+          credentials:"include"
         });
 
         if (!response.ok) throw new Error('Failed to fetch bundle');
@@ -44,6 +43,7 @@ export const usePoloSelector = () => {
         }
       } catch (error) {
         console.error('Error fetching bundle:', error);
+      
       }
     };
 

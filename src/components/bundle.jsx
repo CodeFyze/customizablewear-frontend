@@ -9,15 +9,13 @@ const Bundle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noBundlesAvailable, setNoBundlesAvailable] = useState(false);
+const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 
   // Fetch bundles from backend when component mounts
   const fetchBundles = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('http://localhost:5000/api/bundle/', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+      const response = await fetch(`${apiUrl}/bundle/`, {
+        credentials:"include"
       });
       
       if (!response.ok) {

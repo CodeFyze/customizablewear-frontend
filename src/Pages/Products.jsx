@@ -17,10 +17,10 @@ const Products = ({ showTShirtSelector = true }) => {
     try {
       const response = await fetch(`${apiUrl}/products/`, {
         method: "GET",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       if (!response.ok) {

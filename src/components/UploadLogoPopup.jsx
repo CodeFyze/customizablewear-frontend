@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import { FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { useSelector } from 'react-redux';
 
-	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const UploadLogoPopup = ({
 	onBack,
@@ -26,30 +27,25 @@ const UploadLogoPopup = ({
 	const [usePreviousLogo, setUsePreviousLogo] = useState(false);
 	const [loading, setLoading] = useState(false); // State for loader
 	const dispatch = useDispatch();
+	const {id} = useSelector((state) => state.auth.user || []);
 
 	useEffect(() => {
 		const fetchPreviousLogo = async () => {
 			try {
-				const storedUserId = localStorage.getItem('userId');
-				setUserId(storedUserId);
+				// const storedUserId = localStorage.getItem('userId');
+				setUserId(id);
 
-				if (!storedUserId) {
+				if (!id) {
 					toast.error('User ID is missing! Please login.');
 					return;
 				}
 
-				const token = localStorage.getItem('authToken');
-				if (!token) {
-					toast.error('No auth token found! Please login.');
-					return;
-				}
-
-				const response = await fetch(`${apiUrl}/orders/order-user/${storedUserId}`, {
+				const response = await fetch(`${apiUrl}/orders/order-user/${id}`, {
 					method: 'GET',
 					headers: {
-						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
 					},
+					credentials: 'include',
 				});
 
 				const data = await response.json();
@@ -152,18 +148,6 @@ const UploadLogoPopup = ({
 
 		try {
 			setLoading(true); // Start loading
-			const token = localStorage.getItem('authToken');
-			const userId = localStorage.getItem('userId');
-
-			if (!token) {
-				toast.error('No auth token found! Please login.');
-				return;
-			}
-
-			if (!userId) {
-				toast.error('User ID missing! Please log in again.');
-				return;
-			}
 
 			const formData = new FormData();
 			formData.append('productId', selectedProduct._id);
@@ -185,14 +169,25 @@ const UploadLogoPopup = ({
 
 			const response = await fetch(`${apiUrl}/cart/add`, {
 				method: 'POST',
-				headers: { Authorization: `Bearer ${token}` },
+				// headers: { Authorization: `Bearer ${token}` },
 				credentials: 'include',
 				body: formData,
 			});
 
 			const data = await response.json();
 			console.log('🛒 API Response:', data);
-			dispatch(addItem(formData)); // Dispatch after successful API call
+			dispatch(
+				addItem({
+					productId: selectedProduct._id,
+					title: selectedProduct?.title || 'Custom T-Shirt',
+					size: selectedSize?.size,
+					color: selectedColor,
+					quantity: quantity,
+					price: selectedProduct?.price || 200,
+					usePreviousLogo: usePreviousLogo,
+				}),
+			);
+			// Dispatch after successful API call
 			console.log('formData-->', formData);
 
 			if (response.ok) {

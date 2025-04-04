@@ -16,13 +16,12 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 	}, []);
 
 	const fetchPromoCodes = async () => {
-		const token = localStorage.getItem('authToken');
-		if (!token) return console.error('No auth token found');
 
 		try {
 			const response = await fetch(`${apiUrl}/all`, {
 				method: 'GET',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
+				credentials:"include"
 			});
 			if (!response.ok) throw new Error('Failed to fetch promo codes');
 			const data = await response.json();
@@ -34,14 +33,14 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 
 	const handleAddPromoCode = async (e) => {
 		e.preventDefault();
-		const token = localStorage.getItem('authToken');
-		if (!token) return console.error('No auth token found');
+		
 
 		const newCode = { code, discount: parseFloat(discount), status: 'active' };
 		try {
 			const response = await fetch(`${apiUrl}/create`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
+				credentials:"include",
 				body: JSON.stringify(newCode),
 			});
 			if (!response.ok) throw new Error('Failed to add promo code');
@@ -55,13 +54,12 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 	};
 
 	const handleDeletePromoCode = async (id) => {
-		const token = localStorage.getItem('authToken');
-		if (!token) return console.error('No auth token found');
+	;
 
 		try {
 			const response = await fetch(`${apiUrl}/delete/${id}`, {
 				method: 'DELETE',
-				headers: { Authorization: `Bearer ${token}` },
+			credentials:"include"
 			});
 			if (!response.ok) throw new Error('Failed to delete promo code');
 
@@ -72,14 +70,14 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 	};
 
 	const handleToggleStatus = async (id, currentStatus) => {
-		const token = localStorage.getItem('authToken');
-		if (!token) return console.error('No auth token found');
+	
 
 		const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
 		try {
 			const response = await fetch(`${apiUrl}/toggle/${id}`, {
 				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				headers: { 'Content-Type': 'application/json' },
+				credentials:"include",
 				body: JSON.stringify({ status: newStatus }),
 			});
 			if (!response.ok) throw new Error('Failed to update status');
@@ -96,12 +94,7 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 	};
 
 	const handleSendEmail = async () => {
-		const token = localStorage.getItem('authToken');
-		if (!token) {
-			toast.error('No auth token found.');
-			return;
-		}
-
+		
 		if (!emailBody.trim()) {
 			toast.error('Please enter the email body.');
 			return;
@@ -112,8 +105,12 @@ const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/promocodes`;
 		try {
 			const response = await fetch(`${apiUrl}/send-email`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+				headers: {
+					'Content-Type': 'application/json'
+					
+				 },
 				body: JSON.stringify({ emailBody }),
+				credentials:"include"
 			});
 
 			if (!response.ok) {

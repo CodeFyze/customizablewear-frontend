@@ -69,21 +69,22 @@ const ProductDetailsPage = () => {
     setIsAddingToCart(true);
     
     try {
-      // Get token from storage (check both localStorage and cookies)
-      const token = localStorage.getItem('authToken') || 
-                    document.cookie.split('; ')
-                      .find(row => row.startsWith('token='))
-                      ?.split('=')[1];
+      // // Get token from storage (check both localStorage and cookies)
+      // const token = localStorage.getItem('authToken') || 
+      // document.cookie.split('; ')
+      // .find(row => row.startsWith('token='))
+      // ?.split('=')[1];
+      // console.log("token==>",token)
 
-      if (!token) {
-        throw new Error("Please login to continue");
-      }
-
+      // if (!token) {
+      //   throw new Error("Please login to continue");
+      // }
+console.log(selectedSize)
       const response = await fetch(`${apiUrl}/cart/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          // 'Authorization': `Bearer ${token}`
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -100,8 +101,8 @@ const ProductDetailsPage = () => {
       // Handle unauthorized response
       if (response.status === 401) {
         // Clear invalid token and redirect to login
-        localStorage.removeItem('authToken');
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // localStorage.removeItem('authToken');
+        // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         throw new Error("Session expired. Please login again.");
       }
 
@@ -136,7 +137,9 @@ const ProductDetailsPage = () => {
   }
 
   return (
+  
     <div className="max-w-[1200px] mx-auto px-4 py-6">
+      
     <button className="mb-4 text-blue-500 hover:underline" onClick={() => navigate(-1)}>
       ← Back to Products
     </button>

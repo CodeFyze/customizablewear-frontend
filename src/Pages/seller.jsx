@@ -10,13 +10,11 @@ const SellPage = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        const token = localStorage.getItem("authToken"); 
 
         const response = await fetch(`${apiUrl}/auth/isAdmin`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
 					},
 					credentials: 'include',
 				});

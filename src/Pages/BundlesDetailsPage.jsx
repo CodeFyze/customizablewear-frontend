@@ -10,13 +10,12 @@ const BundleSelectionPage = () => {
   useEffect(() => {
     const fetchThumbnail = async () => {
       try {
-        const token = localStorage.getItem('authToken');
         const response = await fetch(`${apiUrl}/bundle/${id}`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
+          credentials:"include"
         });
 
         if (response.ok) {

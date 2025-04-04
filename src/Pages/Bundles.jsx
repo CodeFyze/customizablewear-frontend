@@ -9,13 +9,12 @@ const Bundles = () => {
   useEffect(() => {
     const fetchBundles = async () => {
       try {
-        const token = localStorage.getItem('authToken');
         const response = await fetch(`${apiUrl}/bundle`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
+          credentials:"true"
         });
 
         if (!response.ok) {

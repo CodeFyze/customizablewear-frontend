@@ -30,6 +30,7 @@ const useOtpVerification = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials:"include",
         body: JSON.stringify({ otp: otpCode }),
       });
 
@@ -38,10 +39,7 @@ const useOtpVerification = () => {
       if (response.ok && data.success) {
         alert("OTP Verified Successfully");
 
-        // Store the token locally
-        if (data.token) {
-          localStorage.setItem("authToken", data.token); // Use sessionStorage if token is session-based
-        }
+      
 
         // Redirect based on role
         const userRole = data.user?.role; // Safely access the role property

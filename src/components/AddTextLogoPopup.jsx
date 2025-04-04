@@ -86,14 +86,13 @@ const AddTextLogoPopup = ({
 		dispatch(addItem(requestData));
 		try {
 			setLoading(true);
-			const token = localStorage.getItem('authToken');
 
 			const response = await fetch(`${apiUrl}/cart/add`, {
 				method: 'POST',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
+				credentials:"include",
 				body: JSON.stringify(requestData),
 			});
 

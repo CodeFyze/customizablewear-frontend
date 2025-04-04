@@ -14,19 +14,11 @@ const Cart = () => {
 
 	useEffect(() => {
 		const fetchCartData = async () => {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				console.error('❌ No auth token found! Redirecting to login.');
-				navigate('/login');
-				return;
-			}
-
+		
 			try {
 				const response = await fetch(`${apiUrl}/cart`, {
 					method: 'GET',
 					headers: {
-						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
 					},
 					credentials: 'include',
@@ -40,6 +32,7 @@ const Cart = () => {
 				dispatch(setCart(data.cart?.products || data.cart || []));
 			} catch (error) {
 				console.error('❌ Error fetching cart data:', error.message);
+				navigate("/login")
 			} finally {
 				setLoading(false);
 			}
@@ -50,20 +43,13 @@ const Cart = () => {
 
 	// Optimistic UI Update for increasing quantity
 const handleIncrease = async (item) => {
-	const token = localStorage.getItem('authToken');
-
-	if (!token) {
-		console.error('You need to log in first!');
-		navigate('/login');
-		return;
-	}
+	
 
 	try {
 		// Make API call first
 		const response = await fetch(`${apiUrl}/cart/increase/${item._id}`, {
 			method: 'PUT',
 			headers: {
-				Authorization: `Bearer ${token}`,
 				'Content-Type': 'application/json',
 			},
 			credentials: 'include',
@@ -80,25 +66,17 @@ const handleIncrease = async (item) => {
 		 dispatch(increaseQuantity(updatedCartItem?.updatedCart?._id || item._id));
 	} catch (error) {
 		console.error('❌ Error increasing quantity:', error.message);
+			dispatch(decreaseQuantity(item._id));
 	}
 };
 
 	// Optimistic UI Update for decreasing quantity
 	const handleDecrease = async (item) => {
-		const token = localStorage.getItem('authToken');
-
-		if (!token) {
-			console.error('You need to log in first!');
-			navigate('/login');
-			return;
-		}
-
-
+		
 		try {
 			const response = await fetch(`${apiUrl}/cart/decrease/${item._id}`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -112,25 +90,19 @@ const handleIncrease = async (item) => {
 			console.log('Response after decrease:', await response.json());
 		} catch (error) {
 			console.error('❌ Error decreasing quantity:', error.message);
-			// dispatch(increaseQuantity(item._id));
-		}
+			dispatch(increaseQuantity(item._id));
+
+}
 	};
 
 	// Function to handle removal of an item from the cart
 	const handleRemove = async (productId) => {
-		const token = localStorage.getItem('authToken');
-
-		if (!token) {
-			console.error('You need to log in first!');
-			navigate('/login');
-			return;
-		}
+	
 
 		try {
 			const response = await fetch(`${apiUrl}/cart/remove/${productId}`, {
 				method: 'DELETE',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',

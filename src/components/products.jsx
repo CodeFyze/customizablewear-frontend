@@ -17,6 +17,9 @@ const Products = () => {
       const response = await fetch(`${apiUrl}/products`, {
         credentials: "include",
         method: "GET",
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!response.ok) throw new Error("Failed to fetch products");
@@ -62,18 +65,21 @@ const Products = () => {
       }
 
       let response;
+      console.log(selectedProduct)
       if (selectedProduct) {
         response = await fetch(`${apiUrl}/products/update/${selectedProduct._id}`, {
-          credentials: "include",
-          method: "PUT",
-          body: formData,
-        });
+					credentials: 'include',
+			
+					method: 'PUT',
+					body: formData,
+				});
       } else {
         response = await fetch(`${apiUrl}/products/add`, {
-          credentials: "include",
-          method: "POST",
-          body: formData,
-        });
+					credentials: 'include',
+				
+					method: 'POST',
+					body: JSON.stringify(formData),
+				});
       }
 
       if (!response.ok) throw new Error("Failed to save product");
@@ -100,12 +106,10 @@ const Products = () => {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const token = localStorage.getItem("authToken");
 
       const response = await fetch(`${apiUrl}/products/delete/${productId}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         credentials: "include",

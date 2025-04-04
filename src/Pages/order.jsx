@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import {
 	FaBox,
@@ -15,6 +15,10 @@ import {
 	FaTimes,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'; 
+import { useDispatch } from 'react-redux';
+import { setOrderStatus } from '../store/orderSlice';
 
 const OrderDetails = () => {
 	const { orderId } = useParams();
@@ -28,8 +32,10 @@ const OrderDetails = () => {
 	const [emailMessage, setEmailMessage] = useState('');
 	const [orderMessage, setOrderMessage] = useState('');
 	const [trackingId, setTrackingId] = useState(''); // State for tracking ID
-	const [isTrackingIdSaved, setIsTrackingIdSaved] = useState(false);
-
+	const [ isTrackingIdSaved, setIsTrackingIdSaved ] = useState(false);
+	const dispatch = useDispatch()
+	const orderStatus = useSelector((state) => state.order.status);
+const navigate = useNavigate()
 	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
 	// Fetch order details and message on component mount
 	useEffect(() => {
@@ -38,21 +44,16 @@ const OrderDetails = () => {
 		fetchOrderMessage();
 		fetchEmailMessage();
 		fetchTrackingId(); // Fetch tracking ID
-	}, [orderId]);
+	}, [orderStatus]);
 
 	// Fetch order details
 	const fetchOrderDetails = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+			
 
 			const response = await fetch(`${apiUrl}/orders/orders/${orderId}`, {
 				method: 'GET',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -60,7 +61,9 @@ const OrderDetails = () => {
 
 			if (!response.ok) {
 				const errorData = await response.json();
+				navigate("/login")
 				throw new Error(errorData.message || 'Failed to fetch order details');
+				
 			}
 
 			const data = await response.json();
@@ -78,16 +81,12 @@ const OrderDetails = () => {
 	// Fetch tracking ID
 	const fetchTrackingId = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
 
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+		
 
 			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'GET',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -103,23 +102,19 @@ const OrderDetails = () => {
 	// Save tracking ID
 	const handleSaveTrackingId = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
-
+			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ trackingId }),
+				credentials:"include"
 			});
 
 			if (!response.ok) {
 				const errorData = await response.json();
+				navigate("/login")
 				throw new Error(errorData.message || 'Failed to save tracking ID');
 			}
 
@@ -133,18 +128,14 @@ const OrderDetails = () => {
 	// Empty tracking ID
 	const handleEmptyTrackingId = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+		
 
 			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'DELETE',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
+				credentials:"include"
 			});
 
 			if (!response.ok) {
@@ -164,16 +155,10 @@ const OrderDetails = () => {
 	// Fetch order message
 	const fetchOrderMessage = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
-
+			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'GET',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -189,16 +174,10 @@ const OrderDetails = () => {
 	// Fetch email message
 	const fetchEmailMessage = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
 
 			const response = await fetch(`${apiUrl}/orders/${orderId}/getEmailMessage`, {
 				method: 'GET',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -212,25 +191,20 @@ const OrderDetails = () => {
 	};
 
 	const fetchStatus = async () => {
-		const status = localStorage.getItem('status');
-		if (status) {
-			setStatus(status);
+		// const status = localStorage.getItem('status');
+		if (orderStatus) {
+			setStatus(orderStatus);
 		}
 	};
 
 	// Handle status change
 	const handleStatusChange = async (newStatus) => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+			
 
 			const response = await fetch(`${apiUrl}/orders/update/${orderId}`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -245,7 +219,9 @@ const OrderDetails = () => {
 			const data = await response.json();
 
 			setOrder((prevOrder) => ({ ...prevOrder, status: newStatus }));
-			localStorage.setItem('status', data?.updatedOrder?.paymentStatus);
+			  // ✅ Update status in Redux instead of localStorage
+      dispatch(setOrderStatus(data?.updatedOrder?.paymentStatus));
+
 			toast.success('Order status updated successfully!', { position: 'top-right' });
 		} catch (error) {
 			console.error('Error updating order status:', error);
@@ -256,19 +232,14 @@ const OrderDetails = () => {
 	// Handle save note
 	const handleSaveNote = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
-
+			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ message: noteMessage }),
+				credentials: 'include',
 			});
 
 			if (!response.ok) {
@@ -289,18 +260,14 @@ const OrderDetails = () => {
 	// Handle delete note
 	const handleDeleteNote = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
-
+			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
+								credentials:"include"
+,
 				body: JSON.stringify({ message: '' }),
 			});
 
@@ -320,19 +287,15 @@ const OrderDetails = () => {
 
 	const handleDeleteEmailNote = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+			
 
 			const response = await fetch(`${apiUrl}/orders/${orderId}/deleteEmail`, {
 				method: 'PUT',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ email: '' }),
+				credentials: 'include',f
 			});
 
 			if (!response.ok) {
@@ -352,19 +315,15 @@ const OrderDetails = () => {
 	// Handle send email
 	const handleSendEmail = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
+			
 
 			const response = await fetch(`${apiUrl}/orders/${orderId}/send-email`, {
 				method: 'POST',
 				headers: {
-					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ message: emailMessage }),
+				credentials: 'include',
 			});
 
 			if (!response.ok) {
@@ -383,17 +342,10 @@ const OrderDetails = () => {
 
 	const handleDownloadInvoice = async () => {
 		try {
-			const token = localStorage.getItem('authToken');
-
-			if (!token) {
-				throw new Error('Unauthorized - No token found.');
-			}
-
+			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/invoice`, {
 				method: 'GET',
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+				credentials: 'include',
 			});
 
 			if (!response.ok) {

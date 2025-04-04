@@ -22,20 +22,20 @@ const SellerDashboard = () => {
 
 	// ✅ Check if the user is an admin before allowing access
 	const checkAdminStatus = async () => {
-		const token = localStorage.getItem('authToken');
+		// const token = localStorage.getItem('authToken');
 
-		if (!token) {
-			console.error('❌ No auth token found! Redirecting to login.');
-			alert('Unauthorized access! Please log in as an admin.');
-			navigate('/login');
-			return;
-		}
+		// if (!token) {
+		// 	console.error('❌ No auth token found! Redirecting to login.');
+		// 	alert('Unauthorized access! Please log in as an admin.');
+		// 	navigate('/login');
+		// 	return;
+		// }
 
 		try {
 			const response = await fetch(`${apiUrl}/auth/isAdmin`, {
 				method: 'GET',
 				headers: {
-					Authorization: `Bearer ${token}`, // ✅ Send Token
+					// Authorization: `Bearer ${token}`, // ✅ Send Token
 					'Content-Type': 'application/json',
 				},
 				credentials: 'include',
@@ -47,7 +47,7 @@ const SellerDashboard = () => {
 			if (!response.ok || !data.success || !data.isAdmin) {
 				console.error('❌ User is not an admin, redirecting to login...');
 				alert('Unauthorized access! You are not an admin.');
-				localStorage.removeItem('authToken'); // 🔹 Remove invalid token
+				// localStorage.removeItem('authToken'); // 🔹 Remove invalid token
 				navigate('/login');
 			}
 		} catch (error) {
@@ -59,30 +59,30 @@ const SellerDashboard = () => {
 
 	// ✅ Fetch Dashboard Data
 	const fetchDashboardData = async () => {
-		const token = localStorage.getItem('authToken');
+		// const token = localStorage.getItem('authToken');
 	  
-		if (!token) {
-		  console.error('❌ No auth token found! Redirecting...');
-		  navigate('/login');
-		  return;
-		}
+		// if (!token) {
+		//   console.error('❌ No auth token found! Redirecting...');
+		//   navigate('/login');
+		//   return;
+		// }
 	  
 		try {
 		  const [ordersRes, productsRes, customersRes, earningsRes] = await Promise.all([
 			fetch(`${apiUrl}/orders/count`, {
-			  headers: { Authorization: `Bearer ${token}` },
+			//   headers: { Authorization: `Bearer ${token}` },
 			  credentials: 'include',
 			}),
 			fetch(`${apiUrl}/products/count`, {
-			  headers: { Authorization: `Bearer ${token}` },
+			//   headers: { Authorization: `Bearer ${token}` },
 			  credentials: 'include',
 			}),
 			fetch(`${apiUrl}/orders/customers`, {
-			  headers: { Authorization: `Bearer ${token}` },
+			//   headers: { Authorization: `Bearer ${token}` },
 			  credentials: 'include',
 			}),
 			fetch(`${apiUrl}/orders/earnings`, {
-			  headers: { Authorization: `Bearer ${token}` },
+			//   headers: { Authorization: `Bearer ${token}` },
 			  credentials: 'include',
 			}),
 		  ]);

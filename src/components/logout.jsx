@@ -17,8 +17,6 @@ const dispatch = useDispatch();
 			});
 
       if (response.ok) {
-        // Remove token from localStorage or cookies if necessary
-				localStorage.removeItem('authToken');
       dispatch(logout());
 
 				// Redirect user to login page

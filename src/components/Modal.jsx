@@ -130,13 +130,9 @@ const Modal = ({ isOpen, onClose, initialData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      toast.error("Unauthorized! Please log in again.");
-      return;
-    }
+
   
-    if (!frontImage || backImage || sideImage) {
+    if (!frontImage || !backImage || !sideImage) {
       toast.error("Please upload all three main images (front, back, side)!");
       return;
     }
@@ -175,10 +171,11 @@ const Modal = ({ isOpen, onClose, initialData }) => {
   
     try {
       const response = await fetch(`${apiUrl}/products/add`, {
-        method: "POST",
-        body: formData,
-        headers: { Authorization: `Bearer ${token}` },
-      });
+				method: 'POST',
+				body: formData,
+			
+				credentials: 'include',
+			});
   
       const data = await response.json();
       if (!data.success) {

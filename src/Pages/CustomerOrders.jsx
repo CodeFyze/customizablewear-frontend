@@ -12,19 +12,14 @@ const CustomerOrders = () => {
 	useEffect(() => {
 		const fetchOrders = async () => {
 			try {
-				const token = localStorage.getItem('authToken');
-				if (!token) {
-					setError('Unauthorized - Please log in.');
-					setLoading(false);
-					return;
-				}
+			
 
 				const response = await fetch(`${apiUrl}/orders/order-user/${customerId}`, {
 					method: 'GET',
 					headers: {
-						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
 					},
+					credentials:"include"
 				});
 
 				const data = await response.json();
@@ -33,6 +28,7 @@ const CustomerOrders = () => {
 				setOrders(data.orders);
 			} catch (err) {
 				setError(err.message);
+				navigator("/login")
 			} finally {
 				setLoading(false);
 			}
@@ -69,7 +65,7 @@ const CustomerOrders = () => {
 							{/* Order Details */}
 							<div className='mt-4'>
 								<p className='text-gray-600'>
-									<strong>Total Amount:</strong> ${order.finalAmount.toFixed(2)}
+									<strong>Total Amount:</strong> ${Math.round(order.finalAmount)}
 								</p>
 								<p className='text-gray-600'>
 									<strong>Payment:</strong> {order.paymentMode} ({order.paymentStatus})
