@@ -78,7 +78,7 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className='flex items-center justify-center min-h-screen bg-gray-100'>
+		<div className='flex items-center justify-center min-h-screen bg-gray-100 px-4 md:px-0'>
 			<div className='w-full max-w-md bg-white rounded-lg shadow-lg p-8 relative'>
 				{loading && (
 					<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg z-50'>
@@ -97,7 +97,7 @@ const LoginPage = () => {
 						<input
 							type='email'
 							placeholder='Enter your email'
-							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black'
 							{...register('email', { required: 'Email is required' })}
 						/>
 						{errors.email && <span className='text-sm text-red-500 mt-1'>{errors.email.message}</span>}
@@ -108,7 +108,7 @@ const LoginPage = () => {
 						<input
 							type={showPassword ? 'text' : 'password'}
 							placeholder='Enter your password'
-							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+							className='mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black'
 							{...register('password', { required: 'Password is required' })}
 						/>
 						<button
@@ -120,7 +120,7 @@ const LoginPage = () => {
 						{errors.password && <span className='text-sm text-red-500 mt-1'>{errors.password.message}</span>}
 					</div>
 
-					<button type='submit' className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600'>
+					<button type='submit' className='w-full bg-black border-[1px] border-black text-white py-2 rounded-md hover:text-black hover:bg-transparent'>
 						Login
 					</button>
 				</form>

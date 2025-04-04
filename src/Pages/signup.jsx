@@ -53,7 +53,7 @@ const SignUp = () => {
 	};
 
 	return (
-		<div className='h-screen flex justify-center items-center relative'>
+		<div className='my-5  flex justify-center items-center relative px-4 md:px-0'>
 			{/* Background overlay when loading */}
 			{loading && (
 				<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-lg z-50'>
@@ -63,11 +63,11 @@ const SignUp = () => {
 
 			{/* Sign Up Form */}
 			{showForm && (
-				<div className='p-8 w-full max-w-6xl bg-white rounded-lg shadow-lg z-20 relative'>
+				<div className='p-8 w-full max-w-md bg-white rounded-lg shadow-lg z-20 relative'>
 					{/* Close button positioned at top-right corner */}
 					<button
 						onClick={() => setShowForm(false)}
-						className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
+						className='absolute top-4 right-4 text-gray-600 hover:text-gray-700 p-2'>
 						<FaTimes size={20} />
 					</button>
 
@@ -86,7 +86,7 @@ const SignUp = () => {
 								value={formData.firstName}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black'
 							/>
 						</div>
 						<div>
@@ -100,7 +100,7 @@ const SignUp = () => {
 								value={formData.lastName}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black'
 							/>
 						</div>
 						<div>
@@ -114,7 +114,7 @@ const SignUp = () => {
 								value={formData.email}
 								onChange={handleChange}
 								required
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black'
 							/>
 						</div>
 						<div className='relative mt-2'>
@@ -128,7 +128,7 @@ const SignUp = () => {
 								value={formData.password}
 								onChange={handleChange}
 								required
-								className='p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 pr-10'
+								className='p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black pr-10'
 							/>
 							<button
 								type='button'
@@ -146,7 +146,7 @@ const SignUp = () => {
 								id='role'
 								value={formData.role}
 								onChange={handleChange}
-								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600'>
+								className='mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black'>
 								<option value='user'>User</option>
 								<option value='seller'>Seller</option>
 							</select>
@@ -154,7 +154,7 @@ const SignUp = () => {
 						<div className='flex justify-center'>
 							<button
 								type='submit'
-								className='w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600'>
+								className='w-full bg-black text-white p-3 rounded-md hover:bg-transparent border-[1px] border-black hover:text-black'>
 								Sign Up
 							</button>
 						</div>

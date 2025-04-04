@@ -28,7 +28,7 @@ const PositionPopup = ({ onClose,onBack, onNext, visible, selectedPosition, setS
 
 	return (
 		<div className='fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50'>
-			<div className='bg-white p-6 md:p-8 rounded-lg w-[90%] max-w-2xl mx-auto relative'>
+			<div className='bg-white h-full md:h-full overflow-x-auto md:overflow-auto p-6 md:p-8 rounded-lg w-[90%] max-w-2xl mx-auto relative'>
 				{/* Close Button */}
 				<button onClick={onClose} className='absolute top-4 right-4 text-red-600 hover:text-red-700 p-2'>
 					<FaTimes size={20} />
@@ -41,6 +41,7 @@ const PositionPopup = ({ onClose,onBack, onNext, visible, selectedPosition, setS
 				<div className='text-sm text-blue-500 text-center mb-6'>
 					Note: Additional logos can be added after the first one has been uploaded.
 				</div>
+				<div className=' '>
 				<div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
 					{positions.map((position) => (
 						<div
@@ -53,6 +54,7 @@ const PositionPopup = ({ onClose,onBack, onNext, visible, selectedPosition, setS
 							<div className='text-sm font-medium text-center'>{position.label}</div>
 						</div>
 					))}
+				</div>
 				</div>
 				<div className='flex justify-between items-center mt-6'>
 					<button

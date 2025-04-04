@@ -46,7 +46,7 @@ const BundleSelectionPage = () => {
           </div>
           
           {/* Right side - Scrollable content */}
-          <div className='w-full lg:w-1/2 lg:overflow-y-auto lg:max-h-[calc(100vh-200px)] lg:py-8'>
+          <div className='w-full lg:w-1/2  lg:overflow-y-auto lg:max-h-[calc(100vh-200px)] lg:py-8'>
             <PoloSelector />
           </div>
         </div>

@@ -74,7 +74,7 @@ const ProductDetail = () => {
   );
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="bg-red-500 container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Image Gallery */}
         <div className="md:w-1/2">
