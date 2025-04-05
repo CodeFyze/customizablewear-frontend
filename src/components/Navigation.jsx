@@ -37,7 +37,7 @@ const Navigation = () => {
 					<div className='hidden sm:block sm:ml-6'>
 						<div className='flex space-x-2 md:space-x-8'>
 							<NavLink to='/' icon={<FaHome />} text='Home' />
-							<NavLink to='/products' text='Products' />
+							<NavLink to='/products' text='Customize your shirt' />
 							<NavLink to='/about' text='About' />
 							<NavLink to='/contact' text='Contact' />
 							{!isAuthenticated && (
