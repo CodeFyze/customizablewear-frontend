@@ -54,12 +54,11 @@ const BundleProductSection = ({
         <div>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2'>
             <div
-              onClick={() => selectedPoloShirts.length < 1 && handleSelectProduct(product, 'polo')}
-              className={`border p-4 rounded-lg cursor-pointer ${
+              className={`border p-4 rounded-lg ${
                 selectedPoloShirts.includes(product)
                   ? 'border-indigo-500'
                   : 'border-gray-200'
-              } ${selectedPoloShirts.length >= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              }`}
             >
               <img
                 src={product.image || product.thumbnail}
