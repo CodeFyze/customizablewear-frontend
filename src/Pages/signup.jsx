@@ -40,7 +40,8 @@ const SignUp = () => {
 			});
 
 			setLoading(false);
-			if (response.ok && response.role === 'user') {
+			const data = await response.json();
+			if (response.ok && data.user.role === 'user') {
 				navigate('/products');
 			} else {
 				navigate('/');
