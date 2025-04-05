@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
+import { clearCart } from "../store/cartSlice";
+import { useDispatch } from "react-redux";
 
 const Success = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+      dispatch(clearCart()); 
     const timer = setTimeout(() => {
       navigate("/products"); 
     }, 4000);
