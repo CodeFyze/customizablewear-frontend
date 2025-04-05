@@ -1,7 +1,8 @@
-// components/PoloSelector.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { usePoloSelector } from '../hooks/usePoloSelector';
 import BundleProductSection from './BundleProductSection';
+// import Popup from './Popup'; // Make sure to import your Popup component
+import BundleLogoPopup from './BundleLogoPopup';
 
 const PoloSelector = () => {
   const {
@@ -34,12 +35,25 @@ const PoloSelector = () => {
     togglePoloShirtsSection2,
   } = usePoloSelector();
 
+  // State for controlling the popup visibility
+  const [showPopup, setShowPopup] = useState(false);
+
   // Get the products for each selector
   const product1 = getProduct(0);
   const product2 = getProduct(1);
 
   // Check if both products have reached their size selection limits (3 sizes each)
   const bothProductsHaveMaxSizes = totalSelectedSizes1 >= 3 && totalSelectedSizes2 >= 3;
+
+  // Function to handle opening the popup
+  const handleAddLogoClick = () => {
+    setShowPopup(true);
+  };
+
+  // Function to handle closing the popup
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
 
   return (
     <div className='bg-white'>
@@ -88,8 +102,7 @@ const PoloSelector = () => {
                 <div className="mt-8 text-center">
                   <button
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md"
-                    onClick={() => {
-                    }}
+                    onClick={handleAddLogoClick}
                   >
                     Add Logo
                   </button>
@@ -99,6 +112,12 @@ const PoloSelector = () => {
           </div>
         </div>
       </div>
+
+      {/* Render the Popup component */}
+      <BundleLogoPopup
+        onClose={handleClosePopup} 
+        visible={showPopup} 
+      />
     </div>
   );
 };
