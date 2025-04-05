@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import {
 	FaBox,
@@ -13,12 +13,11 @@ import {
 	FaDownload,
 	FaEnvelope,
 	FaTimes,
+	FaTruck,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'; 
-import { useDispatch } from 'react-redux';
-import { setOrderStatus } from '../store/orderSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
 const OrderDetails = () => {
 	const { orderId } = useParams();
@@ -31,136 +30,71 @@ const OrderDetails = () => {
 	const [isEmailPopupOpen, setIsEmailPopupOpen] = useState(false);
 	const [emailMessage, setEmailMessage] = useState('');
 	const [orderMessage, setOrderMessage] = useState('');
-	const [trackingId, setTrackingId] = useState(''); // State for tracking ID
-	const [ isTrackingIdSaved, setIsTrackingIdSaved ] = useState(false);
-	const dispatch = useDispatch()
-	const orderStatus = useSelector((state) => state.order.status);
-const navigate = useNavigate()
-	const apiUrl = import.meta.env.VITE_API_BASE_URL; 
-	// Fetch order details and message on component mount
+	const [trackingId, setTrackingId] = useState('');
+	const [shippingCarrier, setShippingCarrier] = useState('');
+	const [isTrackingIdSaved, setIsTrackingIdSaved] = useState(false);
+	const navigate = useNavigate();
+	const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
 	useEffect(() => {
-		fetchStatus();
 		fetchOrderDetails();
 		fetchOrderMessage();
 		fetchEmailMessage();
-		fetchTrackingId(); // Fetch tracking ID
-	}, [orderStatus]);
+		fetchTrackingId();
+	}, [orderId]);
 
-	// Fetch order details
-	const fetchOrderDetails = async () => {
-		try {
-			
+const fetchOrderDetails = async () => {
+	try {
+		const response = await fetch(`${apiUrl}/orders/orders/${orderId}`, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
+		});
 
-			const response = await fetch(`${apiUrl}/orders/orders/${orderId}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				navigate("/login")
-				throw new Error(errorData.message || 'Failed to fetch order details');
-				
-			}
-
-			const data = await response.json();
-			setOrder(data.order);
-			setNoteMessage(data.order.internalNote || '');
-		} catch (error) {
-			console.error('Error fetching order details:', error);
-			setError(error.message || 'Failed to fetch order details');
-			toast.error(error.message, { position: 'top-right' });
-		} finally {
-			setLoading(false);
+		if (!response.ok) {
+			const errorData = await response.json();
+			navigate('/login');
+			throw new Error(errorData.message || 'Failed to fetch order details');
 		}
-	};
 
-	// Fetch tracking ID
+		const data = await response.json();
+		console.log('Fetched Order Details:', data.order); // Log the fetched order details
+		setOrder(data.order);
+		setStatus(data.order.paymentStatus || 'Pending'); // Add this line
+		setNoteMessage(data.order.internalNote || '');
+		if (data.order.shippingCarrier) {
+			setShippingCarrier(data.order.shippingCarrier);
+		}
+	} catch (error) {
+		console.error('Error fetching order details:', error);
+		setError(error.message || 'Failed to fetch order details');
+		toast.error(error.message, { position: 'top-right' });
+	} finally {
+		setLoading(false);
+	}
+};
+
 	const fetchTrackingId = async () => {
 		try {
-
-		
-
 			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include',
 			});
 
 			const data = await response.json();
-			setTrackingId(data.trackingId || ''); // Set the fetched tracking ID
-			setIsTrackingIdSaved(!!data.trackingId); // Set tracking ID saved status based on whether tracking ID exists
+			setTrackingId(data.trackingId || '');
+			setIsTrackingIdSaved(!!data.trackingId);
 		} catch (error) {
 			console.error('Error fetching tracking ID:', error);
 		}
 	};
-	// Save tracking ID
-	const handleSaveTrackingId = async () => {
-		try {
-			
-			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ trackingId }),
-				credentials:"include"
-			});
 
-			if (!response.ok) {
-				const errorData = await response.json();
-				navigate("/login")
-				throw new Error(errorData.message || 'Failed to save tracking ID');
-			}
-
-			setIsTrackingIdSaved(true); // Set tracking ID saved status to true
-			toast.success('Tracking ID saved successfully!', { position: 'top-right' });
-		} catch (error) {
-			console.error('Error saving tracking ID:', error);
-			toast.error(error.message || 'Failed to save tracking ID', { position: 'top-right' });
-		}
-	};
-	// Empty tracking ID
-	const handleEmptyTrackingId = async () => {
-		try {
-		
-
-			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials:"include"
-			});
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.message || 'Failed to empty tracking ID');
-			}
-
-			setTrackingId(''); // Clear the tracking ID in the state
-			setIsTrackingIdSaved(false); // Reset tracking ID saved status
-			toast.success('Tracking ID emptied successfully!', { position: 'top-right' });
-		} catch (error) {
-			console.error('Error emptying tracking ID:', error);
-			toast.error(error.message || 'Failed to empty tracking ID', { position: 'top-right' });
-		}
-	};
-
-	// Fetch order message
 	const fetchOrderMessage = async () => {
 		try {
-			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include',
 			});
 
@@ -171,15 +105,11 @@ const navigate = useNavigate()
 		}
 	};
 
-	// Fetch email message
 	const fetchEmailMessage = async () => {
 		try {
-
 			const response = await fetch(`${apiUrl}/orders/${orderId}/getEmailMessage`, {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include',
 			});
 
@@ -190,54 +120,98 @@ const navigate = useNavigate()
 		}
 	};
 
-	const fetchStatus = async () => {
-		// const status = localStorage.getItem('status');
-		if (orderStatus) {
-			setStatus(orderStatus);
-		}
-	};
-
-	// Handle status change
-	const handleStatusChange = async (newStatus) => {
+	
+	const handleSaveTrackingId = async () => {
 		try {
-			
-
-			const response = await fetch(`${apiUrl}/orders/update/${orderId}`, {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
 				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ trackingId }),
 				credentials: 'include',
-				body: JSON.stringify({ status: newStatus }),
 			});
 
 			if (!response.ok) {
 				const errorData = await response.json();
-				throw new Error(errorData.message || 'Failed to update order status');
+				navigate('/login');
+				throw new Error(errorData.message || 'Failed to save tracking ID');
 			}
 
-			const data = await response.json();
-
-			setOrder((prevOrder) => ({ ...prevOrder, status: newStatus }));
-			  // ✅ Update status in Redux instead of localStorage
-      dispatch(setOrderStatus(data?.updatedOrder?.paymentStatus));
-
-			toast.success('Order status updated successfully!', { position: 'top-right' });
+			setIsTrackingIdSaved(true);
+			toast.success('Tracking ID saved successfully!', { position: 'top-right' });
 		} catch (error) {
-			console.error('Error updating order status:', error);
-			toast.error(error.message || 'Failed to update order status', { position: 'top-right' });
+			console.error('Error saving tracking ID:', error);
+			toast.error(error.message || 'Failed to save tracking ID', { position: 'top-right' });
 		}
 	};
 
-	// Handle save note
+	const handleEmptyTrackingId = async () => {
+		try {
+			const response = await fetch(`${apiUrl}/orders/${orderId}/tracking`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+			});
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to empty tracking ID');
+			}
+
+			setTrackingId('');
+			setIsTrackingIdSaved(false);
+			toast.success('Tracking ID emptied successfully!', { position: 'top-right' });
+		} catch (error) {
+			console.error('Error emptying tracking ID:', error);
+			toast.error(error.message || 'Failed to empty tracking ID', { position: 'top-right' });
+		}
+	};
+
+const handleStatusChange = async (newStatus) => {
+	try {
+		if (newStatus === 'Shipped') {
+			if (!trackingId || !shippingCarrier) {
+				toast.error('Please enter tracking ID and select shipping carrier before shipping', {
+					position: 'top-right',
+				});
+				setStatus(order?.status || 'Pending'); // Revert to previous status
+				return;
+			}
+
+			if (!isTrackingIdSaved) {
+				await handleSaveTrackingId();
+			}
+		}
+
+		const response = await fetch(`${apiUrl}/orders/update/${orderId}`, {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
+			body: JSON.stringify({
+				status: newStatus,
+				...(newStatus === 'Shipped' && { trackingId, shippingCarrier }),
+			}),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.message || 'Failed to update order status');
+		}
+
+		const data = await response.json();
+		setOrder((prev) => ({ ...prev, status: newStatus }));
+		setStatus(newStatus); // Update local state
+		toast.success('Order status updated successfully!', { position: 'top-right' });
+	} catch (error) {
+		console.error('Error updating order status:', error);
+		toast.error(error.message || 'Failed to update order status', { position: 'top-right' });
+		setStatus(order?.status || 'Pending'); // Revert on error
+	}
+};
 	const handleSaveNote = async () => {
 		try {
-			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ message: noteMessage }),
 				credentials: 'include',
 			});
@@ -257,17 +231,12 @@ const navigate = useNavigate()
 		}
 	};
 
-	// Handle delete note
 	const handleDeleteNote = async () => {
 		try {
-			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/message`, {
 				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-								credentials:"include"
-,
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
 				body: JSON.stringify({ message: '' }),
 			});
 
@@ -287,22 +256,17 @@ const navigate = useNavigate()
 
 	const handleDeleteEmailNote = async () => {
 		try {
-			
-
 			const response = await fetch(`${apiUrl}/orders/${orderId}/deleteEmail`, {
 				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email: '' }),
-				credentials: 'include',f
+				credentials: 'include',
 			});
 
 			if (!response.ok) {
 				const errorData = await response.json();
 				throw new Error(errorData.message || 'Failed to delete note');
 			}
-
 			const data = await response.json();
 			setEmailMessage('');
 			toast.success('Email note deleted successfully!', { position: 'top-right' });
@@ -312,16 +276,11 @@ const navigate = useNavigate()
 		}
 	};
 
-	// Handle send email
 	const handleSendEmail = async () => {
 		try {
-			
-
 			const response = await fetch(`${apiUrl}/orders/${orderId}/send-email`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ message: emailMessage }),
 				credentials: 'include',
 			});
@@ -342,7 +301,6 @@ const navigate = useNavigate()
 
 	const handleDownloadInvoice = async () => {
 		try {
-			
 			const response = await fetch(`${apiUrl}/orders/${orderId}/invoice`, {
 				method: 'GET',
 				credentials: 'include',
@@ -369,7 +327,6 @@ const navigate = useNavigate()
 		}
 	};
 
-	// Handle download image
 	const handleDownload = async (imageUrl) => {
 		try {
 			const response = await fetch(imageUrl, { mode: 'cors' });
@@ -388,7 +345,6 @@ const navigate = useNavigate()
 		}
 	};
 
-	// Loading state
 	if (loading) {
 		return (
 			<div className='flex justify-center items-center min-h-screen bg-gray-100'>
@@ -397,7 +353,6 @@ const navigate = useNavigate()
 		);
 	}
 
-	// Error state
 	if (error) {
 		return (
 			<div className='flex justify-center items-center min-h-screen bg-gray-100'>
@@ -446,55 +401,71 @@ const navigate = useNavigate()
 								<option value='Cancelled'>Cancelled</option>
 							</select>
 						</div>
-						<button
-							onClick={() => setIsNotePopupOpen(true)}
-							className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2'>
-							<FaInfoCircle /> Private Note
-						</button>
-						{/* <button
-							onClick={() => setIsEmailPopupOpen(true)}
-							className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2'>
-							<FaEnvelope /> Send Email
-						</button> */}
-						<button
-							onClick={handleDownloadInvoice}
-							className='px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2'>
-							<FaDownload /> Download Invoice
-						</button>
+						<div className='flex flex-wrap gap-2'>
+							<button
+								onClick={() => setIsNotePopupOpen(true)}
+								className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2'>
+								<FaInfoCircle /> Private Note
+							</button>
+							<button
+								onClick={handleDownloadInvoice}
+								className='px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2'>
+								<FaDownload /> Download Invoice
+							</button>
+							<button
+								onClick={() => setIsEmailPopupOpen(true)}
+								className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2'>
+								<FaEnvelope /> Send Private Email
+							</button>
+						</div>
 					</div>
 				</div>
 
-				{/* Tracking ID Section */}
+				{/* Shipping Information */}
 				<div className='p-6 border-b border-gray-200'>
 					<h2 className='text-xl font-semibold mb-4 flex items-center'>
-						<FaInfoCircle className='mr-2 text-gray-700' /> Tracking ID
+						<FaTruck className='mr-2 text-gray-700' /> Shipping Information
 					</h2>
-					<div className='flex items-center gap-2'>
-						<input
-							type='text'
-							value={trackingId}
-							onChange={(e) => setTrackingId(e.target.value)}
-							className='w-full p-2 border border-gray-300 rounded-md'
-							placeholder='Enter Tracking ID'
-						/>
-						<button
-							onClick={handleSaveTrackingId}
-							className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'>
-							Save
-						</button>
-						<button
-							onClick={handleEmptyTrackingId}
-							className='px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors'>
-							Remove
-						</button>
+					<div className='space-y-4'>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-1'>Tracking ID</label>
+							<div className='flex items-center gap-2'>
+								<input
+									type='text'
+									value={trackingId}
+									onChange={(e) => setTrackingId(e.target.value)}
+									className='w-full p-2 border border-gray-300 rounded-md'
+									placeholder='Enter Tracking ID'
+								/>
+								<button
+									onClick={handleSaveTrackingId}
+									className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'>
+									Save
+								</button>
+								<button
+									onClick={handleEmptyTrackingId}
+									className='px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors'>
+									Remove
+								</button>
+							</div>
+						</div>
+
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-1'>Shipping Carrier</label>
+							<select
+								value={shippingCarrier}
+								onChange={(e) => setShippingCarrier(e.target.value)}
+								className='w-full p-2 border border-gray-300 rounded-md'
+								required>
+								<option value=''>Select Carrier</option>
+								<option value='FedEx'>FedEx</option>
+								<option value='UPS'>UPS</option>
+								<option value='USPS'>USPS</option>
+								<option value='DHL'>DHL</option>
+								<option value='Other'>Other</option>
+							</select>
+						</div>
 					</div>
-					{isTrackingIdSaved && ( // Show "Send Email" button only if tracking ID is saved
-						<button
-							onClick={() => setIsEmailPopupOpen(true)}
-							className='mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2'>
-							<FaEnvelope /> Send Email
-						</button>
-					)}
 				</div>
 
 				{/* Display Saved Note */}
@@ -518,11 +489,12 @@ const navigate = useNavigate()
 						<p className='text-gray-700'>Nothing saved</p>
 					</div>
 				)}
+
 				{/* Display Email Note */}
 				{emailMessage ? (
 					<div className='p-6 border-b border-gray-200'>
 						<h2 className='text-xl font-semibold mb-4 flex items-center'>
-							<FaInfoCircle className='mr-2 text-gray-700' /> Email sent to customer
+							<FaInfoCircle className='mr-2 text-gray-700' /> Private Email sent to customer
 						</h2>
 						<p className='text-gray-700'>{emailMessage}</p>
 						<button
