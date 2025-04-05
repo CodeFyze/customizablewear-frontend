@@ -48,7 +48,7 @@ const Products = ({ showTShirtSelector = true }) => {
   return (
     <div className="bg-[#F3F4F6]">
       {showTShirtSelector && <TShirtSelector />}
-      <div className=" container mx-auto px-4 py-4 ">
+      {/* <div className=" container mx-auto px-4 py-4 ">
         <h1 className="text-3xl font-bold my-8 font-sans px-5">Products</h1>
         <div className="w-full  grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
           {products.map((product) => (
@@ -92,10 +92,7 @@ const Products = ({ showTShirtSelector = true }) => {
                   </div>
                 </div>
 
-                {/* <div className="text-center mt-2 font-semibold text-green-600">
-                Discount:{" "}
-                {product.discount ? `${product.discount}%` : "No discount"}
-              </div> */}
+            
 
                 <div className="text-center mt-3 mb-4">
                   <button
@@ -110,7 +107,7 @@ const Products = ({ showTShirtSelector = true }) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
