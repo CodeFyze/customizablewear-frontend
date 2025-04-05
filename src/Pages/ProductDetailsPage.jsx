@@ -175,7 +175,7 @@ console.log(selectedSize)
           <p className="text-2xl font-bold text-red-600">${product.price}</p>
 
           {/* Quantity Selector */}
-          <div>
+          {/* <div>
             <p className="font-semibold">Quantity:</p>
             <div className="flex items-center space-x-2 pt-2">
               <div className=" border-gray-300 border-[1px] flex items-center  rounded-full">
@@ -198,7 +198,7 @@ console.log(selectedSize)
               </button>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Colors */}
           {product.colors && product.colors.length > 0 && (
