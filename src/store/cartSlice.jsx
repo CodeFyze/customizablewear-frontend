@@ -61,7 +61,7 @@ export const cartSlice = createSlice({
 			console.log('Item removed, updated state:', state.items);
 		},
 
-    increaseQuantity: (state, action) => {
+		increaseQuantity: (state, action) => {
 			state.items = state.items.map((item) =>
 				item._id === action.payload ? { ...item, quantity: item.quantity + 1 } : item,
 			);
@@ -75,9 +75,12 @@ export const cartSlice = createSlice({
 				item.quantity -= 1;
 			}
 		},
+		clearCart: (state) => {
+			state.items = []; // Reset cart to empty array
+		},
 	},
 });
 
-export const { setCart, addItem, removeItem, increaseQuantity, decreaseQuantity } = cartSlice.actions;
+export const { setCart,clearCart, addItem, removeItem, increaseQuantity, decreaseQuantity } = cartSlice.actions;
 
 export default cartSlice.reducer;
